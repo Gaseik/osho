@@ -12,3 +12,48 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* Fan / Arc card layout */
+.fan-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+  padding: 40px 0 80px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.fan-inner {
+  position: relative;
+  width: 0;
+  height: 120px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.fan-card {
+  position: absolute;
+  bottom: 0;
+  transform-origin: center 300%;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              z-index 0s;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.fan-card:hover {
+  filter: brightness(1.15) drop-shadow(0 0 12px rgba(255, 215, 0, 0.35));
+}
+
+@keyframes fanIn {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.7) rotate(0deg);
+  }
+  to {
+    opacity: 1;
+  }
+}
