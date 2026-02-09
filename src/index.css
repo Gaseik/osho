@@ -13,47 +13,78 @@ body {
   box-sizing: border-box;
 }
 
-/* Fan / Arc card layout */
-.fan-container {
+/* ============================
+   3D Fan / Arc card layout
+   ============================ */
+
+/* Outer wrapper: sets perspective for the whole 3D scene */
+.fan-scene {
   width: 100%;
   display: flex;
   justify-content: center;
+  perspective: 1200px;
+  padding: 30px 0 120px;
   overflow: visible;
-  padding: 40px 0 80px;
   -webkit-user-select: none;
   user-select: none;
 }
 
-.fan-inner {
-  position: relative;
-  width: 0;
-  height: 120px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+/* Tilted plane — gives a "looking down at the table" feel */
+.fan-table {
+  transform-style: preserve-3d;
+  /* rotateX is set via inline style for responsiveness */
 }
 
+/* The pivot point all cards rotate around */
+.fan-pivot {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+/* Individual card wrapper */
 .fan-card {
   position: absolute;
   bottom: 0;
-  transform-origin: center 300%;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-              z-index 0s;
-  will-change: transform;
+  left: 0;
+  /* Center the card on the pivot point */
+  margin-left: calc(-0.5 * var(--card-w, 56px));
+  /* The magic: rotation origin is far below the card, creating the arc */
+  transform-origin: center calc(100% + var(--fan-radius, 300px));
+  /* Smooth transitions for ALL transform changes (entry + hover + leave) */
+  transition:
+    transform 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.5s ease-out,
+    filter 0.35s ease;
+  will-change: transform, opacity;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  transform-style: preserve-3d;
+  cursor: pointer;
 }
 
-.fan-card:hover {
-  filter: brightness(1.15) drop-shadow(0 0 12px rgba(255, 215, 0, 0.35));
+/* Hover / active glow */
+.fan-card--active {
+  filter:
+    brightness(1.25)
+    drop-shadow(0 -6px 24px rgba(255, 215, 0, 0.5))
+    drop-shadow(0 0 8px rgba(255, 215, 0, 0.25));
 }
 
-@keyframes fanIn {
-  from {
-    opacity: 0;
-    transform: translateY(60px) scale(0.7) rotate(0deg);
+/* Subtle shimmer on any card hover (desktop) */
+@media (hover: hover) {
+  .fan-card:hover:not(.fan-card--active) {
+    filter:
+      brightness(1.1)
+      drop-shadow(0 0 6px rgba(255, 215, 0, 0.15));
   }
-  to {
-    opacity: 1;
+}
+
+/* Small screens */
+@media (max-width: 639px) {
+  .fan-scene {
+    padding: 20px 0 80px;
+    perspective: 800px;
   }
 }
