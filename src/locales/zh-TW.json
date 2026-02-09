@@ -1,0 +1,44 @@
+{
+  "common": {
+    "title": "禪意靈卡",
+    "subtitle": "ZEN INSIGHT"
+  },
+  "spread": {
+    "selectTitle": "選擇你的牌陣",
+    "single": "單牌",
+    "singleEn": "Single Card",
+    "singleDesc": "一張牌回答你的問題",
+    "singleLabel": "指引",
+    "three": "三牌陣",
+    "threeEn": "Past / Present / Future",
+    "threeDesc": "過去·現在·未來",
+    "threeLabels": {
+      "0": "過去",
+      "1": "現在",
+      "2": "未來"
+    },
+    "cross": "五牌陣",
+    "crossEn": "Cross Spread",
+    "crossDesc": "情境·障礙·建議·根源·結果",
+    "crossLabels": {
+      "0": "情境",
+      "1": "障礙",
+      "2": "建議",
+      "3": "根源",
+      "4": "結果"
+    },
+    "cards": "張"
+  },
+  "draw": {
+    "title": "選擇 {{count}} 張牌",
+    "selected": "已選 {{current}} / {{total}}"
+  },
+  "result": {
+    "title": "點擊牌片翻面",
+    "promptPreview": "PROMPT 預覽",
+    "copyPrompt": "複製 Prompt",
+    "copied": "已複製",
+    "reset": "重新抽牌",
+    "promptTemplate": "我用「{{spreadName}}」牌陣抽了以下的禪卡，請幫我解讀：\n\n{{cards}}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。"
+  }
+}

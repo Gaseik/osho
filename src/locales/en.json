@@ -1,0 +1,44 @@
+{
+  "common": {
+    "title": "Zen Insight Cards",
+    "subtitle": "ZEN INSIGHT"
+  },
+  "spread": {
+    "selectTitle": "Choose Your Spread",
+    "single": "Single Card",
+    "singleEn": "Single Card",
+    "singleDesc": "One card to answer your question",
+    "singleLabel": "Guidance",
+    "three": "Three Cards",
+    "threeEn": "Past / Present / Future",
+    "threeDesc": "Past · Present · Future",
+    "threeLabels": {
+      "0": "Past",
+      "1": "Present",
+      "2": "Future"
+    },
+    "cross": "Five Cards",
+    "crossEn": "Cross Spread",
+    "crossDesc": "Situation · Obstacle · Advice · Root · Outcome",
+    "crossLabels": {
+      "0": "Situation",
+      "1": "Obstacle",
+      "2": "Advice",
+      "3": "Root",
+      "4": "Outcome"
+    },
+    "cards": " cards"
+  },
+  "draw": {
+    "title": "Select {{count}} cards",
+    "selected": "Selected {{current}} / {{total}}"
+  },
+  "result": {
+    "title": "Click cards to flip",
+    "promptPreview": "PROMPT PREVIEW",
+    "copyPrompt": "Copy Prompt",
+    "copied": "Copied",
+    "reset": "Draw Again",
+    "promptTemplate": "I drew the following Zen cards using the \"{{spreadName}}\" spread, please help me interpret:\n\n{{cards}}\n\nPlease provide an overall interpretation and guidance based on each card's position and meaning."
+  }
+}

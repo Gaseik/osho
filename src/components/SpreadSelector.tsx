@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Spread, SPREADS } from "../data/spreads";
 
 interface SpreadSelectorProps {
@@ -5,10 +6,12 @@ interface SpreadSelectorProps {
 }
 
 export default function SpreadSelector({ onSelectSpread }: SpreadSelectorProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="animate-fadeUp max-w-[500px] w-full">
       <p className="text-center text-white/60 text-sm mb-6">
-        選擇你的牌陣
+        {t('spread.selectTitle')}
       </p>
       <div className="flex flex-col gap-3">
         {SPREADS.map(s => (
@@ -20,12 +23,12 @@ export default function SpreadSelector({ onSelectSpread }: SpreadSelectorProps) 
           >
             <div className="flex justify-between items-center">
               <div>
-                <div className="text-lg font-medium">{s.name}</div>
-                <div className="text-xs text-white/40 mt-0.5">{s.nameEn}</div>
+                <div className="text-lg font-medium">{t(`spread.${s.id}`)}</div>
+                <div className="text-xs text-white/40 mt-0.5">{t(`spread.${s.id}En`)}</div>
               </div>
-              <div className="text-xs text-zen-gold-dim">{s.count} 張</div>
+              <div className="text-xs text-zen-gold-dim">{s.count}{t('spread.cards')}</div>
             </div>
-            <div className="text-[13px] text-white/50 mt-2">{s.desc}</div>
+            <div className="text-[13px] text-white/50 mt-2">{t(`spread.${s.id}Desc`)}</div>
           </div>
         ))}
       </div>

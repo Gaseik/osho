@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Card, CARDS, shuffle } from "./data/cards";
 import { Spread } from "./data/spreads";
 import SpreadSelector from "./components/SpreadSelector";
 import DrawPhase from "./components/DrawPhase";
 import ResultPhase from "./components/ResultPhase";
+import LanguageSwitcher from "./components/LanguageSwitcher";
+import { POSITION_LABELS } from "./data/spreads";
 
 type Phase = "select" | "draw" | "result";
 
 export default function App() {
+  const { t, i18n } = useTranslation();
   const [phase, setPhase] = useState<Phase>("select");
   const [spread, setSpread] = useState<Spread | null>(null);
   const [deck, setDeck] = useState<Card[]>([]);
@@ -33,13 +37,26 @@ export default function App() {
     }
   };
 
+  const getSpreadLabels = (spreadId: string): string[] => {
+    if (i18n.language === 'zh-TW') {
+      return POSITION_LABELS[spreadId];
+    }
+    // Use translation keys for English
+    const labelKey = `spread.${spreadId}Labels`;
+    return Array.from({ length: spread?.count || 0 }, (_, i) =>
+      t(`${labelKey}.${i}`)
+    );
+  };
+
   const copyPrompt = () => {
     if (!spread) return;
-    const labels = ["指引", "過去", "現在", "未來", "情境", "障礙", "建議", "根源", "結果"];
+    const labels = getSpreadLabels(spread.id);
     const lines = drawn.map((c, i) =>
-      `${labels[i] || `位置${i + 1}`}：${c.name}（${c.nameZh}）- ${c.meaning}`
+      `${labels[i]}：${c.name}（${c.nameZh}）- ${c.meaning}`
     );
-    const prompt = `我用「${spread.name}」牌陣抽了以下的禪卡，請幫我解讀：\n\n${lines.join("\n")}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。`;
+    const spreadName = i18n.language === 'zh-TW' ? spread.name : t(`spread.${spread.id}`);
+    const cardsText = lines.join("\n");
+    const prompt = t('result.promptTemplate', { spreadName, cards: cardsText });
 
     navigator.clipboard.writeText(prompt).then(() => {
       setCopied(true);
@@ -58,13 +75,15 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                     text-white font-serif flex flex-col items-center px-4 py-10">
+      <LanguageSwitcher />
+
       {/* Header */}
       <div className="text-center mb-10 animate-fadeUp">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
-          ☯ ZEN INSIGHT ☯
+          ☯ {t('common.subtitle')} ☯
         </div>
         <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
-          禪 意 靈 卡
+          {t('common.title')}
         </h1>
         <div className="w-[60px] h-px bg-gradient-to-r from-transparent via-zen-gold/50 to-transparent
                       mx-auto mt-3" />

@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS } from "../data/spreads";
 import FlipCard from "./FlipCard";
@@ -22,20 +23,34 @@ export default function ResultPhase({
   onCopyPrompt,
   onReset,
 }: ResultPhaseProps) {
+  const { t, i18n } = useTranslation();
   const resultRef = useRef<HTMLDivElement>(null);
 
+  const getSpreadLabels = (spreadId: string): string[] => {
+    if (i18n.language === 'zh-TW') {
+      return POSITION_LABELS[spreadId];
+    }
+    return Array.from({ length: spread.count }, (_, i) =>
+      t(`spread.${spreadId}Labels.${i}`)
+    );
+  };
+
   const genPrompt = () => {
-    const labels = POSITION_LABELS[spread.id];
+    const labels = getSpreadLabels(spread.id);
     const lines = drawn.map((c, i) =>
       `${labels[i]}：${c.name}（${c.nameZh}）- ${c.meaning}`
     );
-    return `我用「${spread.name}」牌陣抽了以下的禪卡，請幫我解讀：\n\n${lines.join("\n")}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。`;
+    const spreadName = i18n.language === 'zh-TW' ? spread.name : t(`spread.${spread.id}`);
+    const cardsText = lines.join("\n");
+    return t('result.promptTemplate', { spreadName, cards: cardsText });
   };
+
+  const labels = getSpreadLabels(spread.id);
 
   return (
     <div className="animate-fadeUp text-center w-full max-w-[700px]">
       <p className="text-white/60 text-sm mb-6">
-        點擊牌片翻面
+        {t('result.title')}
       </p>
 
       {/* Cards */}
@@ -49,11 +64,11 @@ export default function ResultPhase({
             className="flex flex-col items-center gap-2"
           >
             <div className="text-[11px] text-zen-gold-dim tracking-widest">
-              {POSITION_LABELS[spread.id][i]}
+              {labels[i]}
             </div>
             <FlipCard
               card={card}
-              label={POSITION_LABELS[spread.id][i]}
+              label={labels[i]}
               delay={i * 200}
               onFlipped={onFlipped}
             />
@@ -69,7 +84,7 @@ export default function ResultPhase({
           {/* Prompt Preview */}
           <div className="bg-white/[0.03] rounded-xl border border-zen-gold/10 p-4 max-w-[500px] w-full text-left mb-2">
             <div className="text-[11px] text-zen-gold/50 mb-2 tracking-wider">
-              PROMPT 預覽
+              {t('result.promptPreview')}
             </div>
             <div className="text-xs text-white/60 leading-relaxed whitespace-pre-line">
               {genPrompt()}
@@ -85,14 +100,14 @@ export default function ResultPhase({
                   : 'bg-zen-gold/[0.08] border-zen-gold/40 text-zen-gold hover:bg-zen-gold/[0.15]'
                 }`}
             >
-              {copied ? "✓ 已複製" : "複製 Prompt"}
+              {copied ? `✓ ${t('result.copied')}` : t('result.copyPrompt')}
             </button>
             <button
               onClick={onReset}
               className="px-7 py-3 rounded-lg border border-white/15 bg-white/[0.03] text-white/60
                        hover:bg-white/[0.08] transition-all duration-300 text-sm tracking-wider"
             >
-              重新抽牌
+              {t('result.reset')}
             </button>
           </div>
         </div>
