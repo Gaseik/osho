@@ -37,9 +37,10 @@ export default function ResultPhase({
 
   const genPrompt = () => {
     const labels = getSpreadLabels(spread.id);
-    const lines = drawn.map((c, i) =>
-      `${labels[i]}：${c.name}（${c.nameZh}）- ${c.meaning}`
-    );
+    const lines = drawn.map((c, i) => {
+      const cardName = t(`cards.${c.id}`);
+      return `${labels[i]}：${cardName} - ${c.meaning}`;
+    });
     const spreadName = i18n.language === 'zh-TW' ? spread.name : t(`spread.${spread.id}`);
     const cardsText = lines.join("\n");
     return t('result.promptTemplate', { spreadName, cards: cardsText });
