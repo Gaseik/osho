@@ -26,7 +26,6 @@ export default function SpreadSelector({ onSelectSpread }: SpreadSelectorProps) 
             <div className="flex justify-between items-center">
               <div>
                 <div className="text-lg font-medium">{t(`spread.${s.id}`)}</div>
-                <div className="text-xs text-white/40 mt-0.5">{t(`spread.${s.id}En`)}</div>
               </div>
               <div className="text-xs text-zen-gold-dim">{s.count}{t('spread.cards')}</div>
             </div>

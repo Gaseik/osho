@@ -1,6 +1,7 @@
 "use client";
 
 import { CSSProperties } from "react";
+import Image from "next/image";
 
 interface CardBackProps {
   style?: CSSProperties;
@@ -35,16 +36,16 @@ export default function CardBack({
         ...animStyle,
       }}
     >
-      <img
+      <Image
         src="/assets/cardback.jpeg"
-        alt="card back"
+        alt="Card Back"
+        fill
         style={{
-          width: "100%",
-          height: "100%",
           objectFit: "cover",
-          borderRadius: "inherit",
-          display: "block",
+          borderRadius: 12,
+          pointerEvents: "none",
         }}
+        priority
       />
     </div>
   );

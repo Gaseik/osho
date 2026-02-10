@@ -196,6 +196,9 @@ export default function ResultPhase({
             <div className="text-[11px] text-zen-gold/50 mb-2 tracking-wider">
               {t('result.promptPreview')}
             </div>
+            <div className="text-[10px] text-white/40 mb-3 leading-relaxed">
+              {t('result.promptHelper')}
+            </div>
             <div className="text-xs text-white/60 leading-relaxed whitespace-pre-line">
               {genPrompt()}
             </div>
