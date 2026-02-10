@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu01, XClose, Globe01, Mail01 } from '@untitled-ui/icons-react';

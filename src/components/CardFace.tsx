@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, getCardColor } from "../data/cards";
@@ -19,7 +21,7 @@ export default function CardFace({ card, label, small }: CardFaceProps) {
   const getImagePath = () => {
     const paddedId = String(card.id).padStart(2, '0');
     const slug = card.name.toLowerCase().replace(/\s+/g, '-');
-    return `/src/assets/cards/${paddedId}-${slug}.jpeg`;
+    return `/assets/cards/${paddedId}-${slug}.jpeg`;
   };
 
   // If card has image and no error, show the actual card image
