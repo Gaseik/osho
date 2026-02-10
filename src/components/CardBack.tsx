@@ -1,3 +1,5 @@
+"use client";
+
 import { CSSProperties } from "react";
 
 interface CardBackProps {

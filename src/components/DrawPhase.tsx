@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
