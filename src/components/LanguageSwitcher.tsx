@@ -1,32 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu01, XClose, Globe01, Mail01 } from '@untitled-ui/icons-react';
-
-declare global {
-  interface Window {
-    kofiwidget2?: {
-      init: (text: string, color: string, id: string) => void;
-      draw: () => string;
-    };
-  }
-}
 
 export default function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
-  const kofiRef = useRef<HTMLDivElement>(null);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'zh-TW' ? 'en' : 'zh-TW';
     i18n.changeLanguage(newLang);
   };
-
-  useEffect(() => {
-    if (kofiRef.current && window.kofiwidget2) {
-      window.kofiwidget2.init('Support me on Ko-fi', '#000000', 'I2I51TYYE8');
-      kofiRef.current.innerHTML = window.kofiwidget2.draw();
-    }
-  }, []);
 
   return (
     <>
@@ -91,7 +74,16 @@ export default function LanguageSwitcher() {
           <div className="flex-1" />
 
           {/* Ko-fi donate — pinned to bottom */}
-          <div ref={kofiRef} className="pb-8 flex justify-center" />
+          <div className="pb-8 flex justify-center">
+            <a href="https://ko-fi.com/I2I51TYYE8" target="_blank" rel="noopener noreferrer">
+              <img
+                height="36"
+                style={{ border: 0, height: 36 }}
+                src="https://storage.ko-fi.com/cdn/kofi3.png?v=6"
+                alt="Buy Me a Coffee at ko-fi.com"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </>
