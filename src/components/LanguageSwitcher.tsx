@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu01, XClose, Globe01, Mail01 } from '@untitled-ui/icons-react';
@@ -70,6 +72,20 @@ export default function LanguageSwitcher() {
             <span className="text-sm tracking-wider">{t('menu.contact')}</span>
           </a>
 
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Ko-fi donate — pinned to bottom */}
+          <div className="pb-8 flex justify-center">
+            <a href="https://ko-fi.com/I2I51TYYE8" target="_blank" rel="noopener noreferrer">
+              <img
+                height="36"
+                style={{ border: 0, height: 36 }}
+                src="https://storage.ko-fi.com/cdn/kofi3.png?v=6"
+                alt="Buy Me a Coffee at ko-fi.com"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </>
