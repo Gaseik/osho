@@ -99,6 +99,11 @@ body {
   height: 240px;
 }
 
+/* During exit: disable interaction */
+.fan-scene--exiting {
+  pointer-events: none;
+}
+
 /* Gradient fade from page bg */
 .fan-scene-bg {
   position: absolute;
@@ -160,25 +165,24 @@ body {
     drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
 }
 
-/* Neighbor cards — subtle glow */
-.fan-card--near {
-  filter:
-    brightness(1.12)
-    drop-shadow(0 -4px 15px rgba(255, 215, 0, 0.2));
-}
-
-/* Drag hint text */
+/* Drag hint — fixed to viewport bottom with breathing animation */
 .fan-hint {
-  position: absolute;
-  bottom: 16px;
+  position: fixed;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 215, 0, 0.35);
   font-size: 12px;
   letter-spacing: 1px;
   white-space: nowrap;
   pointer-events: none;
-  animation: fadeUp 0.8s ease-out;
+  z-index: 20;
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.65; }
 }
 
 /* ========== Responsive ========== */
@@ -213,5 +217,9 @@ body {
     padding: 12px 28px;
     font-size: 15px;
     letter-spacing: 2px;
+  }
+  .fan-hint {
+    font-size: 11px;
+    bottom: 8px;
   }
 }
