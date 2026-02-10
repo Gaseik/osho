@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Menu01 } from '@untitled-ui/icons-react/build/cjs/Menu01';
+import { XClose } from '@untitled-ui/icons-react/build/cjs/XClose';
+import { Globe01 } from '@untitled-ui/icons-react/build/cjs/Globe01';
+import { Mail01 } from '@untitled-ui/icons-react/build/cjs/Mail01';
 
 export default function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
@@ -19,11 +23,7 @@ export default function LanguageSwitcher() {
                    rounded-lg border border-zen-gold/30 bg-zen-gold/5 text-zen-gold-dim
                    hover:bg-zen-gold/10 hover:border-zen-gold/50 transition-all duration-300 z-50"
       >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-          <line x1="2" y1="4" x2="16" y2="4" />
-          <line x1="2" y1="9" x2="16" y2="9" />
-          <line x1="2" y1="14" x2="16" y2="14" />
-        </svg>
+        <Menu01 width={18} height={18} />
       </button>
 
       {/* Backdrop */}
@@ -44,9 +44,9 @@ export default function LanguageSwitcher() {
         <button
           onClick={() => setOpen(false)}
           className="absolute top-6 right-5 text-white/40 hover:text-white/70
-                     transition-colors text-lg"
+                     transition-colors"
         >
-          ✕
+          <XClose width={20} height={20} />
         </button>
 
         <div className="flex flex-col h-full pt-20 px-6">
@@ -56,14 +56,12 @@ export default function LanguageSwitcher() {
             className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
                        transition-colors text-left"
           >
-            <span className="text-base">🌐</span>
+            <Globe01 width={18} height={18} />
             <span className="text-sm tracking-wider">{t('menu.language')}</span>
             <span className="ml-auto text-xs text-white/40">
               {i18n.language === 'zh-TW' ? 'EN' : '中文'}
             </span>
           </button>
-
-          <div className="w-full h-px bg-white/10 my-1" />
 
           {/* Contact */}
           <a
@@ -71,7 +69,7 @@ export default function LanguageSwitcher() {
             className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
                        transition-colors"
           >
-            <span className="text-base">✉</span>
+            <Mail01 width={18} height={18} />
             <span className="text-sm tracking-wider">{t('menu.contact')}</span>
           </a>
 
