@@ -10,12 +10,29 @@
     "singleDesc": "一張牌回答你的問題",
     "singleLabel": "指引",
     "three": "三牌陣",
-    "threeEn": "Past / Present / Future",
-    "threeDesc": "過去·現在·未來",
+    "threeEn": "Three Cards",
+    "threeDesc": "三張牌給你指引",
     "threeLabels": {
+      "0": "第一張",
+      "1": "第二張",
+      "2": "第三張"
+    },
+    "time-flow": "時間之流",
+    "time-flowEn": "Flow of Time",
+    "time-flowDesc": "過去·現在·未來",
+    "time-flowLabels": {
       "0": "過去",
       "1": "現在",
       "2": "未來"
+    },
+    "relationship": "兩人關聯",
+    "relationshipEn": "Two People Connection",
+    "relationshipDesc": "你的貢獻·對方的貢獻·綜合能量·洞見",
+    "relationshipLabels": {
+      "0": "你的貢獻",
+      "1": "對方的貢獻",
+      "2": "綜合能量",
+      "3": "洞見"
     },
     "cross": "五牌陣",
     "crossEn": "Cross Spread",
@@ -31,7 +48,10 @@
   },
   "draw": {
     "title": "選擇 {{count}} 張牌",
-    "selected": "已選 {{current}} / {{total}}"
+    "selected": "已選 {{current}} / {{total}}",
+    "shuffle": "洗牌",
+    "shuffleHint": "靜心片刻，感受你的直覺",
+    "dragHint": "← 左右拖曳選牌，點擊浮起的牌抽牌 →"
   },
   "result": {
     "title": "點擊牌片翻面",

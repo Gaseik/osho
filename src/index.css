@@ -14,46 +14,117 @@ body {
 }
 
 /* ================================================
-   3D Fan — fixed at viewport bottom
+   Shuffle Button
    ================================================ */
 
-/* Full-width interaction zone pinned to the bottom */
+.shuffle-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 40px;
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  border-radius: 50px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(255, 215, 0, 0.02));
+  color: rgba(255, 215, 0, 0.9);
+  font-family: 'Georgia', serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.shuffle-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.shuffle-btn:hover {
+  border-color: rgba(255, 215, 0, 0.6);
+  box-shadow:
+    0 0 30px rgba(255, 215, 0, 0.15),
+    inset 0 0 20px rgba(255, 215, 0, 0.05);
+  transform: scale(1.05);
+}
+
+.shuffle-btn:hover::before {
+  opacity: 1;
+}
+
+.shuffle-btn:active {
+  transform: scale(0.97);
+}
+
+.shuffle-btn-icon {
+  font-size: 24px;
+  display: inline-block;
+  animation: spin-slow 6s linear infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ================================================
+   3D Fan — positioned at lower portion of viewport
+   ================================================ */
+
 .fan-scene {
   position: fixed;
-  bottom: 0;
+  bottom: 60px;
   left: 0;
   right: 0;
-  height: 240px;
+  height: 350px;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  perspective: 1200px;
+  perspective: 1400px;
   z-index: 10;
   -webkit-user-select: none;
   user-select: none;
-  touch-action: none; /* prevent scroll when swiping across fan */
+  touch-action: none;
+  transition: bottom 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+              height 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Gradient that fades from page background into the fan area */
+/* During shuffle & stack: center the scene vertically */
+.fan-scene--center {
+  bottom: calc(50vh - 120px);
+  height: 240px;
+}
+
+/* During exit: disable interaction */
+.fan-scene--exiting {
+  pointer-events: none;
+}
+
+/* Gradient fade from page bg */
 .fan-scene-bg {
   position: absolute;
-  inset: 0;
+  inset: -60px 0 0 0;
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    rgba(10, 10, 26, 0.6) 30%,
-    rgba(10, 10, 26, 0.95) 100%
+    rgba(10, 10, 26, 0.5) 40%,
+    rgba(10, 10, 26, 0.9) 100%
   );
   pointer-events: none;
 }
 
-/* The tilted 3D plane (rotateX set inline for responsiveness) */
+/* The tilted 3D plane */
 .fan-table {
   transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
   margin-bottom: 10px;
 }
 
-/* Zero-width anchor: all cards stack here, fanned out by rotation */
+/* Zero-width anchor for card fan */
 .fan-pivot {
   position: relative;
   width: 0;
@@ -66,48 +137,89 @@ body {
   position: absolute;
   bottom: 0;
   left: 0;
-  margin-left: calc(-0.5 * var(--card-w, 56px));
-  transform-origin: center calc(100% + var(--fan-radius, 300px));
-
-  /* The key: smooth transition for transform, opacity, AND filter */
+  margin-left: calc(-0.5 * var(--card-w, 112px));
+  transform-origin: center calc(100% + var(--fan-radius, 520px));
   transition:
-    transform 0.35s cubic-bezier(0.23, 1, 0.32, 1),
-    opacity   0.5s  ease-out,
-    filter    0.3s  ease;
-
+    transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity   0.5s ease-out,
+    filter    0.4s ease;
   will-change: transform, opacity;
   -webkit-tap-highlight-color: transparent;
   transform-style: preserve-3d;
   cursor: pointer;
 }
 
-/* Active card (directly hovered) — strong golden glow */
+/* Dragging state — grabbing cursor */
+.fan-scene--dragging {
+  cursor: grabbing;
+}
+.fan-scene--dragging .fan-card {
+  cursor: grabbing !important;
+}
+
+/* Active card — strong golden glow */
 .fan-card--active {
   filter:
     brightness(1.35)
-    drop-shadow(0 -10px 30px rgba(255, 215, 0, 0.55))
-    drop-shadow(0 0 12px rgba(255, 215, 0, 0.3));
+    drop-shadow(0 -12px 35px rgba(255, 215, 0, 0.55))
+    drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
 }
 
-/* Neighbor cards — subtle glow */
-.fan-card--near {
-  filter:
-    brightness(1.12)
-    drop-shadow(0 -4px 12px rgba(255, 215, 0, 0.2));
+/* Drag hint — fixed to viewport bottom with breathing animation */
+.fan-hint {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 215, 0, 0.35);
+  font-size: 12px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 20;
+  animation: breathe 3s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.65; }
 }
 
 /* ========== Responsive ========== */
 
 @media (max-width: 767px) {
   .fan-scene {
+    height: 280px;
+    bottom: 40px;
+    perspective: 1000px;
+  }
+  .fan-scene--center {
+    bottom: calc(50vh - 100px);
     height: 200px;
-    perspective: 900px;
+  }
+  .shuffle-btn {
+    padding: 14px 32px;
+    font-size: 16px;
   }
 }
 
 @media (max-width: 479px) {
   .fan-scene {
-    height: 170px;
-    perspective: 700px;
+    height: 220px;
+    bottom: 20px;
+    perspective: 800px;
+  }
+  .fan-scene--center {
+    bottom: calc(50vh - 80px);
+    height: 160px;
+  }
+  .shuffle-btn {
+    padding: 12px 28px;
+    font-size: 15px;
+    letter-spacing: 2px;
+  }
+  .fan-hint {
+    font-size: 11px;
+    bottom: 8px;
   }
 }

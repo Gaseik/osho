@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { Card, CARDS, shuffle } from "./data/cards";
 import { Spread } from "./data/spreads";
 import SpreadSelector from "./components/SpreadSelector";
@@ -8,11 +9,9 @@ import ResultPhase from "./components/ResultPhase";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import { POSITION_LABELS } from "./data/spreads";
 
-type Phase = "select" | "draw" | "result";
-
 export default function App() {
   const { t, i18n } = useTranslation();
-  const [phase, setPhase] = useState<Phase>("select");
+  const navigate = useNavigate();
   const [spread, setSpread] = useState<Spread | null>(null);
   const [deck, setDeck] = useState<Card[]>([]);
   const [drawn, setDrawn] = useState<Card[]>([]);
@@ -24,7 +23,7 @@ export default function App() {
     setDeck(shuffle(CARDS));
     setDrawn([]);
     setFlippedCount(0);
-    setPhase("draw");
+    navigate("/draw");
   };
 
   const drawCard = (idx: number) => {
@@ -32,16 +31,16 @@ export default function App() {
     const card = deck[idx];
     setDrawn(p => [...p, card]);
     setDeck(p => p.filter((_, i) => i !== idx));
-    if (drawn.length + 1 >= spread.count) {
-      setTimeout(() => setPhase("result"), 300);
-    }
+  };
+
+  const onDrawComplete = () => {
+    navigate("/result");
   };
 
   const getSpreadLabels = (spreadId: string): string[] => {
     if (i18n.language === 'zh-TW') {
       return POSITION_LABELS[spreadId];
     }
-    // Use translation keys for English
     const labelKey = `spread.${spreadId}Labels`;
     return Array.from({ length: spread?.count || 0 }, (_, i) =>
       t(`${labelKey}.${i}`)
@@ -65,11 +64,11 @@ export default function App() {
   };
 
   const reset = () => {
-    setPhase("select");
     setSpread(null);
     setDrawn([]);
     setFlippedCount(0);
     setCopied(false);
+    navigate("/");
   };
 
   return (
@@ -89,31 +88,42 @@ export default function App() {
                       mx-auto mt-3" />
       </div>
 
-      {/* Select Spread */}
-      {phase === "select" && <SpreadSelector onSelectSpread={selectSpread} />}
+      {/* Routes */}
+      <Routes>
+        <Route path="/" element={<SpreadSelector onSelectSpread={selectSpread} />} />
 
-      {/* Draw Phase */}
-      {phase === "draw" && spread && (
-        <DrawPhase
-          spread={spread}
-          deck={deck}
-          drawn={drawn}
-          onDrawCard={drawCard}
-        />
-      )}
+        <Route path="/draw" element={
+          spread ? (
+            <DrawPhase
+              spread={spread}
+              deck={deck}
+              drawn={drawn}
+              onDrawCard={drawCard}
+              onComplete={onDrawComplete}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        } />
 
-      {/* Result Phase */}
-      {phase === "result" && spread && (
-        <ResultPhase
-          spread={spread}
-          drawn={drawn}
-          flippedCount={flippedCount}
-          copied={copied}
-          onFlipped={() => setFlippedCount(p => p + 1)}
-          onCopyPrompt={copyPrompt}
-          onReset={reset}
-        />
-      )}
+        <Route path="/result" element={
+          spread ? (
+            <ResultPhase
+              spread={spread}
+              drawn={drawn}
+              flippedCount={flippedCount}
+              copied={copied}
+              onFlipped={() => setFlippedCount(p => p + 1)}
+              onCopyPrompt={copyPrompt}
+              onReset={reset}
+            />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        } />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </div>
   );
 }
