@@ -31,7 +31,9 @@
   },
   "draw": {
     "title": "Select {{count}} cards",
-    "selected": "Selected {{current}} / {{total}}"
+    "selected": "Selected {{current}} / {{total}}",
+    "shuffle": "Shuffle",
+    "shuffleHint": "Take a moment, trust your intuition"
   },
   "result": {
     "title": "Click cards to flip",
