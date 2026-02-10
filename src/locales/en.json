@@ -48,6 +48,16 @@
       "3": "Root",
       "4": "Outcome"
     },
+    "two-choice": "Two Choices",
+    "two-choiceEn": "Two Choices",
+    "two-choiceDesc": "Current · Situation A · Outcome A · Situation B · Outcome B",
+    "two-choiceLabels": {
+      "0": "Current Situation",
+      "1": "Situation A",
+      "2": "Outcome of A",
+      "3": "Situation B",
+      "4": "Outcome of B"
+    },
     "cards": " cards"
   },
   "draw": {

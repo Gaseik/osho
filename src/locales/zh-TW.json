@@ -48,6 +48,16 @@
       "3": "根源",
       "4": "結果"
     },
+    "two-choice": "二擇一",
+    "two-choiceEn": "Two Choices",
+    "two-choiceDesc": "現狀·A狀況·A結果·B狀況·B結果",
+    "two-choiceLabels": {
+      "0": "現狀",
+      "1": "A 狀況",
+      "2": "A 的結果",
+      "3": "B 狀況",
+      "4": "B 的結果"
+    },
     "cards": "張"
   },
   "draw": {

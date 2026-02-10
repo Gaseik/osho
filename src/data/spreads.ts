@@ -12,6 +12,7 @@ export const SPREADS: Spread[] = [
   { id: "time-flow", name: "時間之流", nameEn: "Flow of Time", count: 3, desc: "過去·現在·未來" },
   { id: "relationship", name: "兩人關聯", nameEn: "Two People Connection", count: 4, desc: "你的貢獻·對方的貢獻·綜合能量·洞見" },
   { id: "cross", name: "五牌陣", nameEn: "Cross Spread", count: 5, desc: "情境·障礙·建議·根源·結果" },
+  { id: "two-choice", name: "二擇一", nameEn: "Two Choices", count: 5, desc: "現狀·A狀況·A結果·B狀況·B結果" },
 ];
 
 export const POSITION_LABELS: Record<string, string[]> = {
@@ -20,4 +21,5 @@ export const POSITION_LABELS: Record<string, string[]> = {
   "time-flow": ["過去", "現在", "未來"],
   relationship: ["你的貢獻", "對方的貢獻", "綜合能量", "洞見"],
   cross: ["情境", "障礙", "建議", "根源", "結果"],
+  "two-choice": ["現狀", "A 狀況", "A 的結果", "B 狀況", "B 的結果"],
 };
