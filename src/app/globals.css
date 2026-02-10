@@ -238,6 +238,14 @@ body {
   to { transform: translateY(0); opacity: 1; }
 }
 
+/* ================================================
+   Spread Grid — responsive scaling for grid layouts
+   ================================================ */
+
+.spread-grid {
+  transform-origin: top center;
+}
+
 /* ========== Responsive ========== */
 
 @media (max-width: 767px) {
@@ -253,6 +261,9 @@ body {
   .shuffle-btn {
     padding: 14px 32px;
     font-size: 16px;
+  }
+  .spread-grid {
+    zoom: 0.85;
   }
 }
 
@@ -274,5 +285,8 @@ body {
   .fan-hint {
     font-size: 11px;
     bottom: 8px;
+  }
+  .spread-grid {
+    zoom: 0.65;
   }
 }
