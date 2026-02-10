@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
@@ -29,8 +29,13 @@ export default function ResultPhase({
   const resultRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
   const layout = SPREAD_LAYOUTS[spread.id];
+  const [revealed, setRevealed] = useState(false);
 
   const allFlipped = flippedCount >= spread.count;
+
+  const handleRequestReveal = () => {
+    if (!revealed) setRevealed(true);
+  };
 
   useEffect(() => {
     if (allFlipped && actionsRef.current) {
@@ -70,8 +75,10 @@ export default function ResultPhase({
       <FlipCard
         card={drawn[cardIdx]}
         label={labels[cardIdx]}
-        delay={cardIdx * 200}
+        delay={cardIdx * 150}
+        revealed={revealed}
         onFlipped={onFlipped}
+        onRequestReveal={handleRequestReveal}
       />
     </div>
   );
@@ -162,8 +169,10 @@ export default function ResultPhase({
           <FlipCard
             card={card}
             label={labels[i]}
-            delay={i * 200}
+            delay={i * 150}
+            revealed={revealed}
             onFlipped={onFlipped}
+            onRequestReveal={handleRequestReveal}
           />
         </div>
       ))}
