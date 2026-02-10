@@ -179,7 +179,7 @@ body {
 .card-zoom-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.88);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -187,12 +187,26 @@ body {
   cursor: pointer;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  animation: overlayFadeIn 0.25s ease-out;
+  animation: overlayFadeIn 0.5s ease-out;
 }
 
 .card-zoom-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: cardZoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-zoom-content .card-zoom-card {
   transform: scale(2);
-  animation: cardZoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-zoom-content .card-zoom-name {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 18px;
+  letter-spacing: 3px;
+  font-family: 'Georgia', serif;
 }
 
 @keyframes overlayFadeIn {
@@ -201,8 +215,8 @@ body {
 }
 
 @keyframes cardZoomIn {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(2); opacity: 1; }
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 /* ========== Responsive ========== */

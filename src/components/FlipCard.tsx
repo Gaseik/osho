@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { Card } from "../data/cards";
 import CardBack from "./CardBack";
 import CardFace from "./CardFace";
@@ -12,9 +13,11 @@ interface FlipCardProps {
 }
 
 export default function FlipCard({ card, label, delay, onFlipped }: FlipCardProps) {
+  const { t } = useTranslation();
   const [flipped, setFlipped] = useState(false);
   const [ready, setReady] = useState(false);
   const [zoomed, setZoomed] = useState(false);
+  const cardName = t(`cards.${card.id}`);
 
   useEffect(() => {
     const t = setTimeout(() => setReady(true), delay);
@@ -74,7 +77,10 @@ export default function FlipCard({ card, label, delay, onFlipped }: FlipCardProp
           onClick={() => setZoomed(false)}
         >
           <div className="card-zoom-content">
-            <CardFace card={card} label={label} />
+            <div className="card-zoom-name">{cardName}</div>
+            <div className="card-zoom-card">
+              <CardFace card={card} label={label} />
+            </div>
           </div>
         </div>,
         document.body
