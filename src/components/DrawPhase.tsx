@@ -41,8 +41,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
 
   // Responsive params — cards doubled
   const params = useMemo(() => {
-    if (screenW < 480)  return { cardW: 64,  cardH: 96,  radius: 280, maxArc: 65, tilt: 22, liftY: 70, sens: 18 };
-    if (screenW < 768)  return { cardW: 80,  cardH: 120, radius: 380, maxArc: 80, tilt: 18, liftY: 80, sens: 22 };
+    if (screenW < 480)  return { cardW: 128, cardH: 192, radius: 280, maxArc: 65, tilt: 22, liftY: 70, sens: 18 };
+    if (screenW < 768)  return { cardW: 160, cardH: 240, radius: 380, maxArc: 80, tilt: 18, liftY: 80, sens: 22 };
     return                      { cardW: 112, cardH: 168, radius: 520, maxArc: 100, tilt: 14, liftY: 90, sens: 28 };
   }, [screenW]);
 
@@ -249,8 +249,6 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
         >
-          <div className="fan-scene-bg" />
-
           <div
             className="fan-table"
             style={{ transform: `rotateX(${stage === 'fanned' || stage === 'exiting' ? params.tilt : 0}deg)` }}
