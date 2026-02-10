@@ -14,6 +14,24 @@ body {
 }
 
 /* ================================================
+   Side Menu
+   ================================================ */
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 260px;
+  background: rgba(18, 18, 40, 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 215, 0, 0.12);
+  z-index: 50;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ================================================
    Shuffle Button
    ================================================ */
 
@@ -104,19 +122,6 @@ body {
   pointer-events: none;
 }
 
-/* Gradient fade from page bg */
-.fan-scene-bg {
-  position: absolute;
-  inset: -60px 0 0 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(10, 10, 26, 0.5) 40%,
-    rgba(10, 10, 26, 0.9) 100%
-  );
-  pointer-events: none;
-}
-
 /* The tilted 3D plane */
 .fan-table {
   transform-style: preserve-3d;
@@ -183,6 +188,54 @@ body {
 @keyframes breathe {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.65; }
+}
+
+/* ================================================
+   Card Zoom Overlay
+   ================================================ */
+
+.card-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: overlayFadeIn 0.5s ease-out;
+}
+
+.card-zoom-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: cardZoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card-zoom-content .card-zoom-card {
+  transform: scale(2);
+  margin: 105px 70px;
+}
+
+.card-zoom-content .card-zoom-name {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 28px;
+  letter-spacing: 4px;
+  font-family: 'Georgia', serif;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cardZoomIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 /* ========== Responsive ========== */
