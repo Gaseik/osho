@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu01 } from '@untitled-ui/icons-react/build/cjs/Menu01';
-import { XClose } from '@untitled-ui/icons-react/build/cjs/XClose';
-import { Globe01 } from '@untitled-ui/icons-react/build/cjs/Globe01';
-import { Mail01 } from '@untitled-ui/icons-react/build/cjs/Mail01';
+import { Menu01, XClose, Globe01, Mail01 } from '@untitled-ui/icons-react';
 
 export default function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
