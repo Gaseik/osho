@@ -9,9 +9,10 @@ interface DrawPhaseProps {
   deck: Card[];
   drawn: Card[];
   onDrawCard: (index: number) => void;
+  onComplete?: () => void;
 }
 
-type Stage = 'idle' | 'shuffling' | 'stacked' | 'fanned';
+type Stage = 'idle' | 'shuffling' | 'stacked' | 'fanned' | 'exiting';
 
 function useWindowWidth() {
   const [width, setWidth] = useState(
@@ -25,11 +26,12 @@ function useWindowWidth() {
   return width;
 }
 
-export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhaseProps) {
+export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete }: DrawPhaseProps) {
   const { t } = useTranslation();
   const [stage, setStage] = useState<Stage>('idle');
   const [selectedIndex, setSelectedIndex] = useState(40);
   const [isDragging, setIsDragging] = useState(false);
+  const [hasEverDragged, setHasEverDragged] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
 
@@ -81,6 +83,24 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
     }
   }, [deck.length, selectedIndex]);
 
+  // Redirect if already complete on mount (e.g. browser back button)
+  useEffect(() => {
+    if (drawn.length >= spread.count) {
+      onComplete?.();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Exit animation when last card drawn during this session
+  useEffect(() => {
+    if (drawn.length >= spread.count && stage === 'fanned') {
+      setStage('exiting');
+      const timer = setTimeout(() => onComplete?.(), 800);
+      return () => clearTimeout(timer);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawn.length, spread.count, stage]);
+
   // ─── Pointer drag ───
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (stage !== 'fanned') return;
@@ -92,7 +112,10 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!dragRef.current || stage !== 'fanned') return;
     const deltaX = dragRef.current.startX - e.clientX;
-    if (Math.abs(deltaX) > 5) dragRef.current.moved = true;
+    if (Math.abs(deltaX) > 5) {
+      dragRef.current.moved = true;
+      setHasEverDragged(true);
+    }
     const newIndex = Math.max(0, Math.min(totalCards - 1,
       dragRef.current.startIndex + Math.round(deltaX / params.sens)
     ));
@@ -143,6 +166,15 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
       };
     }
 
+    // exiting — collapse and fade
+    if (stage === 'exiting') {
+      const off = (index - totalCards / 2) * 0.15;
+      return {
+        transform: `rotate(0deg) translate(${off}px, 60px) scale(0.6)`,
+        opacity: 0,
+      };
+    }
+
     // fanned — offset so selectedIndex card is at angle 0 (center)
     const angle = baseAngle - selectedAngle;
     const dist = Math.abs(index - selectedIndex);
@@ -170,6 +202,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
     if (isDragging) return '0s';
     if (stage === 'shuffling') return `${(index % 8) * 0.03}s`;
     if (stage === 'stacked') return `${index * 0.005}s`;
+    if (stage === 'exiting') return `${index * 0.004}s`;
     if (stage === 'fanned') return `${index * 0.012}s`;
     return '0s';
   }, [stage, isDragging]);
@@ -178,6 +211,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
     if (isDragging) return '0.25s';
     if (stage === 'shuffling') return '0.5s';
     if (stage === 'stacked') return '0.4s';
+    if (stage === 'exiting') return '0.6s';
     if (stage === 'fanned') return '0.6s';
     return '0.3s';
   }, [stage, isDragging]);
@@ -209,7 +243,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
       {stage !== 'idle' && (
         <div
           ref={sceneRef}
-          className={`fan-scene ${stage === 'shuffling' || stage === 'stacked' ? 'fan-scene--center' : ''} ${isDragging ? 'fan-scene--dragging' : ''}`}
+          className={`fan-scene ${stage === 'shuffling' || stage === 'stacked' ? 'fan-scene--center' : ''} ${stage === 'exiting' ? 'fan-scene--exiting' : ''} ${isDragging ? 'fan-scene--dragging' : ''}`}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -219,7 +253,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
 
           <div
             className="fan-table"
-            style={{ transform: `rotateX(${stage === 'fanned' ? params.tilt : 0}deg)` }}
+            style={{ transform: `rotateX(${stage === 'fanned' || stage === 'exiting' ? params.tilt : 0}deg)` }}
           >
             <div
               className="fan-pivot"
@@ -257,13 +291,13 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
               })}
             </div>
           </div>
+        </div>
+      )}
 
-          {/* Drag hint */}
-          {stage === 'fanned' && !isDragging && drawn.length === 0 && (
-            <div className="fan-hint">
-              {t('draw.dragHint')}
-            </div>
-          )}
+      {/* Drag hint — fixed to viewport bottom, outside fan-scene */}
+      {stage === 'fanned' && !hasEverDragged && (
+        <div className="fan-hint">
+          {t('draw.dragHint')}
         </div>
       )}
     </>
