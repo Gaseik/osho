@@ -135,9 +135,9 @@ body {
   margin-left: calc(-0.5 * var(--card-w, 112px));
   transform-origin: center calc(100% + var(--fan-radius, 520px));
   transition:
-    transform 0.38s cubic-bezier(0.23, 1, 0.32, 1),
-    opacity   0.5s  ease-out,
-    filter    0.3s  ease;
+    transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity   0.5s ease-out,
+    filter    0.4s ease;
   will-change: transform, opacity;
   -webkit-tap-highlight-color: transparent;
   transform-style: preserve-3d;

@@ -32,7 +32,6 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
   const [isDragging, setIsDragging] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
-  const wasDragRef = useRef(false);
 
   const screenW = useWindowWidth();
   const totalCards = deck.length;
@@ -40,9 +39,9 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
 
   // Responsive params — cards doubled
   const params = useMemo(() => {
-    if (screenW < 480)  return { cardW: 64,  cardH: 96,  radius: 280, maxArc: 65, tilt: 22, liftY: 70, sens: 10 };
-    if (screenW < 768)  return { cardW: 80,  cardH: 120, radius: 380, maxArc: 80, tilt: 18, liftY: 80, sens: 12 };
-    return                      { cardW: 112, cardH: 168, radius: 520, maxArc: 100, tilt: 14, liftY: 90, sens: 15 };
+    if (screenW < 480)  return { cardW: 64,  cardH: 96,  radius: 280, maxArc: 65, tilt: 22, liftY: 70, sens: 18 };
+    if (screenW < 768)  return { cardW: 80,  cardH: 120, radius: 380, maxArc: 80, tilt: 18, liftY: 80, sens: 22 };
+    return                      { cardW: 112, cardH: 168, radius: 520, maxArc: 100, tilt: 14, liftY: 90, sens: 28 };
   }, [screenW]);
 
   const arcAngle = Math.min(totalCards * 1.4, params.maxArc);
@@ -101,21 +100,15 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
   }, [stage, totalCards, params.sens]);
 
   const handlePointerUp = useCallback(() => {
-    wasDragRef.current = dragRef.current?.moved ?? false;
+    const wasDrag = dragRef.current?.moved ?? false;
     dragRef.current = null;
     setIsDragging(false);
-  }, []);
 
-  // Click on the selected (lifted) card to draw it
-  const handleCardClick = useCallback((index: number) => {
-    if (wasDragRef.current) {
-      wasDragRef.current = false;
-      return;
+    // Tap (no drag) → draw the selected card
+    if (!wasDrag && canDraw && stage === 'fanned') {
+      onDrawCard(selectedIndex);
     }
-    if (index === selectedIndex && canDraw && stage === 'fanned') {
-      onDrawCard(index);
-    }
-  }, [selectedIndex, canDraw, onDrawCard, stage]);
+  }, [canDraw, stage, selectedIndex, onDrawCard]);
 
   // ─── Card transform ───
   const getCardStyle = useCallback((index: number) => {
@@ -162,18 +155,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
     if (dist === 0) {
       liftY = -params.liftY;
       liftZ = 60;
-      scale = 1.22;
+      scale = 1.15;
       unRotate = 0.2;
-    } else if (dist === 1) {
-      liftY = -params.liftY * 0.12;
-      liftZ = 6;
-      scale = 1.0;
-      unRotate = 0.88;
-    } else if (dist === 2) {
-      liftY = -params.liftY * 0.04;
-      liftZ = 2;
-      scale = 1.0;
-      unRotate = 0.95;
     }
 
     return {
@@ -192,10 +175,10 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
   }, [stage, isDragging]);
 
   const transitionDuration = useMemo(() => {
-    if (isDragging) return '0.1s';
+    if (isDragging) return '0.25s';
     if (stage === 'shuffling') return '0.5s';
     if (stage === 'stacked') return '0.4s';
-    if (stage === 'fanned') return '0.38s';
+    if (stage === 'fanned') return '0.6s';
     return '0.3s';
   }, [stage, isDragging]);
 
@@ -244,24 +227,21 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
             >
               {deck.map((card, i) => {
                 const isSelected = i === selectedIndex && stage === 'fanned';
-                const dist = Math.abs(i - selectedIndex);
-                const isNear = dist <= 2 && stage === 'fanned';
                 const { transform, opacity } = getCardStyle(i);
                 return (
                   <div
                     key={card.id}
-                    className={`fan-card ${isSelected ? 'fan-card--active' : ''} ${isNear && !isSelected ? 'fan-card--near' : ''}`}
+                    className={`fan-card ${isSelected ? 'fan-card--active' : ''}`}
                     style={{
                       '--card-w': `${params.cardW}px`,
                       width: params.cardW,
                       height: params.cardH,
                       transform,
                       opacity,
-                      zIndex: isSelected ? 200 : isNear ? 100 + (3 - dist) : i,
+                      zIndex: isSelected ? 200 : i,
                       transitionDelay: getTransitionDelay(i),
                       transitionDuration,
                     } as React.CSSProperties}
-                    onClick={() => handleCardClick(i)}
                   >
                     <CardBack
                       style={{
