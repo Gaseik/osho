@@ -46,6 +46,14 @@ export interface SpreadLayout {
 }
 
 export const SPREAD_LAYOUTS: Record<string, SpreadLayout> = {
+  diamond: {
+    cols: 3,
+    rows: [
+      { type: "cards", cells: [null, 4, null] },
+      { type: "cards", cells: [1, 0, 2] },
+      { type: "cards", cells: [null, 3, null] },
+    ],
+  },
   mirror: {
     cols: 3,
     rows: [

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
@@ -27,7 +27,18 @@ export default function ResultPhase({
 }: ResultPhaseProps) {
   const { t, i18n } = useTranslation();
   const resultRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
   const layout = SPREAD_LAYOUTS[spread.id];
+
+  const allFlipped = flippedCount >= spread.count;
+
+  useEffect(() => {
+    if (allFlipped && actionsRef.current) {
+      setTimeout(() => {
+        actionsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 400);
+    }
+  }, [allFlipped]);
 
   const getSpreadLabels = (spreadId: string): string[] => {
     if (i18n.language === 'zh-TW') {
@@ -176,8 +187,8 @@ export default function ResultPhase({
       {layout ? renderGridLayout() : renderDefaultLayout()}
 
       {/* Actions - show after all flipped */}
-      {flippedCount >= spread.count && (
-        <div className="animate-fadeUp flex flex-col items-center gap-3">
+      {allFlipped && (
+        <div ref={actionsRef} className="animate-fadeUp flex flex-col items-center gap-3">
           <div className="w-10 h-px bg-gradient-to-r from-transparent via-zen-gold/30 to-transparent mb-2" />
 
           {/* Prompt Preview */}
