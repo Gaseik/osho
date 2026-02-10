@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Card } from "../data/cards";
@@ -11,26 +11,34 @@ interface FlipCardProps {
   card: Card;
   label?: string;
   delay: number;
+  revealed?: boolean;
   onFlipped?: () => void;
+  onRequestReveal?: () => void;
 }
 
-export default function FlipCard({ card, label, delay, onFlipped }: FlipCardProps) {
+export default function FlipCard({ card, label, delay, revealed, onFlipped, onRequestReveal }: FlipCardProps) {
   const { t } = useTranslation();
   const [flipped, setFlipped] = useState(false);
-  const [ready, setReady] = useState(false);
   const [zoomed, setZoomed] = useState(false);
+  const hasStartedFlip = useRef(false);
   const cardName = t(`cards.${card.id}`);
 
+  // When revealed becomes true, flip after stagger delay
   useEffect(() => {
-    const t = setTimeout(() => setReady(true), delay);
-    return () => clearTimeout(t);
-  }, [delay]);
+    if (revealed && !hasStartedFlip.current) {
+      hasStartedFlip.current = true;
+      const timer = setTimeout(() => {
+        setFlipped(true);
+        setTimeout(() => onFlipped?.(), 600);
+      }, delay);
+      return () => clearTimeout(timer);
+    }
+  }, [revealed, delay, onFlipped]);
 
   const handleClick = () => {
-    if (!flipped && ready) {
-      setFlipped(true);
-      setTimeout(() => onFlipped?.(), 600);
-    } else if (flipped) {
+    if (!flipped) {
+      onRequestReveal?.();
+    } else {
       setZoomed(true);
     }
   };
@@ -58,7 +66,7 @@ export default function FlipCard({ card, label, delay, onFlipped }: FlipCardProp
           }}>
             <CardBack
               style={{ width: "100%", height: "100%" }}
-              ready={ready && !flipped}
+              ready={!flipped}
             />
           </div>
           <div style={{

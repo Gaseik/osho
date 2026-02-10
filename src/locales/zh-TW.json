@@ -98,7 +98,8 @@
     "selected": "已選 {{current}} / {{total}}",
     "shuffle": "洗牌",
     "shuffleHint": "靜心片刻，感受你的直覺",
-    "dragHint": "← 左右拖曳選牌，點擊浮起的牌抽牌 →"
+    "dragHint": "← 左右拖曳選牌，點擊浮起的牌抽牌 →",
+    "nextPosition": "下一張：{{label}}"
   },
   "result": {
     "title": "點擊牌片翻面",
@@ -106,6 +107,7 @@
     "promptHelper": "將此 Prompt 複製並貼到你常用的 AI（如 ChatGPT、Claude 等），讓 AI 為你解析牌意。",
     "copyPrompt": "複製 Prompt",
     "copied": "已複製",
+    "zoomHint": "點擊卡片可放大檢視細節",
     "reset": "重新抽牌",
     "promptTemplate": "我用「{{spreadName}}」牌陣抽了以下的禪卡，請幫我解讀：\n\n{{cards}}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。"
   },
