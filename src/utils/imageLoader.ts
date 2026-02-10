@@ -18,11 +18,10 @@ export function getCardImagePath(cardId: number): string {
  * Check if card image exists
  * This is a helper that components can use with try/catch on img.onError
  */
-export function tryLoadCardImage(cardId: number): Promise<string | null> {
+export function tryLoadCardImage(_cardId: number): Promise<string | null> {
   return new Promise((resolve) => {
     // We'll try to load the image and return the path if successful
     // This is handled at component level with img tag error handling
-    const paddedId = String(cardId).padStart(2, '0');
 
     // Since we don't know the exact filename (e.g., 01-existence.jpeg),
     // we rely on the actual file system structure
