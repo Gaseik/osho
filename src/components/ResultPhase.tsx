@@ -201,6 +201,17 @@ export default function ResultPhase({
         {t('result.title')}
       </p>
 
+      <p
+        className="text-white/50 text-xs overflow-hidden transition-all duration-700 ease-out"
+        style={{
+          opacity: revealed && !allFlipped ? 0 : revealed ? 1 : 0,
+          maxHeight: revealed ? 30 : 0,
+          marginBottom: revealed ? 16 : 0,
+        }}
+      >
+        {t('result.zoomHint')}
+      </p>
+
       {/* Cards */}
       {layout ? renderGridLayout() : renderDefaultLayout()}
 

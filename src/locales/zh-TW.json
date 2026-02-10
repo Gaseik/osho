@@ -106,6 +106,7 @@
     "promptPreview": "PROMPT 預覽",
     "copyPrompt": "複製 Prompt",
     "copied": "已複製",
+    "zoomHint": "點擊卡片可放大檢視細節",
     "reset": "重新抽牌",
     "promptTemplate": "我用「{{spreadName}}」牌陣抽了以下的禪卡，請幫我解讀：\n\n{{cards}}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。"
   },

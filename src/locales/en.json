@@ -106,6 +106,7 @@
     "promptPreview": "PROMPT PREVIEW",
     "copyPrompt": "Copy Prompt",
     "copied": "Copied",
+    "zoomHint": "Tap a card to zoom in for details",
     "reset": "Draw Again",
     "promptTemplate": "I drew the following Zen cards using the \"{{spreadName}}\" spread, please help me interpret:\n\n{{cards}}\n\nPlease provide an overall interpretation and guidance based on each card's position and meaning."
   },
