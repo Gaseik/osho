@@ -1,15 +1,32 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu01, XClose, Globe01, Mail01 } from '@untitled-ui/icons-react';
+
+declare global {
+  interface Window {
+    kofiwidget2?: {
+      init: (text: string, color: string, id: string) => void;
+      draw: () => string;
+    };
+  }
+}
 
 export default function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
+  const kofiRef = useRef<HTMLDivElement>(null);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'zh-TW' ? 'en' : 'zh-TW';
     i18n.changeLanguage(newLang);
   };
+
+  useEffect(() => {
+    if (kofiRef.current && window.kofiwidget2) {
+      window.kofiwidget2.init('Support me on Ko-fi', '#000000', 'I2I51TYYE8');
+      kofiRef.current.innerHTML = window.kofiwidget2.draw();
+    }
+  }, []);
 
   return (
     <>
@@ -70,6 +87,11 @@ export default function LanguageSwitcher() {
             <span className="text-sm tracking-wider">{t('menu.contact')}</span>
           </a>
 
+          {/* Spacer */}
+          <div className="flex-1" />
+
+          {/* Ko-fi donate — pinned to bottom */}
+          <div ref={kofiRef} className="pb-8 flex justify-center" />
         </div>
       </div>
     </>
