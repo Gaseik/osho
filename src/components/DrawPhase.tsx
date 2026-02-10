@@ -27,32 +27,39 @@ function useWindowWidth() {
 
 export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhaseProps) {
   const { t } = useTranslation();
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [stage, setStage] = useState<Stage>('idle');
+  const [selectedIndex, setSelectedIndex] = useState(40);
+  const [isDragging, setIsDragging] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
+  const wasDragRef = useRef(false);
 
   const screenW = useWindowWidth();
   const totalCards = deck.length;
   const canDraw = drawn.length < spread.count;
 
-  // Responsive params — card sizes doubled from before
+  // Responsive params — cards doubled
   const params = useMemo(() => {
-    if (screenW < 480)  return { cardW: 64,  cardH: 96,  radius: 280, maxArc: 65, tilt: 22, liftY: 70 };
-    if (screenW < 768)  return { cardW: 80,  cardH: 120, radius: 380, maxArc: 80, tilt: 18, liftY: 80 };
-    return                      { cardW: 112, cardH: 168, radius: 520, maxArc: 100, tilt: 14, liftY: 90 };
+    if (screenW < 480)  return { cardW: 64,  cardH: 96,  radius: 280, maxArc: 65, tilt: 22, liftY: 70, sens: 10 };
+    if (screenW < 768)  return { cardW: 80,  cardH: 120, radius: 380, maxArc: 80, tilt: 18, liftY: 80, sens: 12 };
+    return                      { cardW: 112, cardH: 168, radius: 520, maxArc: 100, tilt: 14, liftY: 90, sens: 15 };
   }, [screenW]);
 
   const arcAngle = Math.min(totalCards * 1.4, params.maxArc);
   const halfArc = arcAngle / 2;
 
-  // Shuffle flow: idle → shuffling (animation) → stacked → fanned
+  // The angle of the selected card — used to center it
+  const selectedAngle = useMemo(() => {
+    if (totalCards <= 1) return 0;
+    return -halfArc + (selectedIndex / (totalCards - 1)) * arcAngle;
+  }, [selectedIndex, totalCards, halfArc, arcAngle]);
+
+  // ─── Shuffle flow ───
   const handleShuffle = useCallback(() => {
     setStage('shuffling');
-    // Shuffling animation plays for 1.2s, then stack
     setTimeout(() => setStage('stacked'), 1200);
   }, []);
 
-  // After stacking, wait 0.8s then fan out
   useEffect(() => {
     if (stage === 'stacked') {
       const timer = setTimeout(() => setStage('fanned'), 800);
@@ -60,66 +67,70 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
     }
   }, [stage]);
 
-  // Map pointer X to card index
-  const posToIndex = useCallback((clientX: number) => {
-    if (!sceneRef.current) return null;
-    const rect = sceneRef.current.getBoundingClientRect();
-    const relX = (clientX - rect.left) / rect.width;
-    const pad = 0.08;
-    const mapped = (relX - pad) / (1 - 2 * pad);
-    if (mapped < -0.02 || mapped > 1.02) return null;
-    const idx = Math.round(mapped * (totalCards - 1));
-    return Math.max(0, Math.min(totalCards - 1, idx));
-  }, [totalCards]);
+  // Center selection when entering fanned stage
+  useEffect(() => {
+    if (stage === 'fanned') {
+      setSelectedIndex(Math.floor(deck.length / 2));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage]);
 
-  // Mouse tracking
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  // Clamp if deck shrinks
+  useEffect(() => {
+    if (deck.length > 0 && selectedIndex >= deck.length) {
+      setSelectedIndex(deck.length - 1);
+    }
+  }, [deck.length, selectedIndex]);
+
+  // ─── Pointer drag ───
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (stage !== 'fanned') return;
-    setHoveredIndex(posToIndex(e.clientX));
-  }, [posToIndex, stage]);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    dragRef.current = { startX: e.clientX, startIndex: selectedIndex, moved: false };
+    setIsDragging(true);
+  }, [stage, selectedIndex]);
 
-  const handleMouseLeave = useCallback(() => {
-    setHoveredIndex(null);
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragRef.current || stage !== 'fanned') return;
+    const deltaX = dragRef.current.startX - e.clientX;
+    if (Math.abs(deltaX) > 5) dragRef.current.moved = true;
+    const newIndex = Math.max(0, Math.min(totalCards - 1,
+      dragRef.current.startIndex + Math.round(deltaX / params.sens)
+    ));
+    setSelectedIndex(newIndex);
+  }, [stage, totalCards, params.sens]);
+
+  const handlePointerUp = useCallback(() => {
+    wasDragRef.current = dragRef.current?.moved ?? false;
+    dragRef.current = null;
+    setIsDragging(false);
   }, []);
 
-  // Touch: slide to browse, lift to draw
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (stage !== 'fanned') return;
-    setHoveredIndex(posToIndex(e.touches[0].clientX));
-  }, [posToIndex, stage]);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (stage !== 'fanned') return;
-    setHoveredIndex(posToIndex(e.touches[0].clientX));
-  }, [posToIndex, stage]);
-
-  const handleTouchEnd = useCallback(() => {
-    if (hoveredIndex !== null && canDraw) {
-      onDrawCard(hoveredIndex);
-    }
-    setHoveredIndex(null);
-  }, [hoveredIndex, canDraw, onDrawCard]);
-
+  // Click on the selected (lifted) card to draw it
   const handleCardClick = useCallback((index: number) => {
-    if (stage !== 'fanned' || !canDraw) return;
-    onDrawCard(index);
-  }, [canDraw, onDrawCard, stage]);
+    if (wasDragRef.current) {
+      wasDragRef.current = false;
+      return;
+    }
+    if (index === selectedIndex && canDraw && stage === 'fanned') {
+      onDrawCard(index);
+    }
+  }, [selectedIndex, canDraw, onDrawCard, stage]);
 
-  // Card style per stage
+  // ─── Card transform ───
   const getCardStyle = useCallback((index: number) => {
-    const angle = totalCards <= 1
+    const baseAngle = totalCards <= 1
       ? 0
       : -halfArc + (index / (totalCards - 1)) * arcAngle;
 
-    // Stage: idle — nothing visible
+    // idle
     if (stage === 'idle') {
-      return { transform: `rotate(0deg) translateY(0px) scale(0.8)`, opacity: 0 };
+      return { transform: 'rotate(0deg) translateY(0px) scale(0.8)', opacity: 0 };
     }
 
-    // Stage: shuffling — cards fly around randomly then converge
+    // shuffling — scatter
     if (stage === 'shuffling') {
-      // Random offset for shuffle scatter
-      const seed = ((index * 7 + 13) % 37) / 37; // deterministic pseudo-random 0..1
+      const seed = ((index * 7 + 13) % 37) / 37;
       const sx = (seed - 0.5) * 120;
       const sy = (((index * 11 + 3) % 29) / 29 - 0.5) * 80;
       const sr = (seed - 0.5) * 40;
@@ -129,61 +140,64 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
       };
     }
 
-    // Stage: stacked — all cards at center, stacked with slight offsets
+    // stacked — converge to center
     if (stage === 'stacked') {
-      const stackOffset = (index - totalCards / 2) * 0.3;
-      const stackRotate = (index - totalCards / 2) * 0.15;
+      const off = (index - totalCards / 2) * 0.3;
+      const rot = (index - totalCards / 2) * 0.15;
       return {
-        transform: `rotate(${stackRotate}deg) translate(${stackOffset}px, 0px) scale(1)`,
+        transform: `rotate(${rot}deg) translate(${off}px, 0px) scale(1)`,
         opacity: 1,
       };
     }
 
-    // Stage: fanned — full arc with hover effects
-    const dist = hoveredIndex !== null ? Math.abs(index - hoveredIndex) : Infinity;
+    // fanned — offset so selectedIndex card is at angle 0 (center)
+    const angle = baseAngle - selectedAngle;
+    const dist = Math.abs(index - selectedIndex);
+
     let liftY = 0;
     let liftZ = 0;
     let scale = 1;
-    let unRotateFactor = 1;
+    let unRotate = 1;
 
     if (dist === 0) {
       liftY = -params.liftY;
       liftZ = 60;
       scale = 1.22;
-      unRotateFactor = 0.25;
+      unRotate = 0.2;
     } else if (dist === 1) {
-      liftY = -params.liftY * 0.35;
-      liftZ = 20;
-      scale = 1.06;
-      unRotateFactor = 0.7;
+      liftY = -params.liftY * 0.3;
+      liftZ = 18;
+      scale = 1.05;
+      unRotate = 0.7;
     } else if (dist === 2) {
-      liftY = -params.liftY * 0.12;
-      liftZ = 6;
+      liftY = -params.liftY * 0.1;
+      liftZ = 5;
       scale = 1.01;
-      unRotateFactor = 0.9;
+      unRotate = 0.9;
     }
 
-    const displayAngle = angle * unRotateFactor;
     return {
-      transform: `rotate(${displayAngle}deg) translateY(${liftY}px) translateZ(${liftZ}px) scale(${scale})`,
+      transform: `rotate(${angle * unRotate}deg) translateY(${liftY}px) translateZ(${liftZ}px) scale(${scale})`,
       opacity: 1,
     };
-  }, [totalCards, halfArc, arcAngle, stage, hoveredIndex, params.liftY]);
+  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY]);
 
-  // Transition speed per stage
+  // Transition timing
   const getTransitionDelay = useCallback((index: number) => {
+    if (isDragging) return '0s';
     if (stage === 'shuffling') return `${(index % 8) * 0.03}s`;
     if (stage === 'stacked') return `${index * 0.005}s`;
     if (stage === 'fanned') return `${index * 0.012}s`;
     return '0s';
-  }, [stage]);
+  }, [stage, isDragging]);
 
-  const getTransitionDuration = useCallback(() => {
+  const transitionDuration = useMemo(() => {
+    if (isDragging) return '0.1s';
     if (stage === 'shuffling') return '0.5s';
     if (stage === 'stacked') return '0.4s';
     if (stage === 'fanned') return '0.38s';
     return '0.3s';
-  }, [stage]);
+  }, [stage, isDragging]);
 
   return (
     <>
@@ -197,13 +211,10 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
         </p>
       </div>
 
-      {/* Shuffle button — only in idle stage */}
+      {/* Shuffle button */}
       {stage === 'idle' && (
         <div className="animate-fadeUp flex flex-col items-center mt-16">
-          <button
-            onClick={handleShuffle}
-            className="shuffle-btn"
-          >
+          <button onClick={handleShuffle} className="shuffle-btn">
             <span className="shuffle-btn-icon">☯</span>
             <span>{t('draw.shuffle')}</span>
           </button>
@@ -211,17 +222,15 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
         </div>
       )}
 
-      {/* Fan scene — visible after shuffle starts */}
+      {/* Fan scene */}
       {stage !== 'idle' && (
         <div
           ref={sceneRef}
-          className={`fan-scene ${stage === 'shuffling' || stage === 'stacked' ? 'fan-scene--center' : ''}`}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onTouchCancel={() => setHoveredIndex(null)}
+          className={`fan-scene ${stage === 'shuffling' || stage === 'stacked' ? 'fan-scene--center' : ''} ${isDragging ? 'fan-scene--dragging' : ''}`}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
         >
           <div className="fan-scene-bg" />
 
@@ -234,23 +243,23 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
               style={{ '--fan-radius': `${params.radius}px` } as React.CSSProperties}
             >
               {deck.map((card, i) => {
-                const isActive = hoveredIndex === i && stage === 'fanned';
-                const dist = hoveredIndex !== null ? Math.abs(i - hoveredIndex) : Infinity;
+                const isSelected = i === selectedIndex && stage === 'fanned';
+                const dist = Math.abs(i - selectedIndex);
                 const isNear = dist <= 2 && stage === 'fanned';
                 const { transform, opacity } = getCardStyle(i);
                 return (
                   <div
                     key={card.id}
-                    className={`fan-card ${isActive ? 'fan-card--active' : ''} ${isNear && !isActive ? 'fan-card--near' : ''}`}
+                    className={`fan-card ${isSelected ? 'fan-card--active' : ''} ${isNear && !isSelected ? 'fan-card--near' : ''}`}
                     style={{
                       '--card-w': `${params.cardW}px`,
                       width: params.cardW,
                       height: params.cardH,
                       transform,
                       opacity,
-                      zIndex: isActive ? 200 : isNear ? 100 + (3 - dist) : i,
-                      transitionDelay: stage === 'fanned' && hoveredIndex !== null ? '0s' : getTransitionDelay(i),
-                      transitionDuration: getTransitionDuration(),
+                      zIndex: isSelected ? 200 : isNear ? 100 + (3 - dist) : i,
+                      transitionDelay: getTransitionDelay(i),
+                      transitionDuration,
                     } as React.CSSProperties}
                     onClick={() => handleCardClick(i)}
                   >
@@ -260,7 +269,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
                         height: '100%',
                         borderRadius: 8,
                         fontSize: params.cardW < 50 ? 14 : 22,
-                        cursor: canDraw && stage === 'fanned' ? 'pointer' : 'default',
+                        cursor: isSelected && canDraw ? 'pointer' : 'grab',
                       }}
                     />
                   </div>
@@ -268,6 +277,13 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
               })}
             </div>
           </div>
+
+          {/* Drag hint */}
+          {stage === 'fanned' && !isDragging && drawn.length === 0 && (
+            <div className="fan-hint">
+              {t('draw.dragHint')}
+            </div>
+          )}
         </div>
       )}
     </>

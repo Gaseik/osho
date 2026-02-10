@@ -144,6 +144,14 @@ body {
   cursor: pointer;
 }
 
+/* Dragging state — grabbing cursor */
+.fan-scene--dragging {
+  cursor: grabbing;
+}
+.fan-scene--dragging .fan-card {
+  cursor: grabbing !important;
+}
+
 /* Active card — strong golden glow */
 .fan-card--active {
   filter:
@@ -157,6 +165,20 @@ body {
   filter:
     brightness(1.12)
     drop-shadow(0 -4px 15px rgba(255, 215, 0, 0.2));
+}
+
+/* Drag hint text */
+.fan-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 12px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fadeUp 0.8s ease-out;
 }
 
 /* ========== Responsive ========== */

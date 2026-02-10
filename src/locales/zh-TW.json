@@ -33,7 +33,8 @@
     "title": "選擇 {{count}} 張牌",
     "selected": "已選 {{current}} / {{total}}",
     "shuffle": "洗牌",
-    "shuffleHint": "靜心片刻，感受你的直覺"
+    "shuffleHint": "靜心片刻，感受你的直覺",
+    "dragHint": "← 左右拖曳選牌，點擊浮起的牌抽牌 →"
   },
   "result": {
     "title": "點擊牌片翻面",
