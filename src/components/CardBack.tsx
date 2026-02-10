@@ -36,16 +36,6 @@ export default function CardBack({
         ...style,
         ...animStyle,
       }}
-      onMouseEnter={e => {
-        if (onClick) {
-          e.currentTarget.style.transform = "translateY(-8px)";
-          e.currentTarget.style.boxShadow = "0 12px 30px rgba(255,215,0,0.2)";
-        }
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = "";
-        e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.4)";
-      }}
     >
       <div style={{
         position: "absolute",
