@@ -99,7 +99,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       return () => clearTimeout(timer);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [drawn.length, spread.count, stage]);
+  }, [drawn.length, spread.count]);
 
   // ─── Pointer drag ───
   const handlePointerDown = useCallback((e: React.PointerEvent) => {

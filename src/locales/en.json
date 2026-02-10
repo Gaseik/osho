@@ -10,12 +10,29 @@
     "singleDesc": "One card to answer your question",
     "singleLabel": "Guidance",
     "three": "Three Cards",
-    "threeEn": "Past / Present / Future",
-    "threeDesc": "Past · Present · Future",
+    "threeEn": "Three Cards",
+    "threeDesc": "Three cards for guidance",
     "threeLabels": {
+      "0": "Card 1",
+      "1": "Card 2",
+      "2": "Card 3"
+    },
+    "time-flow": "Flow of Time",
+    "time-flowEn": "Flow of Time",
+    "time-flowDesc": "Past · Present · Future",
+    "time-flowLabels": {
       "0": "Past",
       "1": "Present",
       "2": "Future"
+    },
+    "relationship": "Two People Connection",
+    "relationshipEn": "Two People Connection",
+    "relationshipDesc": "Your Contribution · Their Contribution · Combined Energy · Insight",
+    "relationshipLabels": {
+      "0": "Your Contribution",
+      "1": "Their Contribution",
+      "2": "Combined Energy",
+      "3": "Insight"
     },
     "cross": "Five Cards",
     "crossEn": "Cross Spread",
