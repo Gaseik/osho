@@ -66,7 +66,7 @@ export default function ResultPhase({
       {/* Cards */}
       <div
         ref={resultRef}
-        className="flex gap-5 justify-center flex-wrap mb-8 p-5"
+        className="flex gap-5 justify-center flex-wrap mb-4 p-2"
       >
         {drawn.map((card, i) => (
           <div
@@ -95,6 +95,9 @@ export default function ResultPhase({
           <div className="bg-white/[0.03] rounded-xl border border-zen-gold/10 p-4 max-w-[500px] w-full text-left mb-2">
             <div className="text-[11px] text-zen-gold/50 mb-2 tracking-wider">
               {t('result.promptPreview')}
+            </div>
+            <div className="text-[10px] text-white/40 mb-3 leading-relaxed">
+              {t('result.promptHelper')}
             </div>
             <div className="text-xs text-white/60 leading-relaxed whitespace-pre-line">
               {genPrompt()}
