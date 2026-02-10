@@ -239,6 +239,64 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         )}
       </div>
 
+      {/* Drawn cards stack */}
+      {drawn.length > 0 && stage !== 'idle' && (
+        <div className="flex justify-center mt-4">
+          <div className="flex">
+            {drawn.map((card, i) => {
+              const posLabel = i18n.language === 'zh-TW'
+                ? POSITION_LABELS[spread.id]?.[i]
+                : t(`spread.${spread.id}Labels.${i}`);
+              return (
+                <div
+                  key={card.id}
+                  className="drawn-stack-card"
+                  style={{
+                    width: 60,
+                    height: 90,
+                    marginLeft: i > 0 ? -35 : 0,
+                    position: 'relative',
+                    borderRadius: 6,
+                    overflow: 'hidden',
+                    border: '1px solid rgba(255,215,0,0.2)',
+                    zIndex: i,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
+                  }}
+                >
+                  <img
+                    src="/assets/cardback.jpeg"
+                    alt=""
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'rgba(0,0,0,0.55)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: 'rgba(255,215,0,0.85)',
+                        fontSize: 9,
+                        letterSpacing: 1,
+                        textAlign: 'center',
+                        padding: '0 4px',
+                      }}
+                    >
+                      {posLabel}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Shuffle button */}
       {stage === 'idle' && (
         <div className="animate-fadeUp flex flex-col items-center mt-16">
