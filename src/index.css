@@ -200,6 +200,7 @@ body {
 
 .card-zoom-content .card-zoom-card {
   transform: scale(2);
+  margin: 105px 70px;
 }
 
 .card-zoom-content .card-zoom-name {
