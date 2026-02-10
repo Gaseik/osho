@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, getCardColor } from "../data/cards";
-import { hasCardImage } from "../utils/imageLoader";
 
 interface CardFaceProps {
   card: Card;
@@ -14,18 +13,27 @@ interface CardFaceProps {
 export default function CardFace({ card, label, small }: CardFaceProps) {
   const { t } = useTranslation();
   const [imageError, setImageError] = useState(false);
-  const hasImage = hasCardImage(card.id) && !imageError;
+  const [useFallback, setUseFallback] = useState(false);
   const cardName = t(`cards.${card.id}`);
 
-  // Try to construct image path
+  // Try PNG first, then JPEG
   const getImagePath = () => {
     const paddedId = String(card.id).padStart(2, '0');
     const slug = card.name.toLowerCase().replace(/\s+/g, '-');
-    return `/assets/cards/${paddedId}-${slug}.jpeg`;
+    const ext = useFallback ? 'jpeg' : 'png';
+    return `/assets/cards/${paddedId}-${slug}.${ext}`;
   };
 
-  // If card has image and no error, show the actual card image
-  if (hasImage) {
+  const handleImageError = () => {
+    if (!useFallback) {
+      setUseFallback(true);
+    } else {
+      setImageError(true);
+    }
+  };
+
+  // Try to show image
+  if (!imageError) {
     return (
       <div style={{
         width: small ? 100 : 140,
@@ -38,9 +46,10 @@ export default function CardFace({ card, label, small }: CardFaceProps) {
         background: "#000",
       }}>
         <img
+          key={useFallback ? 'fallback' : 'primary'}
           src={getImagePath()}
           alt={card.name}
-          onError={() => setImageError(true)}
+          onError={handleImageError}
           style={{
             width: "100%",
             height: "100%",
