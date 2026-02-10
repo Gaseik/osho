@@ -98,7 +98,8 @@
     "selected": "Selected {{current}} / {{total}}",
     "shuffle": "Shuffle",
     "shuffleHint": "Take a moment, trust your intuition",
-    "dragHint": "← Drag to browse, tap the lifted card to draw →"
+    "dragHint": "← Drag to browse, tap the lifted card to draw →",
+    "nextPosition": "Next: {{label}}"
   },
   "result": {
     "title": "Click cards to flip",

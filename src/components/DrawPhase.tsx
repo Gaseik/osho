@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
-import { Spread } from "../data/spreads";
+import { Spread, POSITION_LABELS } from "../data/spreads";
 import CardBack from "./CardBack";
 
 interface DrawPhaseProps {
@@ -29,7 +29,7 @@ function useWindowWidth() {
 }
 
 export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete }: DrawPhaseProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [stage, setStage] = useState<Stage>('idle');
   const [selectedIndex, setSelectedIndex] = useState(40);
   const [isDragging, setIsDragging] = useState(false);
@@ -228,6 +228,15 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         <p className="text-zen-gold/50 text-[13px]">
           {t('draw.selected', { current: drawn.length, total: spread.count })}
         </p>
+        {drawn.length < spread.count && (
+          <p className="text-zen-gold/80 text-sm mt-2 tracking-wider">
+            {t('draw.nextPosition', {
+              label: i18n.language === 'zh-TW'
+                ? POSITION_LABELS[spread.id]?.[drawn.length]
+                : t(`spread.${spread.id}Labels.${drawn.length}`)
+            })}
+          </p>
+        )}
       </div>
 
       {/* Shuffle button */}

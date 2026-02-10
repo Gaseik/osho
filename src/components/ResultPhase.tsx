@@ -67,21 +67,27 @@ export default function ResultPhase({
 
   const labels = getSpreadLabels(spread.id);
 
-  const renderCard = (cardIdx: number) => (
-    <div className="flex flex-col items-center gap-2">
-      <div className="text-[11px] text-zen-gold-dim tracking-widest">
-        {labels[cardIdx]}
+  const renderCard = (cardIdx: number) => {
+    const cardName = t(`cards.${drawn[cardIdx].id}`);
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <div className="text-[11px] text-zen-gold-dim tracking-widest">
+          {labels[cardIdx]}
+        </div>
+        <FlipCard
+          card={drawn[cardIdx]}
+          label={labels[cardIdx]}
+          delay={cardIdx * 150}
+          revealed={revealed}
+          onFlipped={onFlipped}
+          onRequestReveal={handleRequestReveal}
+        />
+        {revealed && (
+          <div className="text-xs text-white/70 mt-1">{cardName}</div>
+        )}
       </div>
-      <FlipCard
-        card={drawn[cardIdx]}
-        label={labels[cardIdx]}
-        delay={cardIdx * 150}
-        revealed={revealed}
-        onFlipped={onFlipped}
-        onRequestReveal={handleRequestReveal}
-      />
-    </div>
-  );
+    );
+  };
 
   const renderGridLayout = () => {
     if (!layout) return null;
@@ -174,6 +180,9 @@ export default function ResultPhase({
             onFlipped={onFlipped}
             onRequestReveal={handleRequestReveal}
           />
+          {revealed && (
+            <div className="text-xs text-white/70 mt-1">{t(`cards.${card.id}`)}</div>
+          )}
         </div>
       ))}
     </div>
