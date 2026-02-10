@@ -13,6 +13,7 @@ export const SPREADS: Spread[] = [
   { id: "relationship", name: "兩人關聯", nameEn: "Two People Connection", count: 4, desc: "你的貢獻·對方的貢獻·綜合能量·洞見" },
   { id: "cross", name: "五牌陣", nameEn: "Cross Spread", count: 5, desc: "情境·障礙·建議·根源·結果" },
   { id: "two-choice", name: "二擇一", nameEn: "Two Choices", count: 5, desc: "現狀·A狀況·A結果·B狀況·B結果" },
+  { id: "diamond", name: "鑽石牌陣", nameEn: "Diamond Spread", count: 5, desc: "問題·內在影響·外在影響·所需·答案" },
 ];
 
 export const POSITION_LABELS: Record<string, string[]> = {
@@ -22,4 +23,5 @@ export const POSITION_LABELS: Record<string, string[]> = {
   relationship: ["你的貢獻", "對方的貢獻", "綜合能量", "洞見"],
   cross: ["情境", "障礙", "建議", "根源", "結果"],
   "two-choice": ["現狀", "A 狀況", "A 的結果", "B 狀況", "B 的結果"],
+  diamond: ["問題", "未知的內在影響", "已知的外在影響", "解決問題所需的", "答案了解"],
 };

@@ -58,6 +58,16 @@
       "3": "Situation B",
       "4": "Outcome of B"
     },
+    "diamond": "Diamond Spread",
+    "diamondEn": "Diamond Spread",
+    "diamondDesc": "Problem · Inner Influence · Outer Influence · What's Needed · Answer",
+    "diamondLabels": {
+      "0": "The Problem",
+      "1": "Unknown Inner Influence",
+      "2": "Known Outer Influence",
+      "3": "What's Needed to Resolve",
+      "4": "The Answer"
+    },
     "cards": " cards"
   },
   "draw": {
