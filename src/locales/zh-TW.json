@@ -3,6 +3,10 @@
     "title": "禪意靈卡",
     "subtitle": "ZEN INSIGHT"
   },
+  "menu": {
+    "language": "切換語言",
+    "contact": "聯繫我們"
+  },
   "spread": {
     "selectTitle": "選擇你的牌陣",
     "single": "單牌",

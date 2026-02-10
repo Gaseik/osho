@@ -3,6 +3,10 @@
     "title": "Zen Insight Cards",
     "subtitle": "ZEN INSIGHT"
   },
+  "menu": {
+    "language": "Language",
+    "contact": "Contact Us"
+  },
   "spread": {
     "selectTitle": "Choose Your Spread",
     "single": "Single Card",
