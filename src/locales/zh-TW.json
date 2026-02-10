@@ -48,6 +48,49 @@
       "3": "根源",
       "4": "結果"
     },
+    "two-choice": "二擇一",
+    "two-choiceEn": "Two Choices",
+    "two-choiceDesc": "現狀·A狀況·A結果·B狀況·B結果",
+    "two-choiceLabels": {
+      "0": "現狀",
+      "1": "A 狀況",
+      "2": "A 的結果",
+      "3": "B 狀況",
+      "4": "B 的結果"
+    },
+    "diamond": "鑽石牌陣",
+    "diamondEn": "Diamond Spread",
+    "diamondDesc": "問題·內在影響·外在影響·所需·答案",
+    "diamondLabels": {
+      "0": "問題",
+      "1": "未知的內在影響",
+      "2": "已知的外在影響",
+      "3": "解決問題所需的",
+      "4": "答案了解"
+    },
+    "mirror": "鏡子牌陣",
+    "mirrorEn": "Mirror Spread",
+    "mirrorDesc": "映照自我與同伴·身心靈的對話",
+    "mirrorLabels": {
+      "0": "身體",
+      "1": "心",
+      "2": "頭腦",
+      "3": "身體",
+      "4": "心",
+      "5": "頭腦",
+      "6": "親密",
+      "7": "蛻變",
+      "8": "祝福",
+      "9": "親密",
+      "10": "蛻變",
+      "11": "祝福"
+    },
+    "mirrorSections": {
+      "innerPurpose": "內在心靈的目的",
+      "you": "此時此地的你",
+      "companion": "此時此地的同伴",
+      "external": "在此關係當中的外在顯現"
+    },
     "cards": "張"
   },
   "draw": {
