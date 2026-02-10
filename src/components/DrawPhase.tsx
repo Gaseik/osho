@@ -165,15 +165,15 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard }: DrawPhase
       scale = 1.22;
       unRotate = 0.2;
     } else if (dist === 1) {
-      liftY = -params.liftY * 0.3;
-      liftZ = 18;
-      scale = 1.05;
-      unRotate = 0.7;
+      liftY = -params.liftY * 0.12;
+      liftZ = 6;
+      scale = 1.0;
+      unRotate = 0.88;
     } else if (dist === 2) {
-      liftY = -params.liftY * 0.1;
-      liftZ = 5;
-      scale = 1.01;
-      unRotate = 0.9;
+      liftY = -params.liftY * 0.04;
+      liftZ = 2;
+      scale = 1.0;
+      unRotate = 0.95;
     }
 
     return {
