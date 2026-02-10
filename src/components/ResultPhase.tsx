@@ -50,7 +50,14 @@ export default function ResultPhase({
 
   return (
     <div className="animate-fadeUp text-center w-full max-w-[700px]">
-      <p className="text-white/60 text-sm mb-6">
+      <p
+        className="text-white/60 text-sm overflow-hidden transition-all duration-500 ease-out"
+        style={{
+          opacity: flippedCount > 0 ? 0 : 1,
+          maxHeight: flippedCount > 0 ? 0 : 40,
+          marginBottom: flippedCount > 0 ? 0 : 24,
+        }}
+      >
         {t('result.title')}
       </p>
 
