@@ -104,6 +104,7 @@
   "result": {
     "title": "點擊牌片翻面",
     "promptPreview": "PROMPT 預覽",
+    "promptHelper": "將此 Prompt 複製並貼到你常用的 AI（如 ChatGPT、Claude 等），讓 AI 為你解析牌意。",
     "copyPrompt": "複製 Prompt",
     "copied": "已複製",
     "zoomHint": "點擊卡片可放大檢視細節",

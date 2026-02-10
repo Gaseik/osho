@@ -104,6 +104,7 @@
   "result": {
     "title": "Click cards to flip",
     "promptPreview": "PROMPT PREVIEW",
+    "promptHelper": "Copy this prompt and paste it into your preferred AI (such as ChatGPT, Claude, etc.) for card interpretation.",
     "copyPrompt": "Copy Prompt",
     "copied": "Copied",
     "zoomHint": "Tap a card to zoom in for details",
