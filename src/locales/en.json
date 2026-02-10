@@ -48,6 +48,49 @@
       "3": "Root",
       "4": "Outcome"
     },
+    "two-choice": "Two Choices",
+    "two-choiceEn": "Two Choices",
+    "two-choiceDesc": "Current · Situation A · Outcome A · Situation B · Outcome B",
+    "two-choiceLabels": {
+      "0": "Current Situation",
+      "1": "Situation A",
+      "2": "Outcome of A",
+      "3": "Situation B",
+      "4": "Outcome of B"
+    },
+    "diamond": "Diamond Spread",
+    "diamondEn": "Diamond Spread",
+    "diamondDesc": "Problem · Inner Influence · Outer Influence · What's Needed · Answer",
+    "diamondLabels": {
+      "0": "The Problem",
+      "1": "Unknown Inner Influence",
+      "2": "Known Outer Influence",
+      "3": "What's Needed to Resolve",
+      "4": "The Answer"
+    },
+    "mirror": "Mirror Spread",
+    "mirrorEn": "Mirror Spread",
+    "mirrorDesc": "Reflecting Self & Companion · Body, Heart, Mind Dialogue",
+    "mirrorLabels": {
+      "0": "Body",
+      "1": "Heart",
+      "2": "Mind",
+      "3": "Body",
+      "4": "Heart",
+      "5": "Mind",
+      "6": "Intimacy",
+      "7": "Transformation",
+      "8": "Blessing",
+      "9": "Intimacy",
+      "10": "Transformation",
+      "11": "Blessing"
+    },
+    "mirrorSections": {
+      "innerPurpose": "Inner Soul Purpose",
+      "you": "You Here & Now",
+      "companion": "Your Companion",
+      "external": "External Manifestation in This Relationship"
+    },
     "cards": " cards"
   },
   "draw": {
