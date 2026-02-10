@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useParams, Navigate } from 'react-router-dom';
 import { Card, CARDS, shuffle } from "./data/cards";
-import { Spread } from "./data/spreads";
+import { Spread, SPREADS } from "./data/spreads";
 import SpreadSelector from "./components/SpreadSelector";
 import DrawPhase from "./components/DrawPhase";
 import ResultPhase from "./components/ResultPhase";
@@ -18,12 +18,17 @@ export default function App() {
   const [flippedCount, setFlippedCount] = useState(0);
   const [copied, setCopied] = useState(false);
 
-  const selectSpread = (s: Spread) => {
+  const initSpread = (s: Spread) => {
     setSpread(s);
     setDeck(shuffle(CARDS));
     setDrawn([]);
     setFlippedCount(0);
-    navigate("/draw");
+    setCopied(false);
+  };
+
+  const selectSpread = (s: Spread) => {
+    initSpread(s);
+    navigate(`/draw/${s.id}`);
   };
 
   const drawCard = (idx: number) => {
@@ -34,7 +39,7 @@ export default function App() {
   };
 
   const onDrawComplete = () => {
-    navigate("/result");
+    if (spread) navigate(`/result/${spread.id}`);
   };
 
   const getSpreadLabels = (spreadId: string): string[] => {
@@ -92,38 +97,96 @@ export default function App() {
       <Routes>
         <Route path="/" element={<SpreadSelector onSelectSpread={selectSpread} />} />
 
-        <Route path="/draw" element={
-          spread ? (
-            <DrawPhase
-              spread={spread}
-              deck={deck}
-              drawn={drawn}
-              onDrawCard={drawCard}
-              onComplete={onDrawComplete}
-            />
-          ) : (
-            <Navigate to="/" replace />
-          )
+        <Route path="/draw/:spreadId" element={
+          <DrawRoute
+            spread={spread}
+            deck={deck}
+            drawn={drawn}
+            onDrawCard={drawCard}
+            onDrawComplete={onDrawComplete}
+            onInitSpread={initSpread}
+          />
         } />
 
-        <Route path="/result" element={
-          spread ? (
-            <ResultPhase
-              spread={spread}
-              drawn={drawn}
-              flippedCount={flippedCount}
-              copied={copied}
-              onFlipped={() => setFlippedCount(p => p + 1)}
-              onCopyPrompt={copyPrompt}
-              onReset={reset}
-            />
-          ) : (
-            <Navigate to="/" replace />
-          )
+        <Route path="/result/:spreadId" element={
+          <ResultRoute
+            spread={spread}
+            drawn={drawn}
+            flippedCount={flippedCount}
+            copied={copied}
+            onFlipped={() => setFlippedCount(p => p + 1)}
+            onCopyPrompt={copyPrompt}
+            onReset={reset}
+          />
         } />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
+  );
+}
+
+/* Resolves spreadId from URL, initializes state if needed (e.g. direct navigation) */
+function DrawRoute({
+  spread, deck, drawn, onDrawCard, onDrawComplete, onInitSpread,
+}: {
+  spread: Spread | null;
+  deck: Card[];
+  drawn: Card[];
+  onDrawCard: (idx: number) => void;
+  onDrawComplete: () => void;
+  onInitSpread: (s: Spread) => void;
+}) {
+  const { spreadId } = useParams();
+  const urlSpread = SPREADS.find(s => s.id === spreadId);
+
+  useEffect(() => {
+    if (urlSpread && (!spread || spread.id !== spreadId)) {
+      onInitSpread(urlSpread);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spreadId]);
+
+  if (!urlSpread) return <Navigate to="/" replace />;
+  if (!spread || spread.id !== spreadId) return null;
+
+  return (
+    <DrawPhase
+      spread={spread}
+      deck={deck}
+      drawn={drawn}
+      onDrawCard={onDrawCard}
+      onComplete={onDrawComplete}
+    />
+  );
+}
+
+function ResultRoute({
+  spread, drawn, flippedCount, copied, onFlipped, onCopyPrompt, onReset,
+}: {
+  spread: Spread | null;
+  drawn: Card[];
+  flippedCount: number;
+  copied: boolean;
+  onFlipped: () => void;
+  onCopyPrompt: () => void;
+  onReset: () => void;
+}) {
+  const { spreadId } = useParams();
+  const urlSpread = SPREADS.find(s => s.id === spreadId);
+
+  if (!urlSpread) return <Navigate to="/" replace />;
+  if (!spread || drawn.length === 0) return <Navigate to={`/draw/${spreadId}`} replace />;
+
+  return (
+    <ResultPhase
+      spread={spread}
+      drawn={drawn}
+      flippedCount={flippedCount}
+      copied={copied}
+      onFlipped={onFlipped}
+      onCopyPrompt={onCopyPrompt}
+      onReset={onReset}
+    />
   );
 }
