@@ -52,11 +52,11 @@
     "two-choiceEn": "Two Choices",
     "two-choiceDesc": "Current · Situation A · Outcome A · Situation B · Outcome B",
     "two-choiceLabels": {
-      "0": "Current Situation",
+      "0": "Current",
       "1": "Situation A",
-      "2": "Outcome of A",
+      "2": "Outcome A",
       "3": "Situation B",
-      "4": "Outcome of B"
+      "4": "Outcome B"
     },
     "diamond": "Diamond Spread",
     "diamondEn": "Diamond Spread",
