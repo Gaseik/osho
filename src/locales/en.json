@@ -91,6 +91,19 @@
       "companion": "Your Companion",
       "external": "External Manifestation in This Relationship"
     },
+    "key": "Key Spread",
+    "keyEn": "Key Spread",
+    "keyDesc": "Suppressed · Feminine · Masculine · Meditation · Body · Heart · Essence · Consciousness",
+    "keyLabels": {
+      "0": "What Is Suppressed",
+      "1": "Your Feminine (Passive) Side",
+      "2": "Your Masculine (Active) Side",
+      "3": "Meditation",
+      "4": "Insight Into the Body",
+      "5": "Insight Into the Heart",
+      "6": "Insight Into the Essence",
+      "7": "Consciousness (Understanding)"
+    },
     "cards": " cards"
   },
   "draw": {
