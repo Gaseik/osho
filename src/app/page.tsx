@@ -7,7 +7,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="text-center animate-fadeUp max-w-lg">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
-          ☯ ZEN INSIGHT ☯
+          ☯︎ ZEN INSIGHT ☯︎
         </div>
         <h1 className="text-4xl font-light tracking-[0.1875rem] text-white/90 m-0 mb-4">
           禪意靈卡
@@ -39,7 +39,7 @@ export default function HomePage() {
                      hover:shadow-[0_0_30px_rgba(255,215,0,0.15),inset_0_0_20px_rgba(255,215,0,0.05)]
                      transition-all duration-400 no-underline"
         >
-          <span className="text-2xl">☯</span>
+          <span className="text-2xl">☯︎</span>
           <span>開始抽牌</span>
         </Link>
 

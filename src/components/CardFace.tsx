@@ -97,7 +97,7 @@ export default function CardFace({ card, label, small }: CardFaceProps) {
           {label}
         </div>
       )}
-      <div style={{ fontSize: small ? 24 : 36, marginBottom: 8, position: "relative", zIndex: 1 }}>☯</div>
+      <div style={{ fontSize: small ? 24 : 36, marginBottom: 8, position: "relative", zIndex: 1 }}>☯︎</div>
       <div style={{
         fontSize: small ? 11 : 14,
         fontWeight: 600,

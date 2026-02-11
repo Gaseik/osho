@@ -21,19 +21,22 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
   const [flipped, setFlipped] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const hasStartedFlip = useRef(false);
+  const onFlippedRef = useRef(onFlipped);
+  onFlippedRef.current = onFlipped;
   const cardName = t(`cards.${card.id}`);
 
   // When revealed becomes true, flip after stagger delay
+  // Use ref for onFlipped to avoid cleanup race condition
   useEffect(() => {
     if (revealed && !hasStartedFlip.current) {
       hasStartedFlip.current = true;
       const timer = setTimeout(() => {
         setFlipped(true);
-        setTimeout(() => onFlipped?.(), 600);
+        setTimeout(() => onFlippedRef.current?.(), 600);
       }, delay);
       return () => clearTimeout(timer);
     }
-  }, [revealed, delay, onFlipped]);
+  }, [revealed, delay]);
 
   const handleClick = () => {
     if (!flipped) {
