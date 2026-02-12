@@ -50,13 +50,13 @@
     },
     "two-choice": "二擇一",
     "two-choiceEn": "Two Choices",
-    "two-choiceDesc": "現狀·A狀況·A結果·B狀況·B結果",
+    "two-choiceDesc": "現況·A狀況·A結果·B狀況·B結果",
     "two-choiceLabels": {
-      "0": "現狀",
-      "1": "A 狀況",
-      "2": "A 的結果",
-      "3": "B 狀況",
-      "4": "B 的結果"
+      "0": "現況",
+      "1": "A狀況",
+      "2": "A結果",
+      "3": "B狀況",
+      "4": "B結果"
     },
     "diamond": "鑽石牌陣",
     "diamondEn": "Diamond Spread",
@@ -91,6 +91,19 @@
       "companion": "此時此地的同伴",
       "external": "在此關係當中的外在顯現"
     },
+    "key": "鑰匙牌陣",
+    "keyEn": "Key Spread",
+    "keyDesc": "壓抑·女性面·男性面·靜心·身體·心·本質·意識",
+    "keyLabels": {
+      "0": "什麼東西被壓抑了",
+      "1": "你的女性（被動）面",
+      "2": "你的男性（主動）面",
+      "3": "靜心",
+      "4": "「進入身體」的洞見",
+      "5": "「進入心」的洞見",
+      "6": "「進入本質」的洞見",
+      "7": "意識（了解）"
+    },
     "cards": "張"
   },
   "draw": {
@@ -98,7 +111,8 @@
     "selected": "已選 {{current}} / {{total}}",
     "shuffle": "洗牌",
     "shuffleHint": "靜心片刻，感受你的直覺",
-    "dragHint": "← 左右拖曳選牌，點擊浮起的牌抽牌 →"
+    "dragHint": "← 左右拖曳選牌，點擊浮起的牌抽牌 →",
+    "nextPosition": "下一張：{{label}}"
   },
   "result": {
     "title": "點擊牌片翻面",
@@ -106,6 +120,7 @@
     "promptHelper": "將此 Prompt 複製並貼到你常用的 AI（如 ChatGPT、Claude 等），讓 AI 為你解析牌意。",
     "copyPrompt": "複製 Prompt",
     "copied": "已複製",
+    "zoomHint": "點擊卡片可放大檢視細節",
     "reset": "重新抽牌",
     "promptTemplate": "我用「{{spreadName}}」牌陣抽了以下的禪卡，請幫我解讀：\n\n{{cards}}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。"
   },

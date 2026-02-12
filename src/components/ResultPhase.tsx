@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
@@ -29,8 +29,13 @@ export default function ResultPhase({
   const resultRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
   const layout = SPREAD_LAYOUTS[spread.id];
+  const [revealed, setRevealed] = useState(false);
 
   const allFlipped = flippedCount >= spread.count;
+
+  const handleRequestReveal = () => {
+    if (!revealed) setRevealed(true);
+  };
 
   useEffect(() => {
     if (allFlipped && actionsRef.current) {
@@ -62,19 +67,27 @@ export default function ResultPhase({
 
   const labels = getSpreadLabels(spread.id);
 
-  const renderCard = (cardIdx: number) => (
-    <div className="flex flex-col items-center gap-2">
-      <div className="text-[11px] text-zen-gold-dim tracking-widest">
-        {labels[cardIdx]}
+  const renderCard = (cardIdx: number) => {
+    const cardName = t(`cards.${drawn[cardIdx].id}`);
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <div className="text-[11px] text-zen-gold-dim tracking-widest">
+          {labels[cardIdx]}
+        </div>
+        <FlipCard
+          card={drawn[cardIdx]}
+          label={labels[cardIdx]}
+          delay={cardIdx * 150}
+          revealed={revealed}
+          onFlipped={onFlipped}
+          onRequestReveal={handleRequestReveal}
+        />
+        {revealed && (
+          <div className="text-xs text-white/70 mt-1">{cardName}</div>
+        )}
       </div>
-      <FlipCard
-        card={drawn[cardIdx]}
-        label={labels[cardIdx]}
-        delay={cardIdx * 200}
-        onFlipped={onFlipped}
-      />
-    </div>
-  );
+    );
+  };
 
   const renderGridLayout = () => {
     if (!layout) return null;
@@ -162,9 +175,14 @@ export default function ResultPhase({
           <FlipCard
             card={card}
             label={labels[i]}
-            delay={i * 200}
+            delay={i * 150}
+            revealed={revealed}
             onFlipped={onFlipped}
+            onRequestReveal={handleRequestReveal}
           />
+          {revealed && (
+            <div className="text-xs text-white/70 mt-1">{t(`cards.${card.id}`)}</div>
+          )}
         </div>
       ))}
     </div>
@@ -181,6 +199,17 @@ export default function ResultPhase({
         }}
       >
         {t('result.title')}
+      </p>
+
+      <p
+        className="text-white/50 text-xs overflow-hidden transition-all duration-700 ease-out"
+        style={{
+          opacity: revealed && !allFlipped ? 0 : revealed ? 1 : 0,
+          maxHeight: revealed ? 30 : 0,
+          marginBottom: revealed ? 16 : 0,
+        }}
+      >
+        {t('result.zoomHint')}
       </p>
 
       {/* Cards */}

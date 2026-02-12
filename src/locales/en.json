@@ -52,11 +52,11 @@
     "two-choiceEn": "Two Choices",
     "two-choiceDesc": "Current · Situation A · Outcome A · Situation B · Outcome B",
     "two-choiceLabels": {
-      "0": "Current Situation",
+      "0": "Current",
       "1": "Situation A",
-      "2": "Outcome of A",
+      "2": "Outcome A",
       "3": "Situation B",
-      "4": "Outcome of B"
+      "4": "Outcome B"
     },
     "diamond": "Diamond Spread",
     "diamondEn": "Diamond Spread",
@@ -91,6 +91,19 @@
       "companion": "Your Companion",
       "external": "External Manifestation in This Relationship"
     },
+    "key": "Key Spread",
+    "keyEn": "Key Spread",
+    "keyDesc": "Suppressed · Feminine · Masculine · Meditation · Body · Heart · Essence · Consciousness",
+    "keyLabels": {
+      "0": "What Is Suppressed",
+      "1": "Your Feminine (Passive) Side",
+      "2": "Your Masculine (Active) Side",
+      "3": "Meditation",
+      "4": "Insight Into the Body",
+      "5": "Insight Into the Heart",
+      "6": "Insight Into the Essence",
+      "7": "Consciousness (Understanding)"
+    },
     "cards": " cards"
   },
   "draw": {
@@ -98,7 +111,8 @@
     "selected": "Selected {{current}} / {{total}}",
     "shuffle": "Shuffle",
     "shuffleHint": "Take a moment, trust your intuition",
-    "dragHint": "← Drag to browse, tap the lifted card to draw →"
+    "dragHint": "← Drag to browse, tap the lifted card to draw →",
+    "nextPosition": "Next: {{label}}"
   },
   "result": {
     "title": "Click cards to flip",
@@ -106,6 +120,7 @@
     "promptHelper": "Copy this prompt and paste it into your preferred AI (such as ChatGPT, Claude, etc.) for card interpretation.",
     "copyPrompt": "Copy Prompt",
     "copied": "Copied",
+    "zoomHint": "Tap a card to zoom in for details",
     "reset": "Draw Again",
     "promptTemplate": "I drew the following Zen cards using the \"{{spreadName}}\" spread, please help me interpret:\n\n{{cards}}\n\nPlease provide an overall interpretation and guidance based on each card's position and meaning."
   },
