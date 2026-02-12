@@ -4,7 +4,6 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS } from "../data/spreads";
-import CardBack from "./CardBack";
 
 interface DrawPhaseProps {
   spread: Spread;
@@ -36,12 +35,14 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const [hasEverDragged, setHasEverDragged] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
+  const rafRef = useRef<number>(0);
 
   const screenW = useWindowWidth();
   const totalCards = deck.length;
   const canDraw = drawn.length < spread.count;
+  const isMobile = screenW < 768;
 
-  // Responsive params — cards doubled
+  // Responsive params
   const params = useMemo(() => {
     if (screenW < 480)  return { cardW: 128, cardH: 192, radius: 280, maxArc: 65, tilt: 22, liftY: 70, sens: 18 };
     if (screenW < 768)  return { cardW: 160, cardH: 240, radius: 380, maxArc: 80, tilt: 18, liftY: 80, sens: 22 };
@@ -103,7 +104,12 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drawn.length, spread.count]);
 
-  // ─── Pointer drag ───
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  // ─── Pointer drag (RAF-throttled for mobile perf) ───
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (stage !== 'fanned') return;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -113,18 +119,24 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!dragRef.current || stage !== 'fanned') return;
-    const deltaX = dragRef.current.startX - e.clientX;
-    if (Math.abs(deltaX) > 5) {
-      dragRef.current.moved = true;
-      setHasEverDragged(true);
-    }
-    const newIndex = Math.max(0, Math.min(totalCards - 1,
-      dragRef.current.startIndex + Math.round(deltaX / params.sens)
-    ));
-    setSelectedIndex(newIndex);
+    const clientX = e.clientX;
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      if (!dragRef.current) return;
+      const deltaX = dragRef.current.startX - clientX;
+      if (Math.abs(deltaX) > 5) {
+        dragRef.current.moved = true;
+        setHasEverDragged(true);
+      }
+      const newIndex = Math.max(0, Math.min(totalCards - 1,
+        dragRef.current.startIndex + Math.round(deltaX / params.sens)
+      ));
+      setSelectedIndex(newIndex);
+    });
   }, [stage, totalCards, params.sens]);
 
   const handlePointerUp = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
     const wasDrag = dragRef.current?.moved ?? false;
     dragRef.current = null;
     setIsDragging(false);
@@ -135,25 +147,25 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
   }, [canDraw, stage, selectedIndex, onDrawCard]);
 
-  // ─── Card transform ───
-  const getCardStyle = useCallback((index: number) => {
+  // ─── Card transform (GPU-optimized with translate3d) ───
+  const getCardStyle = useCallback((index: number): { transform: string; opacity: number } => {
     const baseAngle = totalCards <= 1
       ? 0
       : -halfArc + (index / (totalCards - 1)) * arcAngle;
 
     // idle
     if (stage === 'idle') {
-      return { transform: 'rotate(0deg) translateY(0px) scale(0.8)', opacity: 0 };
+      return { transform: 'translate3d(0, 0, 0) scale(0.8)', opacity: 0 };
     }
 
-    // shuffling — scatter
+    // shuffling — scatter (GPU-composited)
     if (stage === 'shuffling') {
       const seed = ((index * 7 + 13) % 37) / 37;
       const sx = (seed - 0.5) * 120;
       const sy = (((index * 11 + 3) % 29) / 29 - 0.5) * 80;
       const sr = (seed - 0.5) * 40;
       return {
-        transform: `rotate(${sr}deg) translate(${sx}px, ${sy}px) scale(0.9)`,
+        transform: `translate3d(${sx}px, ${sy}px, 0) rotate(${sr}deg) scale(0.9)`,
         opacity: 1,
       };
     }
@@ -163,7 +175,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       const off = (index - totalCards / 2) * 0.3;
       const rot = (index - totalCards / 2) * 0.15;
       return {
-        transform: `rotate(${rot}deg) translate(${off}px, 0px) scale(1)`,
+        transform: `translate3d(${off}px, 0, 0) rotate(${rot}deg) scale(1)`,
         opacity: 1,
       };
     }
@@ -172,7 +184,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     if (stage === 'exiting') {
       const off = (index - totalCards / 2) * 0.15;
       return {
-        transform: `rotate(0deg) translate(${off}px, 60px) scale(0.6)`,
+        transform: `translate3d(${off}px, 60px, 0) scale(0.6)`,
         opacity: 0,
       };
     }
@@ -194,29 +206,30 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
 
     return {
-      transform: `rotate(${angle * unRotate}deg) translateY(${liftY}px) translateZ(${liftZ}px) scale(${scale})`,
+      transform: `rotate(${angle * unRotate}deg) translate3d(0, ${liftY}px, ${liftZ}px) scale(${scale})`,
       opacity: 1,
     };
   }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY]);
 
-  // Transition timing
+  // Transition timing (reduced delays on mobile)
   const getTransitionDelay = useCallback((index: number) => {
     if (isDragging) return '0s';
-    if (stage === 'shuffling') return `${(index % 8) * 0.03}s`;
-    if (stage === 'stacked') return `${index * 0.005}s`;
-    if (stage === 'exiting') return `${index * 0.004}s`;
-    if (stage === 'fanned') return `${index * 0.012}s`;
+    const m = isMobile ? 0.6 : 1;
+    if (stage === 'shuffling') return `${(index % 8) * 0.03 * m}s`;
+    if (stage === 'stacked') return `${index * 0.005 * m}s`;
+    if (stage === 'exiting') return `${index * 0.004 * m}s`;
+    if (stage === 'fanned') return `${index * 0.008 * m}s`;
     return '0s';
-  }, [stage, isDragging]);
+  }, [stage, isDragging, isMobile]);
 
   const transitionDuration = useMemo(() => {
-    if (isDragging) return '0.25s';
-    if (stage === 'shuffling') return '0.5s';
-    if (stage === 'stacked') return '0.4s';
-    if (stage === 'exiting') return '0.6s';
-    if (stage === 'fanned') return '0.6s';
+    if (isDragging) return '0.18s';
+    if (stage === 'shuffling') return isMobile ? '0.4s' : '0.5s';
+    if (stage === 'stacked') return isMobile ? '0.35s' : '0.4s';
+    if (stage === 'exiting') return isMobile ? '0.45s' : '0.6s';
+    if (stage === 'fanned') return isMobile ? '0.45s' : '0.6s';
     return '0.3s';
-  }, [stage, isDragging]);
+  }, [stage, isDragging, isMobile]);
 
   return (
     <>
@@ -308,7 +321,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         </div>
       )}
 
-      {/* Fan scene */}
+      {/* Fan scene — lightweight cards with CSS background (no per-card Image component) */}
       {stage !== 'idle' && (
         <div
           ref={sceneRef}
@@ -343,17 +356,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
                       transitionDelay: getTransitionDelay(i),
                       transitionDuration,
                     } as React.CSSProperties}
-                  >
-                    <CardBack
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        borderRadius: 8,
-                        fontSize: params.cardW < 50 ? 14 : 22,
-                        cursor: isSelected && canDraw ? 'pointer' : 'grab',
-                      }}
-                    />
-                  </div>
+                  />
                 );
               })}
             </div>

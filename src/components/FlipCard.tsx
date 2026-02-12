@@ -59,13 +59,15 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
             transition: "transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
             transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
             cursor: "pointer",
+            willChange: "transform",
           }}
         >
           <div style={{
             position: "absolute",
             width: "100%",
             height: "100%",
-            backfaceVisibility: "hidden"
+            backfaceVisibility: "hidden",
+            transform: "translateZ(0)",
           }}>
             <CardBack
               style={{ width: "100%", height: "100%" }}
@@ -77,7 +79,7 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
             width: "100%",
             height: "100%",
             backfaceVisibility: "hidden",
-            transform: "rotateY(180deg)"
+            transform: "rotateY(180deg) translateZ(0)",
           }}>
             <CardFace card={card} label={label} />
           </div>

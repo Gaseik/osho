@@ -107,6 +107,7 @@ body {
   -webkit-user-select: none;
   user-select: none;
   touch-action: none;
+  contain: layout style;
   transition: bottom 0.8s cubic-bezier(0.23, 1, 0.32, 1),
               height 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
@@ -137,21 +138,26 @@ body {
   transform-style: preserve-3d;
 }
 
-/* Individual card */
+/* Individual card — self-contained with CSS background (no React component needed) */
 .fan-card {
   position: absolute;
   bottom: 0;
   left: 0;
   margin-left: calc(-0.5 * var(--card-w, 112px));
   transform-origin: center calc(100% + var(--fan-radius, 520px));
+  /* Only transition transform + opacity; removed expensive filter transition */
   transition:
     transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    opacity   0.5s ease-out,
-    filter    0.4s ease;
-  will-change: transform, opacity;
+    opacity   0.5s ease-out;
+  will-change: transform;
   -webkit-tap-highlight-color: transparent;
-  transform-style: preserve-3d;
+  backface-visibility: hidden;
   cursor: pointer;
+  /* Card appearance — replaces per-card <CardBack> + <Image> component */
+  background: url('/assets/cardback.jpeg') center / cover no-repeat;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Dragging state — grabbing cursor */
@@ -162,12 +168,23 @@ body {
   cursor: grabbing !important;
 }
 
-/* Active card — strong golden glow */
+/* Active card — box-shadow glow (replaces expensive filter: drop-shadow) */
 .fan-card--active {
-  filter:
-    brightness(1.35)
-    drop-shadow(0 -12px 35px rgba(255, 215, 0, 0.55))
-    drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
+  box-shadow:
+    0 -12px 35px rgba(255, 215, 0, 0.5),
+    0 0 18px rgba(255, 215, 0, 0.3),
+    0 2px 12px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 215, 0, 0.6);
+}
+
+/* Brightness boost for active card (lightweight pseudo-element) */
+.fan-card--active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  pointer-events: none;
 }
 
 /* Drag hint — fixed to viewport bottom with breathing animation */
@@ -285,6 +302,13 @@ body {
   .spread-grid {
     zoom: 0.85;
   }
+  /* Lighter box-shadow on tablet for perf */
+  .fan-card--active {
+    box-shadow:
+      0 -8px 25px rgba(255, 215, 0, 0.45),
+      0 0 12px rgba(255, 215, 0, 0.25),
+      0 2px 8px rgba(0, 0, 0, 0.4);
+  }
 }
 
 @media (max-width: 479px) {
@@ -308,5 +332,37 @@ body {
   }
   .spread-grid {
     zoom: 0.65;
+  }
+  /* Minimal glow on small screens for perf */
+  .fan-card--active {
+    box-shadow:
+      0 -6px 20px rgba(255, 215, 0, 0.4),
+      0 0 10px rgba(255, 215, 0, 0.2);
+  }
+  .fan-card--active::after {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* ========== Reduced Motion ========== */
+
+@media (prefers-reduced-motion: reduce) {
+  .fan-card,
+  .fan-scene,
+  .fan-table,
+  .shuffle-btn {
+    transition-duration: 0.01s !important;
+    transition-delay: 0s !important;
+  }
+  .shuffle-btn-icon,
+  .fan-hint {
+    animation: none;
+  }
+  .drawn-stack-card {
+    animation-duration: 0.01s;
+  }
+  .card-zoom-overlay,
+  .card-zoom-content {
+    animation-duration: 0.01s;
   }
 }
