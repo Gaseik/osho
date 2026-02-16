@@ -40,7 +40,6 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const screenW = useWindowWidth();
   const totalCards = deck.length;
   const canDraw = drawn.length < spread.count;
-  const isMobile = screenW < 768;
 
   // Responsive params
   const params = useMemo(() => {
@@ -52,23 +51,24 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const arcAngle = Math.min(totalCards * 1.4, params.maxArc);
   const halfArc = arcAngle / 2;
 
+  // The angle of the selected card — used to center it
   const selectedAngle = useMemo(() => {
     if (totalCards <= 1) return 0;
     return -halfArc + (selectedIndex / (totalCards - 1)) * arcAngle;
   }, [selectedIndex, totalCards, halfArc, arcAngle]);
 
-  // ─── Shuffle flow (shorter on mobile) ───
+  // ─── Shuffle flow ───
   const handleShuffle = useCallback(() => {
     setStage('shuffling');
-    setTimeout(() => setStage('stacked'), isMobile ? 800 : 1200);
-  }, [isMobile]);
+    setTimeout(() => setStage('stacked'), 1200);
+  }, []);
 
   useEffect(() => {
     if (stage === 'stacked') {
-      const timer = setTimeout(() => setStage('fanned'), isMobile ? 500 : 800);
+      const timer = setTimeout(() => setStage('fanned'), 800);
       return () => clearTimeout(timer);
     }
-  }, [stage, isMobile]);
+  }, [stage]);
 
   // Center selection when entering fanned stage
   useEffect(() => {
@@ -77,7 +77,6 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
-
 
   // Clamp if deck shrinks
   useEffect(() => {
@@ -146,32 +145,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
   }, [canDraw, stage, selectedIndex, onDrawCard]);
 
-  // ─── Shuffle card subset ───
-  // Shuffle animation only needs a handful of cards — they overlap anyway.
-  const shuffleVisibleSet = useMemo(() => {
-    let maxCards: number;
-    if (screenW < 480) maxCards = 8;
-    else if (screenW < 768) maxCards = 14;
-    else return null;
-    if (totalCards <= maxCards) return null;
-    const step = totalCards / maxCards;
-    return new Set(Array.from({ length: maxCards }, (_, i) => Math.floor(i * step)));
-  }, [screenW, totalCards]);
-
-  // ─── Pre-computed static styles for fanned cards ───
-  const baseFannedStyles = useMemo(() => {
-    if (stage !== 'fanned') return null;
-    return Array.from({ length: totalCards }, (_, i) => {
-      const baseAngle = totalCards <= 1 ? 0 : -halfArc + (i / (totalCards - 1)) * arcAngle;
-      return {
-        transform: `rotate(${baseAngle}deg) translate3d(0, 0, 0) scale(1)`,
-        opacity: 1 as number,
-      };
-    });
-  }, [stage, totalCards, halfArc, arcAngle]);
-
-  // ─── Card transform (GPU-optimized) ───
-  const getCardStyle = useCallback((index: number): { transform: string; opacity: number } => {
+  // ─── Card transform ───
+  const getCardStyle = useCallback((index: number) => {
     const baseAngle = totalCards <= 1
       ? 0
       : -halfArc + (index / (totalCards - 1)) * arcAngle;
@@ -186,7 +161,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       const sy = (((index * 11 + 3) % 29) / 29 - 0.5) * 80;
       const sr = (seed - 0.5) * 40;
       return {
-        transform: `translate3d(${sx}px, ${sy}px, 0) rotate(${sr}deg) scale(0.9)`,
+        transform: `rotate(${sr}deg) translate3d(${sx}px, ${sy}px, 0) scale(0.9)`,
         opacity: 1,
       };
     }
@@ -195,7 +170,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       const off = (index - totalCards / 2) * 0.3;
       const rot = (index - totalCards / 2) * 0.15;
       return {
-        transform: `translate3d(${off}px, 0, 0) rotate(${rot}deg) scale(1)`,
+        transform: `rotate(${rot}deg) translate3d(${off}px, 0, 0) scale(1)`,
         opacity: 1,
       };
     }
@@ -208,36 +183,46 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       };
     }
 
-    // ─── FANNED ───
-    if (index === selectedIndex) {
-      return {
-        transform: `rotate(${selectedAngle}deg) translate3d(0, ${-params.liftY}px, 60px) scale(1.15)`,
-        opacity: 1,
-      };
+    // fanned — offset so selectedIndex card is at angle 0 (center)
+    const angle = baseAngle - selectedAngle;
+    const dist = Math.abs(index - selectedIndex);
+
+    let liftY = 0;
+    let liftZ = 0;
+    let scale = 1;
+    let unRotate = 1;
+
+    if (dist === 0) {
+      liftY = -params.liftY;
+      liftZ = 60;
+      scale = 1.15;
+      unRotate = 0.2;
     }
 
-    return baseFannedStyles![index];
-  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY, baseFannedStyles]);
+    return {
+      transform: `rotate(${angle * unRotate}deg) translate3d(0, ${liftY}px, ${liftZ}px) scale(${scale})`,
+      opacity: 1,
+    };
+  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY]);
 
   // Transition timing
   const getTransitionDelay = useCallback((index: number) => {
     if (isDragging) return '0s';
-    const m = isMobile ? 0.5 : 1;
-    if (stage === 'shuffling') return `${(index % 8) * 0.025 * m}s`;
-    if (stage === 'stacked') return `${index * 0.004 * m}s`;
-    if (stage === 'exiting') return `${index * 0.003 * m}s`;
-    if (stage === 'fanned') return `${index * 0.008 * m}s`;
+    if (stage === 'shuffling') return `${(index % 8) * 0.03}s`;
+    if (stage === 'stacked') return `${index * 0.005}s`;
+    if (stage === 'exiting') return `${index * 0.004}s`;
+    if (stage === 'fanned') return `${index * 0.012}s`;
     return '0s';
-  }, [stage, isDragging, isMobile]);
+  }, [stage, isDragging]);
 
   const transitionDuration = useMemo(() => {
-    if (isDragging) return '0.15s';
-    if (stage === 'shuffling') return isMobile ? '0.35s' : '0.5s';
-    if (stage === 'stacked') return isMobile ? '0.3s' : '0.4s';
-    if (stage === 'exiting') return isMobile ? '0.4s' : '0.6s';
-    if (stage === 'fanned') return isMobile ? '0.4s' : '0.6s';
+    if (isDragging) return '0.25s';
+    if (stage === 'shuffling') return '0.5s';
+    if (stage === 'stacked') return '0.4s';
+    if (stage === 'exiting') return '0.6s';
+    if (stage === 'fanned') return '0.6s';
     return '0.3s';
-  }, [stage, isDragging, isMobile]);
+  }, [stage, isDragging]);
 
   return (
     <>
@@ -345,16 +330,9 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
           >
             <div
               className="fan-pivot"
-              style={{
-                '--fan-radius': `${params.radius}px`,
-                transform: stage === 'fanned' ? `rotate(${-selectedAngle}deg)` : undefined,
-                transitionDuration: isDragging ? '0.15s' : undefined,
-              } as React.CSSProperties}
+              style={{ '--fan-radius': `${params.radius}px` } as React.CSSProperties}
             >
               {deck.map((card, i) => {
-                const isCulled = shuffleVisibleSet && !shuffleVisibleSet.has(i);
-                // Hidden cards stay in DOM but are invisible + no transition cost
-                const isHidden = isCulled && (stage === 'shuffling' || stage === 'stacked');
                 const isSelected = i === selectedIndex && stage === 'fanned';
                 const { transform, opacity } = getCardStyle(i);
                 return (
@@ -366,14 +344,10 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
                       width: params.cardW,
                       height: params.cardH,
                       transform,
-                      opacity: isHidden ? 0 : opacity,
-                      visibility: isHidden ? 'hidden' : undefined,
+                      opacity,
                       zIndex: isSelected ? 200 : i,
-                      // transition:none while hidden → zero GPU cost; when unhidden,
-                      // CSS .fan-card transition kicks in and animates stacked→fanned
-                      transition: isHidden ? 'none' : undefined,
-                      transitionDelay: isHidden ? undefined : getTransitionDelay(i),
-                      transitionDuration: isHidden ? undefined : transitionDuration,
+                      transitionDelay: getTransitionDelay(i),
+                      transitionDuration,
                     } as React.CSSProperties}
                   />
                 );
