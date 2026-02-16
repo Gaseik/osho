@@ -33,8 +33,6 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const [selectedIndex, setSelectedIndex] = useState(40);
   const [isDragging, setIsDragging] = useState(false);
   const [hasEverDragged, setHasEverDragged] = useState(false);
-  // 0 = shuffle-visible only, 1 = +half remaining, 2 = all cards
-  const [fanBatch, setFanBatch] = useState(0);
   const sceneRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
   const rafRef = useRef<number>(0);
@@ -80,20 +78,6 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
 
-  // Batched fan rendering: stagger DOM insertions across 3 frames to avoid spike.
-  // Batch 0: shuffle-visible cards only (they transition from stacked → fanned)
-  // Batch 1 (+50ms): insert even-indexed remaining cards
-  // Batch 2 (+120ms): insert odd-indexed remaining cards → all 79 visible
-  useEffect(() => {
-    if (stage === 'fanned') {
-      setFanBatch(0);
-      const t1 = setTimeout(() => setFanBatch(1), 50);
-      const t2 = setTimeout(() => setFanBatch(2), 120);
-      return () => { clearTimeout(t1); clearTimeout(t2); };
-    } else {
-      setFanBatch(0);
-    }
-  }, [stage]);
 
   // Clamp if deck shrinks
   useEffect(() => {
@@ -369,18 +353,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
             >
               {deck.map((card, i) => {
                 const isCulled = shuffleVisibleSet && !shuffleVisibleSet.has(i);
-
-                // During shuffle/stack: only render the animated subset
-                if ((stage === 'shuffling' || stage === 'stacked') && isCulled) return null;
-
-                // Batched fan insertion: stagger remaining cards across 2 batches
-                // to avoid inserting ~70 DOM elements in a single frame
-                if (stage === 'fanned' && isCulled) {
-                  if (fanBatch === 0) return null;              // frame 1-3: shuffle cards only
-                  if (fanBatch === 1 && i % 2 === 1) return null; // +50ms: even-indexed cards
-                  // fanBatch === 2: all cards rendered
-                }
-
+                // Hidden cards stay in DOM but are invisible + no transition cost
+                const isHidden = isCulled && (stage === 'shuffling' || stage === 'stacked');
                 const isSelected = i === selectedIndex && stage === 'fanned';
                 const { transform, opacity } = getCardStyle(i);
                 return (
@@ -392,10 +366,14 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
                       width: params.cardW,
                       height: params.cardH,
                       transform,
-                      opacity,
+                      opacity: isHidden ? 0 : opacity,
+                      visibility: isHidden ? 'hidden' : undefined,
                       zIndex: isSelected ? 200 : i,
-                      transitionDelay: getTransitionDelay(i),
-                      transitionDuration,
+                      // transition:none while hidden → zero GPU cost; when unhidden,
+                      // CSS .fan-card transition kicks in and animates stacked→fanned
+                      transition: isHidden ? 'none' : undefined,
+                      transitionDelay: isHidden ? undefined : getTransitionDelay(i),
+                      transitionDuration: isHidden ? undefined : transitionDuration,
                     } as React.CSSProperties}
                   />
                 );
