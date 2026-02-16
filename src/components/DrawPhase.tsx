@@ -61,12 +61,12 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   // ─── Shuffle flow (shorter on mobile) ───
   const handleShuffle = useCallback(() => {
     setStage('shuffling');
-    setTimeout(() => setStage('stacked'), isMobile ? 1000 : 1200);
+    setTimeout(() => setStage('stacked'), isMobile ? 800 : 1200);
   }, [isMobile]);
 
   useEffect(() => {
     if (stage === 'stacked') {
-      const timer = setTimeout(() => setStage('fanned'), isMobile ? 600 : 800);
+      const timer = setTimeout(() => setStage('fanned'), isMobile ? 500 : 800);
       return () => clearTimeout(timer);
     }
   }, [stage, isMobile]);
@@ -148,13 +148,14 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   }, [canDraw, stage, selectedIndex, onDrawCard]);
 
   // ─── Shuffle card subset ───
-  // On mobile, only animate ~18-28 cards during shuffle/stack.
-  // The rest stay hidden (opacity:0) and smoothly fade in when fanning out.
-  // Visually identical (cards overlap) but cuts GPU work by 60-75%.
+  // On mobile, only RENDER ~12-20 cards during shuffle/stack.
+  // Non-rendered cards are completely absent from the DOM → zero GPU cost.
+  // When entering fanned stage, React inserts new DOM elements at their final
+  // positions without CSS transition (no previous value to transition from).
   const shuffleVisibleSet = useMemo(() => {
     let maxCards: number;
-    if (screenW < 480) maxCards = 18;
-    else if (screenW < 768) maxCards = 28;
+    if (screenW < 480) maxCards = 12;
+    else if (screenW < 768) maxCards = 20;
     else return null; // desktop: all cards
     if (totalCards <= maxCards) return null;
     const step = totalCards / maxCards;
@@ -186,13 +187,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       return { transform: 'translate3d(0, 0, 0) scale(0.8)', opacity: 0 };
     }
 
-    // During shuffle/stack: cards NOT in the animated subset stay hidden at center.
-    // They'll smoothly fade in + fan out when stage becomes 'fanned'.
-    const culled = shuffleVisibleSet && !shuffleVisibleSet.has(index);
-
-    // shuffling — scatter (only animated subset moves)
+    // shuffling — scatter (non-rendered cards are skipped in JSX, not here)
     if (stage === 'shuffling') {
-      if (culled) return { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 0 };
       const seed = ((index * 7 + 13) % 37) / 37;
       const sx = (seed - 0.5) * 120;
       const sy = (((index * 11 + 3) % 29) / 29 - 0.5) * 80;
@@ -205,7 +201,6 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
 
     // stacked — converge to center
     if (stage === 'stacked') {
-      if (culled) return { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 0 };
       const off = (index - totalCards / 2) * 0.3;
       const rot = (index - totalCards / 2) * 0.15;
       return {
@@ -237,7 +232,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
 
     // Non-selected: fixed angle — NEVER changes during drag
     return baseFannedStyles![index];
-  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY, baseFannedStyles, shuffleVisibleSet]);
+  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY, baseFannedStyles]);
 
   // Transition timing (reduced on mobile)
   const getTransitionDelay = useCallback((index: number) => {
@@ -372,6 +367,12 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
               } as React.CSSProperties}
             >
               {deck.map((card, i) => {
+                // During shuffle/stack on mobile: skip non-essential cards entirely.
+                // They're not in the DOM → zero GPU cost. When fanned stage starts,
+                // React inserts them at their final position without CSS transition.
+                if ((stage === 'shuffling' || stage === 'stacked') && shuffleVisibleSet && !shuffleVisibleSet.has(i)) {
+                  return null;
+                }
                 const isSelected = i === selectedIndex && stage === 'fanned';
                 const { transform, opacity } = getCardStyle(i);
                 return (
