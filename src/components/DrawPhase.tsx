@@ -33,30 +33,16 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const [selectedIndex, setSelectedIndex] = useState(40);
   const [isDragging, setIsDragging] = useState(false);
   const [hasEverDragged, setHasEverDragged] = useState(false);
-  const [fanReady, setFanReady] = useState(false);
+  // 0 = shuffle-visible only, 1 = +half remaining, 2 = all cards
+  const [fanBatch, setFanBatch] = useState(0);
   const sceneRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
   const rafRef = useRef<number>(0);
 
   const screenW = useWindowWidth();
+  const totalCards = deck.length;
   const canDraw = drawn.length < spread.count;
   const isMobile = screenW < 768;
-
-  // ─── Fan deck: cap total cards on mobile for lighter transitions ───
-  const fanSlice = useMemo<{ card: Card; di: number }[]>(() => {
-    let max: number;
-    if (screenW < 480) max = 36;
-    else if (screenW < 768) max = 48;
-    else max = deck.length;
-    if (deck.length <= max) return deck.map((card, i) => ({ card, di: i }));
-    const step = deck.length / max;
-    return Array.from({ length: max }, (_, i) => {
-      const di = Math.floor(i * step);
-      return { card: deck[di], di };
-    });
-  }, [deck, screenW]);
-
-  const fanCount = fanSlice.length;
 
   // Responsive params
   const params = useMemo(() => {
@@ -65,14 +51,13 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     return                      { cardW: 112, cardH: 168, radius: 520, maxArc: 100, tilt: 14, liftY: 90, sens: 28 };
   }, [screenW]);
 
-  const arcAngle = Math.min(fanCount * 1.4, params.maxArc);
+  const arcAngle = Math.min(totalCards * 1.4, params.maxArc);
   const halfArc = arcAngle / 2;
 
-  // The angle of the selected card — used for pivot rotation
   const selectedAngle = useMemo(() => {
-    if (fanCount <= 1) return 0;
-    return -halfArc + (selectedIndex / (fanCount - 1)) * arcAngle;
-  }, [selectedIndex, fanCount, halfArc, arcAngle]);
+    if (totalCards <= 1) return 0;
+    return -halfArc + (selectedIndex / (totalCards - 1)) * arcAngle;
+  }, [selectedIndex, totalCards, halfArc, arcAngle]);
 
   // ─── Shuffle flow (shorter on mobile) ───
   const handleShuffle = useCallback(() => {
@@ -90,31 +75,34 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   // Center selection when entering fanned stage
   useEffect(() => {
     if (stage === 'fanned') {
-      setSelectedIndex(Math.floor(fanCount / 2));
+      setSelectedIndex(Math.floor(deck.length / 2));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
 
-  // Batched fan rendering: first let shuffle-visible cards start transitioning,
-  // then insert the rest after a short delay to avoid a DOM insertion frame spike.
+  // Batched fan rendering: stagger DOM insertions across 3 frames to avoid spike.
+  // Batch 0: shuffle-visible cards only (they transition from stacked → fanned)
+  // Batch 1 (+50ms): insert even-indexed remaining cards
+  // Batch 2 (+120ms): insert odd-indexed remaining cards → all 79 visible
   useEffect(() => {
     if (stage === 'fanned') {
-      setFanReady(false);
-      const timer = setTimeout(() => setFanReady(true), 60);
-      return () => clearTimeout(timer);
+      setFanBatch(0);
+      const t1 = setTimeout(() => setFanBatch(1), 50);
+      const t2 = setTimeout(() => setFanBatch(2), 120);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
     } else {
-      setFanReady(false);
+      setFanBatch(0);
     }
   }, [stage]);
 
-  // Clamp if fan shrinks
+  // Clamp if deck shrinks
   useEffect(() => {
-    if (fanCount > 0 && selectedIndex >= fanCount) {
-      setSelectedIndex(fanCount - 1);
+    if (deck.length > 0 && selectedIndex >= deck.length) {
+      setSelectedIndex(deck.length - 1);
     }
-  }, [fanCount, selectedIndex]);
+  }, [deck.length, selectedIndex]);
 
-  // Redirect if already complete on mount (e.g. browser back button)
+  // Redirect if already complete on mount
   useEffect(() => {
     if (drawn.length >= spread.count) {
       onComplete?.();
@@ -122,7 +110,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Exit animation when last card drawn during this session
+  // Exit animation when last card drawn
   useEffect(() => {
     if (drawn.length >= spread.count && stage === 'fanned') {
       setStage('exiting');
@@ -156,12 +144,12 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         dragRef.current.moved = true;
         setHasEverDragged(true);
       }
-      const newIndex = Math.max(0, Math.min(fanCount - 1,
+      const newIndex = Math.max(0, Math.min(totalCards - 1,
         dragRef.current.startIndex + Math.round(deltaX / params.sens)
       ));
       setSelectedIndex(newIndex);
     });
-  }, [stage, fanCount, params.sens]);
+  }, [stage, totalCards, params.sens]);
 
   const handlePointerUp = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
@@ -169,41 +157,40 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     dragRef.current = null;
     setIsDragging(false);
 
-    // Tap (no drag) → draw the selected card (map back to original deck index)
     if (!wasDrag && canDraw && stage === 'fanned') {
-      onDrawCard(fanSlice[selectedIndex].di);
+      onDrawCard(selectedIndex);
     }
-  }, [canDraw, stage, selectedIndex, onDrawCard, fanSlice]);
+  }, [canDraw, stage, selectedIndex, onDrawCard]);
 
   // ─── Shuffle card subset ───
-  // On mobile, only RENDER ~12-20 cards during shuffle/stack.
+  // Shuffle animation only needs a handful of cards — they overlap anyway.
   const shuffleVisibleSet = useMemo(() => {
     let maxCards: number;
-    if (screenW < 480) maxCards = 12;
-    else if (screenW < 768) maxCards = 20;
+    if (screenW < 480) maxCards = 8;
+    else if (screenW < 768) maxCards = 14;
     else return null;
-    if (fanCount <= maxCards) return null;
-    const step = fanCount / maxCards;
+    if (totalCards <= maxCards) return null;
+    const step = totalCards / maxCards;
     return new Set(Array.from({ length: maxCards }, (_, i) => Math.floor(i * step)));
-  }, [screenW, fanCount]);
+  }, [screenW, totalCards]);
 
   // ─── Pre-computed static styles for fanned cards ───
   const baseFannedStyles = useMemo(() => {
     if (stage !== 'fanned') return null;
-    return Array.from({ length: fanCount }, (_, i) => {
-      const baseAngle = fanCount <= 1 ? 0 : -halfArc + (i / (fanCount - 1)) * arcAngle;
+    return Array.from({ length: totalCards }, (_, i) => {
+      const baseAngle = totalCards <= 1 ? 0 : -halfArc + (i / (totalCards - 1)) * arcAngle;
       return {
         transform: `rotate(${baseAngle}deg) translate3d(0, 0, 0) scale(1)`,
         opacity: 1 as number,
       };
     });
-  }, [stage, fanCount, halfArc, arcAngle]);
+  }, [stage, totalCards, halfArc, arcAngle]);
 
   // ─── Card transform (GPU-optimized) ───
   const getCardStyle = useCallback((index: number): { transform: string; opacity: number } => {
-    const baseAngle = fanCount <= 1
+    const baseAngle = totalCards <= 1
       ? 0
-      : -halfArc + (index / (fanCount - 1)) * arcAngle;
+      : -halfArc + (index / (totalCards - 1)) * arcAngle;
 
     if (stage === 'idle') {
       return { transform: 'translate3d(0, 0, 0) scale(0.8)', opacity: 0 };
@@ -221,8 +208,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
 
     if (stage === 'stacked') {
-      const off = (index - fanCount / 2) * 0.3;
-      const rot = (index - fanCount / 2) * 0.15;
+      const off = (index - totalCards / 2) * 0.3;
+      const rot = (index - totalCards / 2) * 0.15;
       return {
         transform: `translate3d(${off}px, 0, 0) rotate(${rot}deg) scale(1)`,
         opacity: 1,
@@ -230,7 +217,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
 
     if (stage === 'exiting') {
-      const off = (index - fanCount / 2) * 0.15;
+      const off = (index - totalCards / 2) * 0.15;
       return {
         transform: `translate3d(${off}px, 60px, 0) scale(0.6)`,
         opacity: 0,
@@ -246,7 +233,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
 
     return baseFannedStyles![index];
-  }, [fanCount, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY, baseFannedStyles]);
+  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY, baseFannedStyles]);
 
   // Transition timing
   const getTransitionDelay = useCallback((index: number) => {
@@ -380,12 +367,19 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
                 transitionDuration: isDragging ? '0.15s' : undefined,
               } as React.CSSProperties}
             >
-              {fanSlice.map(({ card, di }, i) => {
+              {deck.map((card, i) => {
                 const isCulled = shuffleVisibleSet && !shuffleVisibleSet.has(i);
-                // During shuffle/stack: skip non-essential cards (not in DOM)
+
+                // During shuffle/stack: only render the animated subset
                 if ((stage === 'shuffling' || stage === 'stacked') && isCulled) return null;
-                // Batched fan: delay non-shuffle cards by ~60ms so transition starts smoothly first
-                if (stage === 'fanned' && !fanReady && isCulled) return null;
+
+                // Batched fan insertion: stagger remaining cards across 2 batches
+                // to avoid inserting ~70 DOM elements in a single frame
+                if (stage === 'fanned' && isCulled) {
+                  if (fanBatch === 0) return null;              // frame 1-3: shuffle cards only
+                  if (fanBatch === 1 && i % 2 === 1) return null; // +50ms: even-indexed cards
+                  // fanBatch === 2: all cards rendered
+                }
 
                 const isSelected = i === selectedIndex && stage === 'fanned';
                 const { transform, opacity } = getCardStyle(i);
@@ -411,7 +405,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         </div>
       )}
 
-      {/* Drag hint — fixed to viewport bottom, outside fan-scene */}
+      {/* Drag hint */}
       {stage === 'fanned' && !hasEverDragged && (
         <div className="fan-hint">
           {t('draw.dragHint')}
