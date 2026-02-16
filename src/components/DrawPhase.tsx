@@ -52,24 +52,24 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const arcAngle = Math.min(totalCards * 1.4, params.maxArc);
   const halfArc = arcAngle / 2;
 
-  // The angle of the selected card — used to center it
+  // The angle of the selected card — used for pivot rotation
   const selectedAngle = useMemo(() => {
     if (totalCards <= 1) return 0;
     return -halfArc + (selectedIndex / (totalCards - 1)) * arcAngle;
   }, [selectedIndex, totalCards, halfArc, arcAngle]);
 
-  // ─── Shuffle flow ───
+  // ─── Shuffle flow (shorter on mobile) ───
   const handleShuffle = useCallback(() => {
     setStage('shuffling');
-    setTimeout(() => setStage('stacked'), 1200);
-  }, []);
+    setTimeout(() => setStage('stacked'), isMobile ? 1000 : 1200);
+  }, [isMobile]);
 
   useEffect(() => {
     if (stage === 'stacked') {
-      const timer = setTimeout(() => setStage('fanned'), 800);
+      const timer = setTimeout(() => setStage('fanned'), isMobile ? 600 : 800);
       return () => clearTimeout(timer);
     }
-  }, [stage]);
+  }, [stage, isMobile]);
 
   // Center selection when entering fanned stage
   useEffect(() => {
@@ -109,7 +109,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
-  // ─── Pointer drag (RAF-throttled for mobile perf) ───
+  // ─── Pointer drag (RAF-throttled) ───
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (stage !== 'fanned') return;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -147,7 +147,21 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
   }, [canDraw, stage, selectedIndex, onDrawCard]);
 
-  // ─── Card transform (GPU-optimized with translate3d) ───
+  // ─── Pre-computed static styles for fanned cards ───
+  // During drag, only the selected card + pivot change; all other cards reuse these cached objects.
+  // This reduces per-frame work from O(78 DOM writes) → O(3 DOM writes).
+  const baseFannedStyles = useMemo(() => {
+    if (stage !== 'fanned') return null;
+    return Array.from({ length: totalCards }, (_, i) => {
+      const baseAngle = totalCards <= 1 ? 0 : -halfArc + (i / (totalCards - 1)) * arcAngle;
+      return {
+        transform: `rotate(${baseAngle}deg) translate3d(0, 0, 0) scale(1)`,
+        opacity: 1 as number,
+      };
+    });
+  }, [stage, totalCards, halfArc, arcAngle]);
+
+  // ─── Card transform (GPU-optimized) ───
   const getCardStyle = useCallback((index: number): { transform: string; opacity: number } => {
     const baseAngle = totalCards <= 1
       ? 0
@@ -158,7 +172,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       return { transform: 'translate3d(0, 0, 0) scale(0.8)', opacity: 0 };
     }
 
-    // shuffling — scatter (GPU-composited)
+    // shuffling — scatter
     if (stage === 'shuffling') {
       const seed = ((index * 7 + 13) % 37) / 37;
       const sx = (seed - 0.5) * 120;
@@ -189,45 +203,39 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       };
     }
 
-    // fanned — offset so selectedIndex card is at angle 0 (center)
-    const angle = baseAngle - selectedAngle;
-    const dist = Math.abs(index - selectedIndex);
-
-    let liftY = 0;
-    let liftZ = 0;
-    let scale = 1;
-    let unRotate = 1;
-
-    if (dist === 0) {
-      liftY = -params.liftY;
-      liftZ = 60;
-      scale = 1.15;
-      unRotate = 0.2;
+    // ─── FANNED ───
+    // Pivot rotation handles centering (rotate(-selectedAngle) on fan-pivot).
+    // Only the selected card needs a unique transform per drag frame;
+    // all other cards return a cached static style → zero DOM diff.
+    if (index === selectedIndex) {
+      // Selected card: counteract pivot rotation so it appears straight + lift up
+      return {
+        transform: `rotate(${selectedAngle}deg) translate3d(0, ${-params.liftY}px, 60px) scale(1.15)`,
+        opacity: 1,
+      };
     }
 
-    return {
-      transform: `rotate(${angle * unRotate}deg) translate3d(0, ${liftY}px, ${liftZ}px) scale(${scale})`,
-      opacity: 1,
-    };
-  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY]);
+    // Non-selected: fixed angle — NEVER changes during drag
+    return baseFannedStyles![index];
+  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY, baseFannedStyles]);
 
-  // Transition timing (reduced delays on mobile)
+  // Transition timing (reduced on mobile)
   const getTransitionDelay = useCallback((index: number) => {
     if (isDragging) return '0s';
-    const m = isMobile ? 0.6 : 1;
-    if (stage === 'shuffling') return `${(index % 8) * 0.03 * m}s`;
-    if (stage === 'stacked') return `${index * 0.005 * m}s`;
-    if (stage === 'exiting') return `${index * 0.004 * m}s`;
+    const m = isMobile ? 0.5 : 1;
+    if (stage === 'shuffling') return `${(index % 8) * 0.025 * m}s`;
+    if (stage === 'stacked') return `${index * 0.004 * m}s`;
+    if (stage === 'exiting') return `${index * 0.003 * m}s`;
     if (stage === 'fanned') return `${index * 0.008 * m}s`;
     return '0s';
   }, [stage, isDragging, isMobile]);
 
   const transitionDuration = useMemo(() => {
-    if (isDragging) return '0.18s';
-    if (stage === 'shuffling') return isMobile ? '0.4s' : '0.5s';
-    if (stage === 'stacked') return isMobile ? '0.35s' : '0.4s';
-    if (stage === 'exiting') return isMobile ? '0.45s' : '0.6s';
-    if (stage === 'fanned') return isMobile ? '0.45s' : '0.6s';
+    if (isDragging) return '0.15s';
+    if (stage === 'shuffling') return isMobile ? '0.35s' : '0.5s';
+    if (stage === 'stacked') return isMobile ? '0.3s' : '0.4s';
+    if (stage === 'exiting') return isMobile ? '0.4s' : '0.6s';
+    if (stage === 'fanned') return isMobile ? '0.4s' : '0.6s';
     return '0.3s';
   }, [stage, isDragging, isMobile]);
 
@@ -321,7 +329,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         </div>
       )}
 
-      {/* Fan scene — lightweight cards with CSS background (no per-card Image component) */}
+      {/* Fan scene */}
       {stage !== 'idle' && (
         <div
           ref={sceneRef}
@@ -337,7 +345,11 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
           >
             <div
               className="fan-pivot"
-              style={{ '--fan-radius': `${params.radius}px` } as React.CSSProperties}
+              style={{
+                '--fan-radius': `${params.radius}px`,
+                transform: stage === 'fanned' ? `rotate(${-selectedAngle}deg)` : undefined,
+                transitionDuration: isDragging ? '0.15s' : undefined,
+              } as React.CSSProperties}
             >
               {deck.map((card, i) => {
                 const isSelected = i === selectedIndex && stage === 'fanned';
