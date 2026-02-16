@@ -147,6 +147,20 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
     }
   }, [canDraw, stage, selectedIndex, onDrawCard]);
 
+  // ─── Shuffle card subset ───
+  // On mobile, only animate ~18-28 cards during shuffle/stack.
+  // The rest stay hidden (opacity:0) and smoothly fade in when fanning out.
+  // Visually identical (cards overlap) but cuts GPU work by 60-75%.
+  const shuffleVisibleSet = useMemo(() => {
+    let maxCards: number;
+    if (screenW < 480) maxCards = 18;
+    else if (screenW < 768) maxCards = 28;
+    else return null; // desktop: all cards
+    if (totalCards <= maxCards) return null;
+    const step = totalCards / maxCards;
+    return new Set(Array.from({ length: maxCards }, (_, i) => Math.floor(i * step)));
+  }, [screenW, totalCards]);
+
   // ─── Pre-computed static styles for fanned cards ───
   // During drag, only the selected card + pivot change; all other cards reuse these cached objects.
   // This reduces per-frame work from O(78 DOM writes) → O(3 DOM writes).
@@ -172,8 +186,13 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       return { transform: 'translate3d(0, 0, 0) scale(0.8)', opacity: 0 };
     }
 
-    // shuffling — scatter
+    // During shuffle/stack: cards NOT in the animated subset stay hidden at center.
+    // They'll smoothly fade in + fan out when stage becomes 'fanned'.
+    const culled = shuffleVisibleSet && !shuffleVisibleSet.has(index);
+
+    // shuffling — scatter (only animated subset moves)
     if (stage === 'shuffling') {
+      if (culled) return { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 0 };
       const seed = ((index * 7 + 13) % 37) / 37;
       const sx = (seed - 0.5) * 120;
       const sy = (((index * 11 + 3) % 29) / 29 - 0.5) * 80;
@@ -186,6 +205,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
 
     // stacked — converge to center
     if (stage === 'stacked') {
+      if (culled) return { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 0 };
       const off = (index - totalCards / 2) * 0.3;
       const rot = (index - totalCards / 2) * 0.15;
       return {
@@ -217,7 +237,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
 
     // Non-selected: fixed angle — NEVER changes during drag
     return baseFannedStyles![index];
-  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY, baseFannedStyles]);
+  }, [totalCards, halfArc, arcAngle, stage, selectedAngle, selectedIndex, params.liftY, baseFannedStyles, shuffleVisibleSet]);
 
   // Transition timing (reduced on mobile)
   const getTransitionDelay = useCallback((index: number) => {
