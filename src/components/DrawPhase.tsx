@@ -301,7 +301,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       {stage === 'idle' && (
         <div className="animate-fadeUp flex flex-col items-center mt-16">
           <button onClick={handleShuffle} className="shuffle-btn">
-            <span className="shuffle-btn-icon">☯</span>
+            <span className="shuffle-btn-icon">☯︎</span>
             <span>{t('draw.shuffle')}</span>
           </button>
           <p className="text-white/30 text-xs mt-4">{t('draw.shuffleHint')}</p>

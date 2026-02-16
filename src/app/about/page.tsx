@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "關於禪意靈卡 | About Zen Insight Cards",
+  title: "關於洞見 | About OSHO Zen Card Read",
   description:
     "禪意靈卡是一個免費的線上禪卡抽牌平台，靈感來自奧修禪卡。About Zen Insight Cards - a free online Zen tarot card reading platform inspired by Osho Zen Tarot.",
 };
@@ -15,7 +15,7 @@ export default function AboutPage() {
     >
       <div className="text-center mb-10 animate-fadeUp">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
-          ☯ ZEN INSIGHT ☯
+          ☯︎ ZEN INSIGHT ☯︎
         </div>
         <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
           關於禪意靈卡
@@ -50,7 +50,7 @@ export default function AboutPage() {
                      hover:border-zen-gold/60 hover:scale-105
                      transition-all duration-300 no-underline"
         >
-          <span>☯</span>
+          <span>☯︎</span>
           <span>開始抽牌</span>
         </Link>
       </div>

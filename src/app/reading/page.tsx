@@ -85,7 +85,7 @@ export default function ReadingPage() {
       {/* Header */}
       <div className={`text-center animate-fadeUp ${phase === "result" ? "mb-4" : "mb-10"}`}>
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
-          ☯ {t("common.subtitle")} ☯
+          ☯︎ {t("common.subtitle")} ☯︎
         </div>
         <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
           {phase === "result" ? "解讀" : t("common.title")}

@@ -3,7 +3,7 @@ import I18nProvider from "../components/I18nProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "禪意靈卡 | Zen Tarot Card Reading Online Free",
+  title: "洞見 | 奧修禪卡抽牌 | OSHO Zen Card Read",
   description:
     "免費線上禪卡抽牌，提供多種牌陣選擇。Free online Zen tarot card reading with beautiful UI and multiple spreads. Inspired by Osho Zen Tarot.",
   keywords: [
@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     "zen tarot card",
   ],
   openGraph: {
-    title: "禪意靈卡 | Zen Tarot Card Reading",
+    title: "洞見 | 奧修禪卡抽牌 | OSHO Zen Card Read",
     description: "免費線上禪卡抽牌，精美互動體驗",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "禪意靈卡 | Zen Tarot Card Reading",
+    title: "洞見 | 奧修禪卡抽牌 | OSHO Zen Card Read",
     description: "免費線上禪卡抽牌，精美互動體驗",
   },
 };
