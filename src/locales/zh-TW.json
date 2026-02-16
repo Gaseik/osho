@@ -5,7 +5,8 @@
   },
   "menu": {
     "language": "切換語言",
-    "contact": "聯繫我們"
+    "contact": "聯繫我們",
+    "records": "占卜紀錄"
   },
   "spread": {
     "selectTitle": "選擇你的牌陣",
@@ -123,6 +124,27 @@
     "zoomHint": "點擊卡片可放大檢視細節",
     "reset": "重新抽牌",
     "promptTemplate": "我用「{{spreadName}}」牌陣抽了以下的禪卡，請幫我解讀：\n\n{{cards}}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。"
+  },
+  "record": {
+    "saveTitle": "儲存此次占卜紀錄",
+    "questionPlaceholder": "輸入你的提問或描述（選填）",
+    "save": "儲存紀錄",
+    "saved": "已儲存至占卜紀錄",
+    "pageTitle": "占卜紀錄",
+    "backToReading": "返回抽牌",
+    "empty": "尚無占卜紀錄",
+    "goReading": "前往抽牌",
+    "question": "提問",
+    "cards": "牌組",
+    "review": "回測心得",
+    "addReview": "新增心得",
+    "editReview": "編輯",
+    "reviewPlaceholder": "寫下你的回測心得、事後驗證...",
+    "saveReview": "儲存",
+    "cancel": "取消",
+    "noReview": "尚未填寫回測心得",
+    "reviewedAt": "回測時間",
+    "confirmDelete": "確認刪除？"
   },
   "cards": {
     "0": "愚者",

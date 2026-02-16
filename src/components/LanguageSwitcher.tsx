@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu01, XClose, Globe01, Mail01 } from '@untitled-ui/icons-react';
+import Link from 'next/link';
+import { Menu01, XClose, Globe01, Mail01, BookOpen01 } from '@untitled-ui/icons-react';
 
 export default function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
@@ -61,6 +62,17 @@ export default function LanguageSwitcher() {
               {i18n.language === 'zh-TW' ? 'EN' : '中文'}
             </span>
           </button>
+
+          {/* Divination Records */}
+          <Link
+            href="/records"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                       transition-colors"
+          >
+            <BookOpen01 width={18} height={18} />
+            <span className="text-sm tracking-wider">{t('menu.records')}</span>
+          </Link>
 
           {/* Contact */}
           <a

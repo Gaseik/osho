@@ -5,7 +5,8 @@
   },
   "menu": {
     "language": "Language",
-    "contact": "Contact Us"
+    "contact": "Contact Us",
+    "records": "Reading Records"
   },
   "spread": {
     "selectTitle": "Choose Your Spread",
@@ -123,6 +124,27 @@
     "zoomHint": "Tap a card to zoom in for details",
     "reset": "Draw Again",
     "promptTemplate": "I drew the following Zen cards using the \"{{spreadName}}\" spread, please help me interpret:\n\n{{cards}}\n\nPlease provide an overall interpretation and guidance based on each card's position and meaning."
+  },
+  "record": {
+    "saveTitle": "Save This Reading",
+    "questionPlaceholder": "Enter your question or description (optional)",
+    "save": "Save Record",
+    "saved": "Saved to Reading Records",
+    "pageTitle": "Reading Records",
+    "backToReading": "Back to Reading",
+    "empty": "No reading records yet",
+    "goReading": "Go to Reading",
+    "question": "Question",
+    "cards": "Cards",
+    "review": "Review Notes",
+    "addReview": "Add Review",
+    "editReview": "Edit",
+    "reviewPlaceholder": "Write your review, reflections, validations...",
+    "saveReview": "Save",
+    "cancel": "Cancel",
+    "noReview": "No review notes yet",
+    "reviewedAt": "Reviewed at",
+    "confirmDelete": "Confirm delete?"
   },
   "cards": {
     "0": "The Fool",

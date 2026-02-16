@@ -5,6 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
 import FlipCard from "./FlipCard";
+import {
+  saveRecord,
+  generateId,
+  type DivinationCard,
+} from "../utils/divinationRecords";
 
 interface ResultPhaseProps {
   spread: Spread;
@@ -30,6 +35,8 @@ export default function ResultPhase({
   const actionsRef = useRef<HTMLDivElement>(null);
   const layout = SPREAD_LAYOUTS[spread.id];
   const [revealed, setRevealed] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [saved, setSaved] = useState(false);
 
   const allFlipped = flippedCount >= spread.count;
 
@@ -63,6 +70,27 @@ export default function ResultPhase({
     const spreadName = i18n.language === 'zh-TW' ? spread.name : t(`spread.${spread.id}`);
     const cardsText = lines.join("\n");
     return t('result.promptTemplate', { spreadName, cards: cardsText });
+  };
+
+  const handleSave = () => {
+    const recordCards: DivinationCard[] = drawn.map((c) => ({
+      id: c.id,
+      name: c.name,
+      nameZh: c.nameZh,
+      meaning: c.meaning,
+    }));
+    saveRecord({
+      id: generateId(),
+      spreadId: spread.id,
+      spreadName: spread.name,
+      spreadNameEn: spread.nameEn,
+      cards: recordCards,
+      question,
+      createdAt: new Date().toISOString(),
+      review: "",
+      reviewedAt: null,
+    });
+    setSaved(true);
   };
 
   const labels = getSpreadLabels(spread.id);
@@ -232,6 +260,36 @@ export default function ResultPhase({
               {genPrompt()}
             </div>
           </div>
+
+          {/* Save Record */}
+          {!saved ? (
+            <div className="bg-white/[0.03] rounded-xl border border-zen-gold/10 p-4 max-w-[500px] w-full mb-2">
+              <div className="text-[11px] text-zen-gold/50 mb-2 tracking-wider">
+                {t('record.saveTitle')}
+              </div>
+              <textarea
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder={t('record.questionPlaceholder')}
+                className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2
+                         text-xs text-white/70 placeholder-white/30 resize-none
+                         focus:outline-none focus:border-zen-gold/30 transition-colors"
+                rows={2}
+              />
+              <button
+                onClick={handleSave}
+                className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
+                         bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
+                         hover:bg-zen-gold/[0.15] transition-all duration-300"
+              >
+                {t('record.save')}
+              </button>
+            </div>
+          ) : (
+            <div className="text-zen-gold/70 text-sm tracking-wider mb-2">
+              ✓ {t('record.saved')}
+            </div>
+          )}
 
           <div className="flex gap-3 flex-wrap justify-center">
             <button
