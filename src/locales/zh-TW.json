@@ -6,7 +6,8 @@
   "menu": {
     "language": "切換語言",
     "contact": "聯繫我們",
-    "records": "占卜紀錄"
+    "records": "占卜紀錄",
+    "reading": "奧修卡抽牌"
   },
   "spread": {
     "selectTitle": "選擇你的牌陣",

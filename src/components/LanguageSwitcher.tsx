@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import { Menu01, XClose, Globe01, Mail01, BookOpen01 } from '@untitled-ui/icons-react';
+import { Menu01, XClose, Globe01, Mail01, BookOpen01, Star01 } from '@untitled-ui/icons-react';
 import { getRecords } from '../utils/divinationRecords';
 
 export default function LanguageSwitcher() {
@@ -68,6 +68,17 @@ export default function LanguageSwitcher() {
               {i18n.language === 'zh-TW' ? 'EN' : '中文'}
             </span>
           </button>
+
+          {/* Reading */}
+          <Link
+            href="/reading"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                       transition-colors"
+          >
+            <Star01 width={18} height={18} />
+            <span className="text-sm tracking-wider">{t('menu.reading')}</span>
+          </Link>
 
           {/* Divination Records */}
           <Link
