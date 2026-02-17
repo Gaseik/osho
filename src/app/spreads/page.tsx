@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import LanguageSwitcher from "../../components/LanguageSwitcher";
 import { SPREAD_DETAILS } from "../../data/spreadDetails";
 
 export const metadata: Metadata = {
@@ -25,6 +26,8 @@ export default function SpreadsPage() {
       className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                   text-white font-serif px-4 py-10"
     >
+      <LanguageSwitcher />
+
       {/* Header */}
       <div className="text-center mb-12 animate-fadeUp">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">

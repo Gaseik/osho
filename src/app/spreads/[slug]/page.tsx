@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import { SPREAD_DETAILS, getSpreadBySlug } from "../../../data/spreadDetails";
 
 export function generateStaticParams() {
@@ -100,6 +101,8 @@ export default async function SpreadDetailPage({
       className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                   text-white font-serif px-4 py-10"
     >
+      <LanguageSwitcher />
+
       <div className="max-w-2xl mx-auto">
         {/* Breadcrumb */}
         <nav className="text-xs text-white/40 mb-8 animate-fadeUp">

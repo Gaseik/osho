@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import {
   CARD_DETAILS,
   getCardBySlug,
@@ -62,6 +63,8 @@ export default async function CardDetailPage({
       className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                   text-white font-serif px-4 py-10"
     >
+      <LanguageSwitcher />
+
       <div className="max-w-2xl mx-auto">
         {/* Breadcrumb */}
         <nav className="text-xs text-white/40 mb-8 animate-fadeUp">
