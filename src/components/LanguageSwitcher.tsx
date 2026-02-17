@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import { Menu01, XClose, Globe01, Mail01, BookOpen01, Star01 } from '@untitled-ui/icons-react';
+import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02 } from '@untitled-ui/icons-react';
 import { getRecords } from '../utils/divinationRecords';
 
 export default function LanguageSwitcher() {
@@ -56,19 +56,6 @@ export default function LanguageSwitcher() {
         </button>
 
         <div className="flex flex-col h-full pt-20 px-6">
-          {/* Language */}
-          <button
-            onClick={toggleLanguage}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors text-left"
-          >
-            <Globe01 width={18} height={18} />
-            <span className="text-sm tracking-wider">{t('menu.language')}</span>
-            <span className="ml-auto text-xs text-white/40">
-              {i18n.language === 'zh-TW' ? 'EN' : '中文'}
-            </span>
-          </button>
-
           {/* Reading */}
           <Link
             href="/reading"
@@ -76,7 +63,7 @@ export default function LanguageSwitcher() {
             className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
                        transition-colors"
           >
-            <Star01 width={18} height={18} />
+            <MagicWand02 width={18} height={18} />
             <span className="text-sm tracking-wider">{t('menu.reading')}</span>
           </Link>
 
@@ -103,6 +90,19 @@ export default function LanguageSwitcher() {
             <Mail01 width={18} height={18} />
             <span className="text-sm tracking-wider">{t('menu.contact')}</span>
           </a>
+
+          {/* Language */}
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                       transition-colors text-left"
+          >
+            <Globe01 width={18} height={18} />
+            <span className="text-sm tracking-wider">{t('menu.language')}</span>
+            <span className="ml-auto text-xs text-white/40">
+              {i18n.language === 'zh-TW' ? 'EN' : '中文'}
+            </span>
+          </button>
 
           {/* Spacer */}
           <div className="flex-1" />
