@@ -113,7 +113,8 @@
     "shuffle": "Shuffle",
     "shuffleHint": "Take a moment, trust your intuition",
     "dragHint": "← Drag to browse, tap the lifted card to draw →",
-    "nextPosition": "Next: {{label}}"
+    "nextPosition": "Next: {{label}}",
+    "reselect": "Re-select Spread"
   },
   "result": {
     "title": "Click cards to flip",

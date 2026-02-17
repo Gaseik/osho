@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { Menu01, XClose, Globe01, Mail01, BookOpen01 } from '@untitled-ui/icons-react';
+import { getRecords } from '../utils/divinationRecords';
 
 export default function LanguageSwitcher() {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [recordCount, setRecordCount] = useState(0);
+
+  useEffect(() => {
+    if (open) setRecordCount(getRecords().length);
+  }, [open]);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'zh-TW' ? 'en' : 'zh-TW';
@@ -72,6 +78,9 @@ export default function LanguageSwitcher() {
           >
             <BookOpen01 width={18} height={18} />
             <span className="text-sm tracking-wider">{t('menu.records')}</span>
+            {recordCount > 0 && (
+              <span className="ml-auto text-xs text-white/40">{recordCount}</span>
+            )}
           </Link>
 
           {/* Contact */}

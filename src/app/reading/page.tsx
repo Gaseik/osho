@@ -108,6 +108,7 @@ export default function ReadingPage() {
           drawn={drawn}
           onDrawCard={drawCard}
           onComplete={onDrawComplete}
+          onBack={reset}
         />
       )}
 

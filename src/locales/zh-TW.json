@@ -113,7 +113,8 @@
     "shuffle": "洗牌",
     "shuffleHint": "靜心片刻，感受你的直覺",
     "dragHint": "← 左右拖曳選牌，點擊浮起的牌抽牌 →",
-    "nextPosition": "下一張：{{label}}"
+    "nextPosition": "下一張：{{label}}",
+    "reselect": "重新選擇牌陣"
   },
   "result": {
     "title": "點擊牌片翻面",
