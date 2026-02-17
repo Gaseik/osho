@@ -82,14 +82,15 @@ export default function LanguageSwitcher() {
           </Link>
 
           {/* Contact */}
-          <a
-            href="mailto:gaseik.dev@gmail.com"
+          <Link
+            href="/contact"
+            onClick={() => setOpen(false)}
             className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
                        transition-colors"
           >
             <Mail01 width={18} height={18} />
             <span className="text-sm tracking-wider">{t('menu.contact')}</span>
-          </a>
+          </Link>
 
           {/* Language */}
           <button

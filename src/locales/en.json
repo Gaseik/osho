@@ -153,6 +153,22 @@
     "hasReview": "Review added",
     "autoDeleteHint": "Up to 100 records are kept. Oldest records are automatically removed when the limit is reached."
   },
+  "contact": {
+    "title": "Contact Us",
+    "subject": "Subject",
+    "subjectPlaceholder": "Enter subject",
+    "message": "Message",
+    "messagePlaceholder": "Tell us what's on your mind...",
+    "email": "Your Email",
+    "optional": "optional",
+    "emailPlaceholder": "So we can get back to you",
+    "submit": "Send",
+    "sending": "Sending...",
+    "sent": "Message Sent!",
+    "sentDesc": "Thank you for reaching out. We'll get back to you soon.",
+    "error": "Failed to send. Please try again later.",
+    "backToReading": "Back to Reading"
+  },
   "cards": {
     "0": "The Fool",
     "1": "Existence",
