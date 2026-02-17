@@ -1,9 +1,12 @@
 import Link from "next/link";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                     text-white font-serif flex flex-col items-center justify-center px-4">
+      <LanguageSwitcher />
+
       {/* Hero Section */}
       <div className="text-center animate-fadeUp max-w-lg">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">

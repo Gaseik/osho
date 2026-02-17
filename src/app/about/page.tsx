@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import LanguageSwitcher from "../../components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   title: "關於洞見 | About OSHO Zen Card Read",
@@ -13,6 +14,8 @@ export default function AboutPage() {
       className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
+      <LanguageSwitcher />
+
       <div className="text-center mb-10 animate-fadeUp">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
           ☯︎ ZEN INSIGHT ☯︎
