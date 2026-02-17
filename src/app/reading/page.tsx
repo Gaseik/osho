@@ -54,7 +54,7 @@ export default function ReadingPage() {
     if (!spread) return;
     const labels = getSpreadLabels(spread.id);
     const lines = drawn.map(
-      (c, i) => `${labels[i]}：${c.name}（${c.nameZh}）- ${c.meaning}`
+      (c, i) => `${labels[i]}：${c.name}（${c.nameZh}）- ${c.keywords.join(", ")}`
     );
     const spreadName =
       i18n.language === "zh-TW" ? spread.name : t(`spread.${spread.id}`);

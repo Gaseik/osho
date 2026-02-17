@@ -30,7 +30,7 @@ export async function generateMetadata({
       "奧修禪卡",
       "禪卡牌義",
       "osho zen tarot",
-      ...card.meaning.split(",").map((s) => s.trim()),
+      ...card.keywords,
     ],
     openGraph: {
       title: `${card.nameZh}（${card.name}）| 禪意靈卡`,

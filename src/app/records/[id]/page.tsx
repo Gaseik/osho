@@ -8,7 +8,7 @@ import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import CardSpreadLayout from "../../../components/CardSpreadLayout";
 import StaticCard from "../../../components/StaticCard";
 import { POSITION_LABELS, SPREAD_LAYOUTS } from "../../../data/spreads";
-import { type Card } from "../../../data/cards";
+import { CARD_DETAILS, type Card } from "../../../data/cards";
 import {
   getRecords,
   updateRecord,
@@ -104,12 +104,12 @@ export default function RecordDetailPage() {
     router.push("/records");
   };
 
-  const renderCard = (cardIdx: number) => (
-    <StaticCard
-      card={record.cards[cardIdx] as Card}
-      label={labels[cardIdx] || ""}
-    />
-  );
+  const renderCard = (cardIdx: number) => {
+    const saved = record.cards[cardIdx];
+    const full = CARD_DETAILS.find((c) => c.id === saved.id);
+    const card: Card = full ?? { ...saved, slug: "", suit: "major", keywords: [], keywordsZh: [], description: "", descriptionZh: "" };
+    return <StaticCard card={card} label={labels[cardIdx] || ""} />;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark text-white font-serif flex flex-col items-center px-4 py-10">

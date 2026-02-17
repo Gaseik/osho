@@ -121,7 +121,9 @@ export default function CardDetailContent({ card, prev, next }: Props) {
         <h2 className="text-sm text-zen-gold/70 tracking-[0.15rem] mb-3 font-light">
           {isZh ? "核心意涵" : "Core Meaning"}
         </h2>
-        <p className="text-white/50 text-sm italic">{card.meaning}</p>
+        <p className="text-white/50 text-sm italic">
+          {isZh ? card.keywordsZh.join("、") : card.keywords.join(", ")}
+        </p>
       </section>
 
       {/* CTA */}

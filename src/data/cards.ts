@@ -900,3 +900,27 @@ export const CARD_DETAILS: CardDetail[] = [
     descriptionZh: "彩虹國王坐在人間樂園之中——不是作為囤積者，而是作為管理者。豐富是與你的真實校準、做有意義的工作、扎根於現實的自然結果。\n\n這張牌出現時，物質和靈性的豐盛正在匯聚。你不必在做得好和做好事之間選擇。真正的豐富不是關於累積——而是關於流通。你越自由地給予，生命就越自由地給予你。\n\n享受你擁有的。分享你能分享的。相信足夠的。宇宙不吝嗇——只有頭腦創造匱乏。"
   },
 ];
+
+// Backward-compatible aliases used by reading page and components
+export type Card = CardDetail;
+export const CARDS: Card[] = CARD_DETAILS;
+
+export const GRADIENTS = [
+  "linear-gradient(135deg, #1a0533 0%, #2d1b69 50%, #0f0c29 100%)",
+  "linear-gradient(135deg, #0c1445 0%, #1b3a6b 50%, #0a1628 100%)",
+  "linear-gradient(135deg, #2a0a2e 0%, #5c1a6e 50%, #1a0533 100%)",
+  "linear-gradient(135deg, #0a2e1a 0%, #1a6b4a 50%, #0c1f14 100%)",
+  "linear-gradient(135deg, #2e1a0a 0%, #6b3a1a 50%, #1f140c 100%)",
+  "linear-gradient(135deg, #1a1a2e 0%, #3a3a6b 50%, #0f0f1f 100%)",
+];
+
+export const getCardColor = (id: number): string => GRADIENTS[id % GRADIENTS.length];
+
+export const shuffle = <T,>(arr: T[]): T[] => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
