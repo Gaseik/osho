@@ -153,6 +153,22 @@
     "hasReview": "已填寫回測心得",
     "autoDeleteHint": "最多保留 100 筆紀錄，超過時將自動刪除最舊的紀錄。"
   },
+  "contact": {
+    "title": "聯繫我們",
+    "subject": "主旨",
+    "subjectPlaceholder": "請輸入主旨",
+    "message": "內容",
+    "messagePlaceholder": "請輸入你想說的話...",
+    "email": "你的信箱",
+    "optional": "選填",
+    "emailPlaceholder": "方便我們回覆你",
+    "submit": "送出",
+    "sending": "送出中...",
+    "sent": "已成功送出！",
+    "sentDesc": "感謝你的訊息，我們會盡快回覆。",
+    "error": "送出失敗，請稍後再試。",
+    "backToReading": "返回抽牌"
+  },
   "cards": {
     "0": "愚者",
     "1": "存在",

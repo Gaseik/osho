@@ -1,108 +1,90 @@
-# Zen Insight Cards | 禪意靈卡
+# Zen Insight Cards 
 
-An online Zen card drawing website inspired by Osho Zen Tarot. Features elegant UI and smooth flip animations for an enhanced interactive experience.
+An online Zen card drawing website inspired by Osho Zen Tarot. Features elegant UI, smooth flip animations, and multiple spread options for an enhanced interactive experience.
 
-## ✨ Features
+**Live:** [https://osho-wk7j.vercel.app](https://osho-wk7j.vercel.app)
 
-- 🎴 Three spread options (Single Card, Three Cards, Five Cards)
-- 🔄 Smooth 3D card flip animations
-- 📋 One-click prompt copy for AI interpretation
-- 🎨 Dark mystical design aesthetic
-- 📱 Responsive design for mobile and desktop
+## Features
 
-## 🛠️ Tech Stack
+- 79-card complete Osho Zen Tarot deck
+- 9 spread types (Single, Three Cards, Time Flow, Cross, Diamond, Mirror, Key, Two Choices, Relationship)
+- Smooth 3D card fan and flip animations
+- One-click prompt copy for AI interpretation (ChatGPT, Claude, etc.)
+- Reading records with review notes (stored locally)
+- Contact form (Formspree)
+- Dark mystical design with gold accents
+- Bilingual support (繁體中文 / English)
+- Responsive design for mobile and desktop
+- Vercel Analytics & Speed Insights
 
-- **Vite** - Fast build tool
+## Tech Stack
+
+- **Next.js 16** - React framework
 - **React 18** - UI framework
 - **TypeScript** - Type safety
-- **Tailwind CSS** - Styling framework
+- **Tailwind CSS** - Styling
+- **react-i18next** - Internationalization
+- **Vercel** - Hosting & Analytics
 
-## 🚀 Quick Start
-
-### Install Dependencies
+## Quick Start
 
 ```bash
 yarn install
-```
-
-### Development Mode
-
-```bash
 yarn dev
 ```
 
-### Build for Production
+Build for production:
 
 ```bash
 yarn build
 ```
 
-### Preview Production Build
-
-```bash
-yarn preview
-```
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
-  ├── components/         # React components
-  │   ├── CardBack.tsx   # Card back
-  │   ├── CardFace.tsx   # Card face
-  │   ├── FlipCard.tsx   # Flip animation
-  │   ├── SpreadSelector.tsx  # Spread selection
-  │   ├── DrawPhase.tsx  # Drawing phase
-  │   └── ResultPhase.tsx # Result display
-  ├── data/              # Data definitions
-  │   ├── cards.ts       # 30 cards data
-  │   └── spreads.ts     # Spread definitions
-  ├── App.tsx            # Main application
-  ├── main.tsx           # Entry point
-  └── index.css          # Global styles
+  app/
+    ├── layout.tsx           # Root layout & metadata
+    ├── page.tsx             # Home page
+    ├── reading/page.tsx     # Card drawing page
+    ├── records/             # Reading records
+    ├── contact/page.tsx     # Contact form
+    ├── about/page.tsx       # About page
+    ├── opengraph-image.tsx  # OG share image
+    ├── icon.tsx             # Favicon
+    ├── robots.ts            # SEO robots
+    └── sitemap.ts           # SEO sitemap
+  components/
+    ├── CardFace.tsx         # Card face display
+    ├── CardBack.tsx         # Card back
+    ├── FlipCard.tsx         # Flip animation
+    ├── DrawPhase.tsx        # Card drawing phase
+    ├── ResultPhase.tsx      # Result display
+    ├── SpreadSelector.tsx   # Spread selection
+    └── LanguageSwitcher.tsx # Side menu & language toggle
+  data/
+    ├── cards.ts             # 79 cards data
+    └── spreads.ts           # 9 spread definitions
+  locales/
+    ├── zh-TW.json           # Chinese Traditional
+    └── en.json              # English
 ```
 
-## 🎴 Spread Types
+## Spread Types
 
 | Spread | Cards | Purpose |
 |--------|-------|---------|
 | Single Card | 1 | Simple guidance |
-| Three Cards | 3 | Past · Present · Future |
-| Five Cards | 5 | Situation · Obstacle · Advice · Root · Outcome |
+| Three Cards | 3 | General guidance |
+| Time Flow | 3 | Past / Present / Future |
+| Cross | 5 | Situation / Obstacle / Advice / Root / Outcome |
+| Diamond | 5 | Problem / Inner / Outer / Needed / Answer |
+| Two Choices | 5 | Current / Option A / Option B |
+| Relationship | 4 | You / Partner / Combined / Insight |
+| Mirror | 12 | Self & companion reflection |
+| Key | 8 | Suppressed / Feminine / Masculine / Meditation / Body / Heart / Essence / Consciousness |
 
-## 🎯 Usage Flow
-
-1. **Choose Spread** - Select the spread that suits your needs
-2. **Draw Cards** - Select the specified number of cards from the deck
-3. **Flip Cards** - Click to reveal each card
-4. **Interpret** - Copy the generated prompt and paste it into ChatGPT/Claude for interpretation
-
-## 🚢 Deployment
-
-Deploy to Vercel:
-
-```bash
-yarn build
-# Deploy the dist directory to Vercel
-```
-
-Or use Vercel CLI:
-
-```bash
-vercel
-```
-
-## 📝 Roadmap
-
-- [ ] Complete 79-card deck
-- [ ] Additional spread options
-- [ ] Custom card illustrations
-- [ ] Sound effects support
-- [ ] Screenshot functionality
-- [ ] Donation page
-- [ ] React Native app version
-
-## 📄 License
+## License
 
 This is an original work inspired by Osho Zen Tarot.
 
