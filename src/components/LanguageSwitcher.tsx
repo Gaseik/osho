@@ -67,6 +67,28 @@ export default function LanguageSwitcher() {
             <span className="text-sm tracking-wider">{t('menu.reading')}</span>
           </Link>
 
+          {/* Card Meanings */}
+          <Link
+            href="/cards"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                       transition-colors"
+          >
+            <BookOpen01 width={18} height={18} />
+            <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌義總覽' : 'Card Meanings'}</span>
+          </Link>
+
+          {/* Spread Types */}
+          <Link
+            href="/spreads"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                       transition-colors"
+          >
+            <Globe01 width={18} height={18} />
+            <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌陣介紹' : 'Spread Types'}</span>
+          </Link>
+
           {/* Divination Records */}
           <Link
             href="/records"
