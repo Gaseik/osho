@@ -30,16 +30,14 @@ export function getRecords(): DivinationRecord[] {
   }
 }
 
-export function saveRecord(record: DivinationRecord): boolean {
+export function saveRecord(record: DivinationRecord): void {
   const records = getRecords();
-  if (records.length >= MAX_RECORDS) return false;
   records.unshift(record);
+  // Auto-delete oldest records when exceeding limit
+  while (records.length > MAX_RECORDS) {
+    records.pop();
+  }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-  return true;
-}
-
-export function isRecordsFull(): boolean {
-  return getRecords().length >= MAX_RECORDS;
 }
 
 export function updateRecord(

@@ -2,18 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
-import CardFace from "../../../components/CardFace";
+import CardSpreadLayout from "../../../components/CardSpreadLayout";
+import StaticCard from "../../../components/StaticCard";
 import { POSITION_LABELS, SPREAD_LAYOUTS } from "../../../data/spreads";
+import { type Card } from "../../../data/cards";
 import {
   getRecords,
   updateRecord,
   deleteRecord,
   type DivinationRecord,
-  type DivinationCard,
 } from "../../../utils/divinationRecords";
 
 function formatDateTime(iso: string, locale: string): string {
@@ -34,50 +34,6 @@ function formatDateTime(iso: string, locale: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
-}
-
-function ZoomableCard({
-  card,
-  label,
-}: {
-  card: DivinationCard;
-  label: string;
-}) {
-  const { t } = useTranslation();
-  const [zoomed, setZoomed] = useState(false);
-  const cardName = t(`cards.${card.id}`);
-  // CardFace expects Card type - DivinationCard is compatible
-  const cardObj = card as Parameters<typeof CardFace>[0]["card"];
-
-  return (
-    <>
-      <div className="flex flex-col items-center gap-2">
-        <div className="text-[11px] text-zen-gold-dim tracking-widest">
-          {label}
-        </div>
-        <div className="cursor-pointer" onClick={() => setZoomed(true)}>
-          <CardFace card={cardObj} label={label} />
-        </div>
-        <div className="text-xs text-white/70 mt-1">{cardName}</div>
-      </div>
-
-      {zoomed &&
-        createPortal(
-          <div
-            className="card-zoom-overlay"
-            onClick={() => setZoomed(false)}
-          >
-            <div className="card-zoom-content">
-              <div className="card-zoom-name">{cardName}</div>
-              <div className="card-zoom-card">
-                <CardFace card={cardObj} label={label} />
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
-    </>
-  );
 }
 
 export default function RecordDetailPage() {
@@ -149,88 +105,10 @@ export default function RecordDetailPage() {
   };
 
   const renderCard = (cardIdx: number) => (
-    <ZoomableCard
-      card={record.cards[cardIdx]}
+    <StaticCard
+      card={record.cards[cardIdx] as Card}
       label={labels[cardIdx] || ""}
     />
-  );
-
-  const renderGridLayout = () => {
-    if (!layout) return null;
-    return (
-      <div className="spread-grid flex flex-col items-center gap-3 mb-8 px-2">
-        {layout.rows.map((row, rowIdx) => {
-          if (row.type === "section") {
-            return (
-              <div
-                key={rowIdx}
-                className="text-zen-gold/60 text-sm tracking-widest py-3"
-              >
-                {t(`spread.${record.spreadId}Sections.${row.key}`)}
-              </div>
-            );
-          }
-
-          if (row.type === "sections") {
-            return (
-              <div
-                key={rowIdx}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: `repeat(${layout.cols}, 1fr)`,
-                  gap: "0.5rem",
-                }}
-                className="w-full max-w-[520px]"
-              >
-                {Array.from({ length: layout.cols }, (_, colIdx) => {
-                  const item = row.items.find((it) => it.col === colIdx);
-                  return (
-                    <div
-                      key={colIdx}
-                      className="text-zen-gold/60 text-xs tracking-widest py-2 text-center"
-                    >
-                      {item
-                        ? t(`spread.${record.spreadId}Sections.${item.key}`)
-                        : ""}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          }
-
-          if (row.type === "cards") {
-            return (
-              <div
-                key={rowIdx}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: `repeat(${layout.cols}, 1fr)`,
-                  gap: "0.5rem",
-                }}
-                className="w-full max-w-[520px]"
-              >
-                {row.cells.map((cardIdx, colIdx) => (
-                  <div key={colIdx} className="flex justify-center">
-                    {cardIdx !== null ? renderCard(cardIdx) : null}
-                  </div>
-                ))}
-              </div>
-            );
-          }
-
-          return null;
-        })}
-      </div>
-    );
-  };
-
-  const renderDefaultLayout = () => (
-    <div className="flex gap-5 justify-center flex-wrap mb-8 p-5">
-      {record.cards.map((_, i) => (
-        <div key={i}>{renderCard(i)}</div>
-      ))}
-    </div>
   );
 
   return (
@@ -273,7 +151,11 @@ export default function RecordDetailPage() {
 
       {/* Cards display */}
       <div className={`animate-fadeUp text-center w-full ${layout ? "max-w-[900px]" : "max-w-[700px]"}`}>
-        {layout ? renderGridLayout() : renderDefaultLayout()}
+        <CardSpreadLayout
+          spreadId={record.spreadId}
+          cardCount={record.cards.length}
+          renderCard={renderCard}
+        />
       </div>
 
       {/* Divider */}

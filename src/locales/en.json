@@ -149,7 +149,7 @@
     "backToRecords": "Back to Records",
     "notFound": "Reading record not found",
     "hasReview": "Review added",
-    "full": "Records limit reached (100). Please delete old records before saving new ones."
+    "autoDeleteHint": "Up to 100 records are kept. Oldest records are automatically removed when the limit is reached."
   },
   "cards": {
     "0": "The Fool",

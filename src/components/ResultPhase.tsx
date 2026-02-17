@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
 import FlipCard from "./FlipCard";
+import CardSpreadLayout from "./CardSpreadLayout";
 import {
   saveRecord,
-  isRecordsFull,
   generateId,
   type DivinationCard,
 } from "../utils/divinationRecords";
@@ -38,7 +38,6 @@ export default function ResultPhase({
   const [revealed, setRevealed] = useState(false);
   const [question, setQuestion] = useState("");
   const [saved, setSaved] = useState(false);
-  const [recordsFull, setRecordsFull] = useState(false);
 
   const allFlipped = flippedCount >= spread.count;
 
@@ -74,10 +73,6 @@ export default function ResultPhase({
     return t('result.promptTemplate', { spreadName, cards: cardsText });
   };
 
-  useEffect(() => {
-    setRecordsFull(isRecordsFull());
-  }, []);
-
   const handleSave = () => {
     const recordCards: DivinationCard[] = drawn.map((c) => ({
       id: c.id,
@@ -85,7 +80,7 @@ export default function ResultPhase({
       nameZh: c.nameZh,
       meaning: c.meaning,
     }));
-    const ok = saveRecord({
+    saveRecord({
       id: generateId(),
       spreadId: spread.id,
       spreadName: spread.name,
@@ -96,11 +91,7 @@ export default function ResultPhase({
       review: "",
       reviewedAt: null,
     });
-    if (ok) {
-      setSaved(true);
-    } else {
-      setRecordsFull(true);
-    }
+    setSaved(true);
   };
 
   const labels = getSpreadLabels(spread.id);
@@ -127,105 +118,6 @@ export default function ResultPhase({
     );
   };
 
-  const renderGridLayout = () => {
-    if (!layout) return null;
-    return (
-      <div ref={resultRef} className="spread-grid flex flex-col items-center gap-3 mb-8 px-2">
-        {layout.rows.map((row, rowIdx) => {
-          if (row.type === "section") {
-            return (
-              <div
-                key={rowIdx}
-                className="text-zen-gold/60 text-sm tracking-widest py-3"
-              >
-                {t(`spread.${spread.id}Sections.${row.key}`)}
-              </div>
-            );
-          }
-
-          if (row.type === "sections") {
-            return (
-              <div
-                key={rowIdx}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: `repeat(${layout.cols}, 1fr)`,
-                  gap: "0.5rem",
-                }}
-                className="w-full max-w-[520px]"
-              >
-                {Array.from({ length: layout.cols }, (_, colIdx) => {
-                  const item = row.items.find((it) => it.col === colIdx);
-                  return (
-                    <div
-                      key={colIdx}
-                      className="text-zen-gold/60 text-xs tracking-widest py-2 text-center"
-                    >
-                      {item
-                        ? t(`spread.${spread.id}Sections.${item.key}`)
-                        : ""}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          }
-
-          if (row.type === "cards") {
-            return (
-              <div
-                key={rowIdx}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: `repeat(${layout.cols}, 1fr)`,
-                  gap: "0.5rem",
-                }}
-                className="w-full max-w-[520px]"
-              >
-                {row.cells.map((cardIdx, colIdx) => (
-                  <div key={colIdx} className="flex justify-center">
-                    {cardIdx !== null ? renderCard(cardIdx) : null}
-                  </div>
-                ))}
-              </div>
-            );
-          }
-
-          return null;
-        })}
-      </div>
-    );
-  };
-
-  const renderDefaultLayout = () => (
-    <div
-      ref={resultRef}
-      className="flex gap-5 justify-center flex-wrap mb-8 p-5"
-    >
-      {drawn.map((card, i) => (
-        <div
-          key={card.id}
-          className="flex flex-col items-center gap-2"
-        >
-          <div className="text-[11px] text-zen-gold-dim tracking-widest">
-            {labels[i]}
-          </div>
-          <FlipCard
-            card={card}
-            label={labels[i]}
-            delay={i * 150}
-            revealed={revealed}
-            onFlipped={onFlipped}
-            onRequestReveal={handleRequestReveal}
-          />
-          {revealed && (
-            <div className="text-xs text-white/70 mt-1">{t(`cards.${card.id}`)}</div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <div className={`animate-fadeUp text-center w-full ${layout ? 'max-w-[900px]' : 'max-w-[700px]'}`}>
       <p
@@ -251,7 +143,12 @@ export default function ResultPhase({
       </p>
 
       {/* Cards */}
-      {layout ? renderGridLayout() : renderDefaultLayout()}
+      <CardSpreadLayout
+        ref={resultRef}
+        spreadId={spread.id}
+        cardCount={spread.count}
+        renderCard={renderCard}
+      />
 
       {/* Actions - show after all flipped */}
       {allFlipped && (
@@ -277,31 +174,26 @@ export default function ResultPhase({
               <div className="text-[11px] text-zen-gold/50 mb-2 tracking-wider">
                 {t('record.saveTitle')}
               </div>
-              {recordsFull ? (
-                <div className="text-xs text-white/40 leading-relaxed">
-                  {t('record.full')}
-                </div>
-              ) : (
-                <>
-                  <textarea
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    placeholder={t('record.questionPlaceholder')}
-                    className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2
-                             text-xs text-white/70 placeholder-white/30 resize-none
-                             focus:outline-none focus:border-zen-gold/30 transition-colors"
-                    rows={2}
-                  />
-                  <button
-                    onClick={handleSave}
-                    className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
-                             bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
-                             hover:bg-zen-gold/[0.15] transition-all duration-300"
-                  >
-                    {t('record.save')}
-                  </button>
-                </>
-              )}
+              <div className="text-[10px] text-white/30 mb-2 leading-relaxed">
+                {t('record.autoDeleteHint')}
+              </div>
+              <textarea
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder={t('record.questionPlaceholder')}
+                className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2
+                         text-xs text-white/70 placeholder-white/30 resize-none
+                         focus:outline-none focus:border-zen-gold/30 transition-colors"
+                rows={2}
+              />
+              <button
+                onClick={handleSave}
+                className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
+                         bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
+                         hover:bg-zen-gold/[0.15] transition-all duration-300"
+              >
+                {t('record.save')}
+              </button>
             </div>
           ) : (
             <div className="text-zen-gold/70 text-sm tracking-wider mb-2">
