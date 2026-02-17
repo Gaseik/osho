@@ -18,6 +18,7 @@ export interface DivinationRecord {
 }
 
 const STORAGE_KEY = "zen-divination-records";
+const MAX_RECORDS = 100;
 
 export function getRecords(): DivinationRecord[] {
   if (typeof window === "undefined") return [];
@@ -29,10 +30,16 @@ export function getRecords(): DivinationRecord[] {
   }
 }
 
-export function saveRecord(record: DivinationRecord): void {
+export function saveRecord(record: DivinationRecord): boolean {
   const records = getRecords();
+  if (records.length >= MAX_RECORDS) return false;
   records.unshift(record);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  return true;
+}
+
+export function isRecordsFull(): boolean {
+  return getRecords().length >= MAX_RECORDS;
 }
 
 export function updateRecord(

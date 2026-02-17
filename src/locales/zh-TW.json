@@ -144,7 +144,12 @@
     "cancel": "取消",
     "noReview": "尚未填寫回測心得",
     "reviewedAt": "回測時間",
-    "confirmDelete": "確認刪除？"
+    "confirmDelete": "確認刪除？",
+    "deleteRecord": "刪除紀錄",
+    "backToRecords": "返回紀錄列表",
+    "notFound": "找不到此占卜紀錄",
+    "hasReview": "已填寫回測心得",
+    "full": "紀錄已達上限（100 筆），請先刪除舊紀錄再儲存。"
   },
   "cards": {
     "0": "愚者",

@@ -7,6 +7,7 @@ import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
 import FlipCard from "./FlipCard";
 import {
   saveRecord,
+  isRecordsFull,
   generateId,
   type DivinationCard,
 } from "../utils/divinationRecords";
@@ -37,6 +38,7 @@ export default function ResultPhase({
   const [revealed, setRevealed] = useState(false);
   const [question, setQuestion] = useState("");
   const [saved, setSaved] = useState(false);
+  const [recordsFull, setRecordsFull] = useState(false);
 
   const allFlipped = flippedCount >= spread.count;
 
@@ -72,6 +74,10 @@ export default function ResultPhase({
     return t('result.promptTemplate', { spreadName, cards: cardsText });
   };
 
+  useEffect(() => {
+    setRecordsFull(isRecordsFull());
+  }, []);
+
   const handleSave = () => {
     const recordCards: DivinationCard[] = drawn.map((c) => ({
       id: c.id,
@@ -79,7 +85,7 @@ export default function ResultPhase({
       nameZh: c.nameZh,
       meaning: c.meaning,
     }));
-    saveRecord({
+    const ok = saveRecord({
       id: generateId(),
       spreadId: spread.id,
       spreadName: spread.name,
@@ -90,7 +96,11 @@ export default function ResultPhase({
       review: "",
       reviewedAt: null,
     });
-    setSaved(true);
+    if (ok) {
+      setSaved(true);
+    } else {
+      setRecordsFull(true);
+    }
   };
 
   const labels = getSpreadLabels(spread.id);
@@ -267,23 +277,31 @@ export default function ResultPhase({
               <div className="text-[11px] text-zen-gold/50 mb-2 tracking-wider">
                 {t('record.saveTitle')}
               </div>
-              <textarea
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                placeholder={t('record.questionPlaceholder')}
-                className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2
-                         text-xs text-white/70 placeholder-white/30 resize-none
-                         focus:outline-none focus:border-zen-gold/30 transition-colors"
-                rows={2}
-              />
-              <button
-                onClick={handleSave}
-                className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
-                         bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
-                         hover:bg-zen-gold/[0.15] transition-all duration-300"
-              >
-                {t('record.save')}
-              </button>
+              {recordsFull ? (
+                <div className="text-xs text-white/40 leading-relaxed">
+                  {t('record.full')}
+                </div>
+              ) : (
+                <>
+                  <textarea
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder={t('record.questionPlaceholder')}
+                    className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2
+                             text-xs text-white/70 placeholder-white/30 resize-none
+                             focus:outline-none focus:border-zen-gold/30 transition-colors"
+                    rows={2}
+                  />
+                  <button
+                    onClick={handleSave}
+                    className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
+                             bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
+                             hover:bg-zen-gold/[0.15] transition-all duration-300"
+                  >
+                    {t('record.save')}
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             <div className="text-zen-gold/70 text-sm tracking-wider mb-2">

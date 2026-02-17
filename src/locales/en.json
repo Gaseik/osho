@@ -144,7 +144,12 @@
     "cancel": "Cancel",
     "noReview": "No review notes yet",
     "reviewedAt": "Reviewed at",
-    "confirmDelete": "Confirm delete?"
+    "confirmDelete": "Confirm delete?",
+    "deleteRecord": "Delete Record",
+    "backToRecords": "Back to Records",
+    "notFound": "Reading record not found",
+    "hasReview": "Review added",
+    "full": "Records limit reached (100). Please delete old records before saving new ones."
   },
   "cards": {
     "0": "The Fool",
