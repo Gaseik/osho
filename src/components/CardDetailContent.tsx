@@ -21,7 +21,8 @@ export default function CardDetailContent({ card, prev, next }: Props) {
 
   const keywordsStr = t(`cardKeywords.${card.id}`);
   const keywords = keywordsStr.split(/[,、]/).map((s: string) => s.trim());
-  const description = t(`cardDescriptions.${card.id}`);
+  const rawDescription = t(`cardDescriptions.${card.id}`);
+  const paragraphs = rawDescription.split('\n\n').filter((p: string) => p.trim());
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -42,7 +43,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
       {/* Card header */}
       <div className="text-center mb-10 animate-fadeUp">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
-          ☯︎ {suitEn.toUpperCase()} ☯︎
+          ☯︎ {(isZh ? suitZh : suitEn).toUpperCase()} ☯︎
         </div>
 
         {/* Card image */}
@@ -61,11 +62,8 @@ export default function CardDetailContent({ card, prev, next }: Props) {
 
         {/* Name */}
         <h1 className="text-[28px] font-light tracking-[0.15rem] text-white/90 m-0">
-          {card.nameZh}
+          {isZh ? card.nameZh : card.name}
         </h1>
-        <p className="text-white/50 text-base mt-1 tracking-wider">
-          {card.name}
-        </p>
 
         {/* Suit badge */}
         <div
@@ -73,10 +71,8 @@ export default function CardDetailContent({ card, prev, next }: Props) {
                       border border-zen-gold/20 bg-zen-gold/[0.05]"
         >
           <span className="text-zen-gold/70 text-xs tracking-wider">
-            {suitZh}
+            {isZh ? suitZh : suitEn}
           </span>
-          <span className="text-white/30 text-xs">|</span>
-          <span className="text-white/40 text-xs">{suitEn}</span>
         </div>
 
         <div
@@ -112,7 +108,9 @@ export default function CardDetailContent({ card, prev, next }: Props) {
           className="space-y-4 text-white/60 text-sm leading-relaxed
                       border-l-2 border-zen-gold/15 pl-5"
         >
-          <p>{description}</p>
+          {paragraphs.map((para: string, i: number) => (
+            <p key={i}>{para}</p>
+          ))}
         </div>
       </section>
 
