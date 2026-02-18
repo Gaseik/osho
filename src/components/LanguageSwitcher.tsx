@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02 } from '@untitled-ui/icons-react';
+import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02, HelpCircle } from '@untitled-ui/icons-react';
 import { getRecords } from '../utils/divinationRecords';
 
 export default function LanguageSwitcher() {
@@ -87,6 +87,17 @@ export default function LanguageSwitcher() {
           >
             <Globe01 width={18} height={18} />
             <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌陣介紹' : 'Spread Types'}</span>
+          </Link>
+
+          {/* About Osho */}
+          <Link
+            href="/about-osho"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                       transition-colors"
+          >
+            <HelpCircle width={18} height={18} />
+            <span className="text-sm tracking-wider">{t('menu.aboutOsho')}</span>
           </Link>
 
           {/* Divination Records */}
