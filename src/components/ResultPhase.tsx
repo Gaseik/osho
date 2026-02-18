@@ -66,7 +66,7 @@ export default function ResultPhase({
     const labels = getSpreadLabels(spread.id);
     const lines = drawn.map((c, i) => {
       const cardName = t(`cards.${c.id}`);
-      return `${labels[i]}：${cardName} - ${c.meaning}`;
+      return `${labels[i]}：${cardName} - ${c.keywords.join(", ")}`;
     });
     const spreadName = i18n.language === 'zh-TW' ? spread.name : t(`spread.${spread.id}`);
     const cardsText = lines.join("\n");
@@ -78,7 +78,7 @@ export default function ResultPhase({
       id: c.id,
       name: c.name,
       nameZh: c.nameZh,
-      meaning: c.meaning,
+      meaning: c.keywords.join(", "),
     }));
     saveRecord({
       id: generateId(),

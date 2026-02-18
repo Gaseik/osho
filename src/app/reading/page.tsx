@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Card, CARDS, shuffle } from "../../data/cards";
-import { Spread, POSITION_LABELS } from "../../data/spreads";
+import { Spread, SPREADS, POSITION_LABELS } from "../../data/spreads";
 import SpreadSelector from "../../components/SpreadSelector";
 import DrawPhase from "../../components/DrawPhase";
 import ResultPhase from "../../components/ResultPhase";
@@ -11,8 +12,9 @@ import LanguageSwitcher from "../../components/LanguageSwitcher";
 
 type Phase = "select" | "draw" | "result";
 
-export default function ReadingPage() {
+function ReadingContent() {
   const { t, i18n } = useTranslation();
+  const searchParams = useSearchParams();
   const [phase, setPhase] = useState<Phase>("select");
   const [spread, setSpread] = useState<Spread | null>(null);
   const [deck, setDeck] = useState<Card[]>([]);
@@ -28,6 +30,18 @@ export default function ReadingPage() {
     setCopied(false);
     setPhase("draw");
   };
+
+  // Auto-select spread from query parameter (e.g., /reading?spread=single)
+  useEffect(() => {
+    const spreadId = searchParams.get("spread");
+    if (spreadId && phase === "select") {
+      const found = SPREADS.find((s) => s.id === spreadId);
+      if (found) {
+        selectSpread(found);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const drawCard = (idx: number) => {
     if (!spread || drawn.length >= spread.count) return;
@@ -54,7 +68,7 @@ export default function ReadingPage() {
     if (!spread) return;
     const labels = getSpreadLabels(spread.id);
     const lines = drawn.map(
-      (c, i) => `${labels[i]}：${c.name}（${c.nameZh}）- ${c.meaning}`
+      (c, i) => `${labels[i]}：${c.name}（${c.nameZh}）- ${c.keywords.join(", ")}`
     );
     const spreadName =
       i18n.language === "zh-TW" ? spread.name : t(`spread.${spread.id}`);
@@ -124,5 +138,13 @@ export default function ReadingPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function ReadingPage() {
+  return (
+    <Suspense>
+      <ReadingContent />
+    </Suspense>
   );
 }

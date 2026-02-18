@@ -117,7 +117,7 @@ export default function CardFace({ card, label, small }: CardFaceProps) {
           position: "relative",
           zIndex: 1,
         }}>
-          {card.meaning}
+          {card.keywords.join(", ")}
         </div>
       )}
     </div>
