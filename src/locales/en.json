@@ -7,7 +7,8 @@
     "language": "Language",
     "contact": "Contact Us",
     "records": "Reading Records",
-    "reading": "Osho Zen Reading"
+    "reading": "Osho Zen Reading",
+    "aboutOsho": "What is Osho"
   },
   "spread": {
     "selectTitle": "Choose Your Spread",
@@ -152,6 +153,35 @@
     "notFound": "Reading record not found",
     "hasReview": "Review added",
     "autoDeleteHint": "Up to 100 records are kept. Oldest records are automatically removed when the limit is reached."
+  },
+  "aboutOsho": {
+    "title": "What is Osho",
+    "subtitle": "Meet Osho — The Inspiration Behind Zen Tarot",
+    "intro": "Osho (1931–1990), born Rajneesh Chandra Mohan Jain, was one of the most influential and controversial spiritual teachers of the 20th century. Born in Madhya Pradesh, India, he showed a strong inclination to question established beliefs and authority from an early age.",
+    "philosophyTitle": "Core Teachings of Osho",
+    "philosophy1Title": "Meditation as Living",
+    "philosophy1": "Osho believed meditation is not a ritual to escape life, but a way of \"living with awareness.\" Whether you're drinking tea, walking, or navigating a difficult relationship — all of it can be meditation.",
+    "philosophy2Title": "Non-Judgmental Awareness",
+    "philosophy2": "He encouraged people not to suppress any emotion — anger, sadness, joy — but to observe them, like watching a river flow by. When you stop judging your feelings, inner freedom begins to sprout.",
+    "philosophy3Title": "Living in the Present",
+    "philosophy3": "The past is gone, the future hasn't arrived. Osho constantly reminded us that the only real moment is now. Fear comes from imagining the future, regret from clinging to the past — let go of both, and you are free.",
+    "philosophy4Title": "Dare to Be Yourself",
+    "philosophy4": "Osho insisted that everyone should walk their own path, rather than follow scripts written by society, religion, or culture. He said: \"Be yourself — that is your only responsibility.\"",
+    "zenTarotTitle": "What is Osho Zen Tarot?",
+    "zenTarotDesc": "The Osho Zen Tarot was designed by Ma Deva Padma based on Osho's teachings and contains 79 cards. Unlike traditional tarot which focuses on predicting the future, it serves as a mirror reflecting your current inner state.",
+    "zenTarotPoint1": "Not about predicting the future, but illuminating the present",
+    "zenTarotPoint2": "Each card is a key that opens the door to self-awareness",
+    "zenTarotPoint3": "Combines Eastern Zen wisdom with the spirit of meditation",
+    "zenTarotPoint4": "Suitable for anyone who wants to understand themselves more deeply",
+    "howToUseTitle": "How to Use Zen Tarot",
+    "howToUseDesc": "The most important thing about using Zen Tarot is not technique, but attitude:",
+    "howToUse1": "Come with a genuine question, not expecting a definitive answer",
+    "howToUse2": "Let intuition guide your card selection, not rational analysis",
+    "howToUse3": "Treat the card's message as a mirror, reflecting truths you already know but haven't yet faced",
+    "howToUse4": "Don't worry about \"drawing the wrong card\" — every card is the perfect message for this moment",
+    "closingTitle": "A Final Thought",
+    "closing": "Whether or not you agree with all of Osho's views, Zen Tarot is a beautiful tool for self-dialogue. It invites you to pause, breathe, and look inward. In a world full of noise, perhaps what we need most is a quiet moment to listen to ourselves.",
+    "cta": "Begin Your Zen Tarot Journey"
   },
   "contact": {
     "title": "Contact Us",
