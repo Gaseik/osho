@@ -45,6 +45,7 @@ export default function ResultPhase({
   // AI reading state
   const [aiState, setAiState] = useState<AiState>("idle");
   const [aiText, setAiText] = useState("");
+  const [aiError, setAiError] = useState("");
   const [showPrompt, setShowPrompt] = useState(false);
   const [showPromptLink, setShowPromptLink] = useState(false);
   const [readingCopied, setReadingCopied] = useState(false);
@@ -103,6 +104,7 @@ export default function ResultPhase({
   const handleAiReading = useCallback(async () => {
     setAiState("loading");
     setAiText("");
+    setAiError("");
     setShowPrompt(false);
     setShowPromptLink(false);
 

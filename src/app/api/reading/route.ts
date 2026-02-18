@@ -1,4 +1,6 @@
-export const runtime = "edge";
+export const runtime = "nodejs";
+
+import { GoogleGenAI } from "@google/genai";
 
 interface CardInfo {
   position: string;
@@ -53,9 +55,10 @@ Please respond in plain text without markdown formatting.`;
 export async function POST(request: Request) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return new Response(
-      JSON.stringify({ error: "API key not configured" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    console.log("Gemini error: GEMINI_API_KEY not set in environment");
+    return Response.json(
+      { error: "API key not configured – set GEMINI_API_KEY in .env.local", status: 500 },
+      { status: 500 }
     );
   }
 
@@ -63,98 +66,66 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return new Response(
-      JSON.stringify({ error: "Invalid request body" }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
+    return Response.json(
+      { error: "Invalid request body" },
+      { status: 400 }
     );
   }
 
   const { spread, cards, locale } = body;
   if (!spread || !cards?.length || !locale) {
-    return new Response(
-      JSON.stringify({ error: "Missing required fields" }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
+    return Response.json(
+      { error: "Missing required fields" },
+      { status: 400 }
     );
   }
 
   const prompt = buildPrompt(spread, cards, locale);
 
-  const geminiResponse = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent?alt=sse&key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.8,
-          maxOutputTokens: 1500,
-        },
-      }),
-    }
-  );
+  try {
+    const ai = new GoogleGenAI({ apiKey });
+    const response = await ai.models.generateContentStream({
+      model: "gemini-2.0-flash",
+      contents: prompt,
+      config: {
+        temperature: 0.8,
+        maxOutputTokens: 1500,
+      },
+    });
 
-  if (!geminiResponse.ok) {
-    return new Response(
-      JSON.stringify({ error: "Gemini API error" }),
-      { status: geminiResponse.status, headers: { "Content-Type": "application/json" } }
-    );
-  }
-
-  // Transform Gemini SSE stream into plain text stream
-  let buffer = "";
-  const transformStream = new TransformStream({
-    transform(chunk, controller) {
-      buffer += new TextDecoder().decode(chunk);
-      const events = buffer.split("\n\n");
-      buffer = events.pop() || "";
-
-      for (const event of events) {
-        const dataLine = event
-          .split("\n")
-          .find((l) => l.startsWith("data: "));
-        if (dataLine) {
-          try {
-            const data = JSON.parse(dataLine.slice(6));
-            const textPart =
-              data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (textPart) {
-              controller.enqueue(new TextEncoder().encode(textPart));
+    // Stream SDK chunks as plain text
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of response) {
+            const text = chunk.text;
+            if (text) {
+              controller.enqueue(new TextEncoder().encode(text));
             }
-          } catch {
-            // ignore parse errors for incomplete JSON
           }
+          controller.close();
+        } catch (streamError) {
+          console.log("Gemini stream error:", streamError);
+          controller.error(streamError);
         }
-      }
-    },
-    flush(controller) {
-      if (buffer.trim()) {
-        const dataLine = buffer
-          .split("\n")
-          .find((l) => l.startsWith("data: "));
-        if (dataLine) {
-          try {
-            const data = JSON.parse(dataLine.slice(6));
-            const textPart =
-              data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (textPart) {
-              controller.enqueue(new TextEncoder().encode(textPart));
-            }
-          } catch {
-            // ignore
-          }
-        }
-      }
-    },
-  });
+      },
+    });
 
-  return new Response(
-    geminiResponse.body!.pipeThrough(transformStream),
-    {
+    return new Response(stream, {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-cache",
       },
-    }
-  );
+    });
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    const errStack = error instanceof Error ? error.stack : undefined;
+    console.log("Gemini API error:", errMsg);
+    if (errStack) console.log("Stack:", errStack);
+
+    return Response.json(
+      { error: errMsg || "Unknown Gemini error" },
+      { status: 500 }
+    );
+  }
 }
