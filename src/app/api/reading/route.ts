@@ -118,14 +118,32 @@ export async function POST(request: Request) {
       },
     });
   } catch (error: unknown) {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    const errStack = error instanceof Error ? error.stack : undefined;
-    console.log("Gemini API error:", errMsg);
-    if (errStack) console.log("Stack:", errStack);
+    const raw = error instanceof Error ? error.message : String(error);
+    console.log("Gemini API error (raw):", raw);
+
+    // SDK wraps the HTTP error body in its message — try to extract the real message
+    let status = 500;
+    let message = raw;
+    try {
+      const parsed = JSON.parse(raw);
+      const inner = typeof parsed.error?.message === "string"
+        ? JSON.parse(parsed.error.message)
+        : parsed;
+      const code = inner.error?.code || parsed.error?.code;
+      if (code) status = code;
+      message = inner.error?.message || parsed.error?.message || raw;
+      // Trim the message to the first sentence for readability
+      const firstLine = message.split("\n")[0];
+      if (firstLine) message = firstLine;
+    } catch {
+      // Not JSON, use raw message as-is
+    }
+
+    console.log("Gemini API error:", status, message);
 
     return Response.json(
-      { error: errMsg || "Unknown Gemini error" },
-      { status: 500 }
+      { error: message, status },
+      { status }
     );
   }
 }
