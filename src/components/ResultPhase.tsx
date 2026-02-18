@@ -131,6 +131,9 @@ export default function ResultPhase({
       });
 
       if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        console.log("AI reading error:", response.status, errData);
+        setAiError(errData.error || `HTTP ${response.status}`);
         setAiState("error");
         setShowPrompt(true);
         setShowPromptLink(true);
@@ -159,12 +162,14 @@ export default function ResultPhase({
 
       setAiState("done");
       setShowPromptLink(true);
-    } catch {
+    } catch (err) {
       // Network error or stream interrupted
+      console.log("AI reading fetch error:", err);
       setAiText((currentText) => {
         if (currentText) {
           setAiState("done");
         } else {
+          setAiError(err instanceof Error ? err.message : String(err));
           setAiState("error");
           setShowPrompt(true);
           setShowPromptLink(true);
@@ -292,6 +297,11 @@ export default function ResultPhase({
               <div className="text-xs text-white/60 leading-relaxed">
                 {t('result.aiReadingError')}
               </div>
+              {aiError && (
+                <div className="mt-2 text-[10px] text-red-400/70 font-mono leading-relaxed break-all">
+                  {aiError}
+                </div>
+              )}
             </div>
           )}
 
