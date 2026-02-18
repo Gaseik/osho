@@ -126,7 +126,13 @@
     "copied": "Copied",
     "zoomHint": "Tap a card to zoom in for details",
     "reset": "Draw Again",
-    "promptTemplate": "I drew the following Zen cards using the \"{{spreadName}}\" spread, please help me interpret:\n\n{{cards}}\n\nPlease provide an overall interpretation and guidance based on each card's position and meaning."
+    "promptTemplate": "I drew the following Zen cards using the \"{{spreadName}}\" spread, please help me interpret:\n\n{{cards}}\n\nPlease provide an overall interpretation and guidance based on each card's position and meaning.",
+    "aiReading": "✦ AI Reading",
+    "aiReadingLoading": "Reading in progress...",
+    "aiReadingError": "High traffic right now. Please copy the prompt and paste it into ChatGPT or Claude for your reading.",
+    "copyReading": "Copy Reading",
+    "copyReadingDone": "Reading Copied",
+    "orCopyPrompt": "Or copy prompt for self-reading"
   },
   "record": {
     "saveTitle": "Save This Reading",

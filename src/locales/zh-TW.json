@@ -126,7 +126,13 @@
     "copied": "已複製",
     "zoomHint": "點擊卡片可放大檢視細節",
     "reset": "重新抽牌",
-    "promptTemplate": "我用「{{spreadName}}」牌陣抽了以下的禪卡，請幫我解讀：\n\n{{cards}}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。"
+    "promptTemplate": "我用「{{spreadName}}」牌陣抽了以下的禪卡，請幫我解讀：\n\n{{cards}}\n\n請根據每張牌的位置和含義，給我整體的解讀和建議。",
+    "aiReading": "✦ AI 解讀",
+    "aiReadingLoading": "正在解讀中...",
+    "aiReadingError": "目前使用人數較多，請複製提示詞到 ChatGPT 或 Claude 進行解讀",
+    "copyReading": "複製解讀結果",
+    "copyReadingDone": "已複製解讀結果",
+    "orCopyPrompt": "或複製 Prompt 自行解讀"
   },
   "record": {
     "saveTitle": "儲存此次占卜紀錄",
