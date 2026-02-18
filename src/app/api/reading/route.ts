@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
 
-import { GoogleGenAI } from "@google/genai";
+import Groq from "groq-sdk";
 
 interface CardInfo {
   position: string;
@@ -53,11 +53,11 @@ Please respond in plain text without markdown formatting.`;
 }
 
 export async function POST(request: Request) {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    console.log("Gemini error: GEMINI_API_KEY not set in environment");
+    console.log("Groq error: GROQ_API_KEY not set in environment");
     return Response.json(
-      { error: "API key not configured – set GEMINI_API_KEY in .env.local", status: 500 },
+      { error: "API key not configured – set GROQ_API_KEY in .env.local", status: 500 },
       { status: 500 }
     );
   }
@@ -83,29 +83,27 @@ export async function POST(request: Request) {
   const prompt = buildPrompt(spread, cards, locale);
 
   try {
-    const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.generateContentStream({
-      model: "gemini-2.0-flash",
-      contents: prompt,
-      config: {
-        temperature: 0.8,
-        maxOutputTokens: 1500,
-      },
+    const groq = new Groq({ apiKey });
+    const response = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.8,
+      max_tokens: 1500,
+      stream: true,
     });
 
-    // Stream SDK chunks as plain text
     const stream = new ReadableStream({
       async start(controller) {
         try {
           for await (const chunk of response) {
-            const text = chunk.text;
+            const text = chunk.choices[0]?.delta?.content;
             if (text) {
               controller.enqueue(new TextEncoder().encode(text));
             }
           }
           controller.close();
         } catch (streamError) {
-          console.log("Gemini stream error:", streamError);
+          console.log("Groq stream error:", streamError);
           controller.error(streamError);
         }
       },
@@ -119,27 +117,18 @@ export async function POST(request: Request) {
     });
   } catch (error: unknown) {
     const raw = error instanceof Error ? error.message : String(error);
-    console.log("Gemini API error (raw):", raw);
+    console.log("Groq API error:", raw);
 
-    // SDK wraps the HTTP error body in its message — try to extract the real message
     let status = 500;
     let message = raw;
     try {
       const parsed = JSON.parse(raw);
-      const inner = typeof parsed.error?.message === "string"
-        ? JSON.parse(parsed.error.message)
-        : parsed;
-      const code = inner.error?.code || parsed.error?.code;
-      if (code) status = code;
-      message = inner.error?.message || parsed.error?.message || raw;
-      // Trim the message to the first sentence for readability
-      const firstLine = message.split("\n")[0];
-      if (firstLine) message = firstLine;
+      const code = parsed.error?.code || parsed.code;
+      if (code && typeof code === "number") status = code;
+      message = parsed.error?.message || parsed.message || raw;
     } catch {
       // Not JSON, use raw message as-is
     }
-
-    console.log("Gemini API error:", status, message);
 
     return Response.json(
       { error: message, status },
