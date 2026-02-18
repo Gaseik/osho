@@ -46,7 +46,9 @@ export default function ResultPhase({
   const [aiState, setAiState] = useState<AiState>("idle");
   const [aiText, setAiText] = useState("");
   const [showPrompt, setShowPrompt] = useState(false);
+  const [showPromptLink, setShowPromptLink] = useState(false);
   const [readingCopied, setReadingCopied] = useState(false);
+  const aiTriggered = useRef(false);
 
   const allFlipped = flippedCount >= spread.count;
 
@@ -61,6 +63,15 @@ export default function ResultPhase({
       }, 400);
     }
   }, [allFlipped]);
+
+  // 3-second timer: if still loading/streaming, show the copy prompt link
+  useEffect(() => {
+    if (aiState !== "loading" && aiState !== "streaming") return;
+    const timer = setTimeout(() => {
+      setShowPromptLink(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [aiState]);
 
   // Auto-scroll AI result area as text streams in
   useEffect(() => {
@@ -90,11 +101,10 @@ export default function ResultPhase({
   };
 
   const handleAiReading = useCallback(async () => {
-    if (aiState === "loading" || aiState === "streaming") return;
-
     setAiState("loading");
     setAiText("");
     setShowPrompt(false);
+    setShowPromptLink(false);
 
     const labels = getSpreadLabels(spread.id);
     const spreadName = i18n.language === 'zh-TW' ? spread.name : t(`spread.${spread.id}`);
@@ -121,6 +131,7 @@ export default function ResultPhase({
       if (!response.ok) {
         setAiState("error");
         setShowPrompt(true);
+        setShowPromptLink(true);
         return;
       }
 
@@ -128,6 +139,7 @@ export default function ResultPhase({
       if (!reader) {
         setAiState("error");
         setShowPrompt(true);
+        setShowPromptLink(true);
         return;
       }
 
@@ -144,22 +156,30 @@ export default function ResultPhase({
       }
 
       setAiState("done");
+      setShowPromptLink(true);
     } catch {
       // Network error or stream interrupted
       setAiText((currentText) => {
         if (currentText) {
-          // Partial content received - show what we have
           setAiState("done");
         } else {
-          // No content received at all - show error + prompt fallback
           setAiState("error");
           setShowPrompt(true);
+          setShowPromptLink(true);
         }
         return currentText;
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spread, drawn, i18n.language]);
+
+  // Auto-trigger AI reading when all cards are flipped
+  useEffect(() => {
+    if (allFlipped && !aiTriggered.current) {
+      aiTriggered.current = true;
+      handleAiReading();
+    }
+  }, [allFlipped, handleAiReading]);
 
   const handleCopyReading = () => {
     navigator.clipboard.writeText(aiText).then(() => {
@@ -250,19 +270,6 @@ export default function ResultPhase({
         <div ref={actionsRef} className="animate-fadeUp flex flex-col items-center gap-3">
           <div className="w-10 h-px bg-gradient-to-r from-transparent via-zen-gold/30 to-transparent mb-2" />
 
-          {/* AI Reading Button */}
-          {aiState === "idle" && (
-            <button
-              onClick={handleAiReading}
-              className="px-8 py-3.5 rounded-lg border border-zen-gold/50
-                       bg-zen-gold/[0.12] text-zen-gold text-sm tracking-wider
-                       hover:bg-zen-gold/[0.22] hover:border-zen-gold/70
-                       transition-all duration-300 font-medium"
-            >
-              {t('result.aiReading')}
-            </button>
-          )}
-
           {/* Loading State */}
           {aiState === "loading" && (
             <div className="flex items-center gap-3 px-8 py-3.5">
@@ -275,18 +282,6 @@ export default function ResultPhase({
                 {t('result.aiReadingLoading')}
               </span>
             </div>
-          )}
-
-          {/* "Or copy prompt" link - show when idle, loading, or error */}
-          {(aiState === "idle" || aiState === "loading" || aiState === "error") && (
-            <button
-              onClick={() => setShowPrompt((p) => !p)}
-              className="text-white/40 text-xs tracking-wider hover:text-white/60
-                       transition-colors duration-200 underline underline-offset-2
-                       decoration-white/20 hover:decoration-white/40"
-            >
-              {t('result.orCopyPrompt')}
-            </button>
           )}
 
           {/* Error Message */}
@@ -329,13 +324,13 @@ export default function ResultPhase({
             </div>
           )}
 
-          {/* After streaming done, also show the copy prompt link */}
-          {aiState === "done" && (
+          {/* "Or copy prompt" link - fades in after 3s or on error/done */}
+          {showPromptLink && (
             <button
               onClick={() => setShowPrompt((p) => !p)}
-              className="text-white/30 text-[11px] tracking-wider hover:text-white/50
+              className="text-white/40 text-xs tracking-wider hover:text-white/60
                        transition-colors duration-200 underline underline-offset-2
-                       decoration-white/15 hover:decoration-white/30"
+                       decoration-white/20 hover:decoration-white/40 animate-fadeUp"
             >
               {t('result.orCopyPrompt')}
             </button>
