@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
+import BackButton from "../../components/BackButton";
 
 export default function ContactPage() {
   const { t } = useTranslation();
@@ -40,6 +41,7 @@ export default function ContactPage() {
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
       <LanguageSwitcher />
+      <BackButton href="/" />
 
       <div className="text-center mb-10">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">

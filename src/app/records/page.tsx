@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
+import BackButton from "../../components/BackButton";
 import {
   getRecords,
   deleteRecord,
@@ -137,6 +138,7 @@ export default function RecordsPage() {
                   text-white font-serif flex flex-col items-center px-4 py-10"
     >
       <LanguageSwitcher />
+      <BackButton href="/reading" />
 
       {/* Header */}
       <div className="text-center animate-fadeUp mb-8">
@@ -151,15 +153,6 @@ export default function RecordsPage() {
                       mx-auto mt-3"
         />
       </div>
-
-      {/* Back to reading */}
-      <Link
-        href="/reading"
-        className="text-zen-gold/50 text-xs tracking-wider hover:text-zen-gold/80
-                   transition-colors mb-6"
-      >
-        ← {t("record.backToReading")}
-      </Link>
 
       {/* Records */}
       <div className="w-full max-w-[540px] flex flex-col gap-4 animate-fadeUp">

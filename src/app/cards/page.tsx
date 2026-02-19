@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
+import BackButton from "../../components/BackButton";
 import { CARD_DETAILS, getCardImagePath, getSuitLabel } from "../../data/cardDetails";
 
 export const metadata: Metadata = {
@@ -38,6 +39,7 @@ export default function CardsPage() {
                   text-white font-serif px-4 py-10"
     >
       <LanguageSwitcher />
+      <BackButton href="/" />
 
       {/* Header */}
       <div className="text-center mb-12 animate-fadeUp">

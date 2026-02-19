@@ -9,6 +9,8 @@ import SpreadSelector from "../../components/SpreadSelector";
 import DrawPhase from "../../components/DrawPhase";
 import ResultPhase from "../../components/ResultPhase";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
+import BackButton from "../../components/BackButton";
+import BackButtonClient from "../../components/BackButtonClient";
 
 type Phase = "select" | "draw" | "result";
 
@@ -95,6 +97,11 @@ function ReadingContent() {
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
       <LanguageSwitcher />
+      {phase === "select" ? (
+        <BackButton href="/" />
+      ) : (
+        <BackButtonClient onClick={reset} />
+      )}
 
       {/* Header */}
       <div className={`text-center animate-fadeUp ${phase === "result" ? "mb-4" : "mb-10"}`}>

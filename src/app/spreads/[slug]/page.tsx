@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import BackButton from "../../../components/BackButton";
 import { SPREAD_DETAILS, getSpreadBySlug } from "../../../data/spreadDetails";
 
 export function generateStaticParams() {
@@ -102,6 +103,7 @@ export default async function SpreadDetailPage({
                   text-white font-serif px-4 py-10"
     >
       <LanguageSwitcher />
+      <BackButton href="/spreads" />
 
       <div className="max-w-2xl mx-auto">
         {/* Breadcrumb */}

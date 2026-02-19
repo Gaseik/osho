@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import BackButton from "../../../components/BackButton";
 import CardSpreadLayout from "../../../components/CardSpreadLayout";
 import StaticCard from "../../../components/StaticCard";
 import MarkdownReading from "../../../components/MarkdownReading";
@@ -63,13 +64,8 @@ export default function RecordDetailPage() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark text-white font-serif flex flex-col items-center justify-center px-4">
         <LanguageSwitcher />
+        <BackButton href="/records" />
         <div className="text-white/40 text-sm mb-4">{t("record.notFound")}</div>
-        <Link
-          href="/records"
-          className="text-zen-gold/60 text-xs hover:text-zen-gold/80 transition-colors"
-        >
-          ← {t("record.backToRecords")}
-        </Link>
       </div>
     );
   }
@@ -115,6 +111,7 @@ export default function RecordDetailPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark text-white font-serif flex flex-col items-center px-4 py-10">
       <LanguageSwitcher />
+      <BackButton href="/records" />
 
       {/* Header */}
       <div className="text-center animate-fadeUp mb-4">
@@ -129,14 +126,6 @@ export default function RecordDetailPage() {
           {formatDateTime(record.createdAt, i18n.language)}
         </div>
       </div>
-
-      {/* Back */}
-      <Link
-        href="/records"
-        className="text-zen-gold/50 text-xs tracking-wider hover:text-zen-gold/80 transition-colors mb-6"
-      >
-        ← {t("record.backToRecords")}
-      </Link>
 
       {/* Question */}
       {record.question && (
