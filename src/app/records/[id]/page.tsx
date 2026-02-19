@@ -61,7 +61,7 @@ export default function RecordDetailPage() {
 
   if (!record) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark text-white font-serif flex flex-col items-center justify-center px-4">
+      <div className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark text-white font-serif flex flex-col items-center justify-center px-4">
         <LanguageSwitcher />
         <div className="text-white/40 text-sm mb-4">{t("record.notFound")}</div>
         <Link
@@ -113,7 +113,7 @@ export default function RecordDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark text-white font-serif flex flex-col items-center px-4 py-10">
+    <div className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark text-white font-serif flex flex-col items-center px-4 py-10">
       <LanguageSwitcher />
 
       {/* Header */}
