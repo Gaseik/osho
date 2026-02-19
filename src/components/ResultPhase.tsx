@@ -6,6 +6,7 @@ import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
 import FlipCard from "./FlipCard";
 import CardSpreadLayout from "./CardSpreadLayout";
+import MarkdownReading from "./MarkdownReading";
 import {
   saveRecord,
   generateId,
@@ -312,11 +313,15 @@ export default function ResultPhase({
             <div className="bg-white/[0.03] rounded-xl border border-zen-gold/20 p-5 max-w-[500px] w-full text-left mb-2">
               <div
                 ref={aiResultRef}
-                className="text-sm text-white/75 leading-relaxed whitespace-pre-line max-h-[60vh] overflow-y-auto"
+                className="text-sm leading-relaxed max-h-[60vh] overflow-y-auto"
               >
-                {aiText}
-                {aiState === "streaming" && (
-                  <span className="inline-block w-1 h-4 bg-zen-gold/50 ml-0.5 animate-pulse align-text-bottom" />
+                {aiState === "streaming" ? (
+                  <div className="text-white/75 whitespace-pre-line">
+                    {aiText}
+                    <span className="inline-block w-1 h-4 bg-zen-gold/50 ml-0.5 animate-pulse align-text-bottom" />
+                  </div>
+                ) : (
+                  <MarkdownReading content={aiText} />
                 )}
               </div>
 

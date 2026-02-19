@@ -12,40 +12,40 @@ interface CardInfo {
 
 function getAssessmentZh(spreadId: string): string {
   if (spreadId === "relationship") {
-    return `2. 多層面評估
-   - 感情與關係面
-   - 溝通與互動面
-   - 這段關係的成長方向`;
+    return `「## 多層面評估」底下分三個小節（用 ### 標記）：
+   ### 感情與關係面
+   ### 溝通與互動面
+   ### 這段關係的成長方向`;
   }
   if (spreadId === "two-choice") {
-    return `2. 多層面評估
-   - 選項 A 的能量走向
-   - 選項 B 的能量走向
-   - 綜合比較與建議`;
+    return `「## 多層面評估」底下分三個小節（用 ### 標記）：
+   ### 選項 A 的能量走向
+   ### 選項 B 的能量走向
+   ### 綜合比較`;
   }
-  return `2. 多層面評估
-   - 內在狀態與心理面
-   - 人際與關係面
-   - 工作與現實生活面`;
+  return `「## 多層面評估」底下分三個小節（用 ### 標記）：
+   ### 內在狀態與心理面
+   ### 人際與關係面
+   ### 工作與現實生活面`;
 }
 
 function getAssessmentEn(spreadId: string): string {
   if (spreadId === "relationship") {
-    return `2. Multi-dimensional Assessment
-   - Emotions & connection
-   - Communication & interaction
-   - Growth direction for the relationship`;
+    return `Under "## Multi-dimensional Assessment", use three subsections (### headings):
+   ### Emotions & Connection
+   ### Communication & Interaction
+   ### Growth Direction`;
   }
   if (spreadId === "two-choice") {
-    return `2. Multi-dimensional Assessment
-   - Energy direction of Option A
-   - Energy direction of Option B
-   - Comparison and recommendation`;
+    return `Under "## Multi-dimensional Assessment", use three subsections (### headings):
+   ### Option A Energy Direction
+   ### Option B Energy Direction
+   ### Comparison`;
   }
-  return `2. Multi-dimensional Assessment
-   - Inner state & psychological
-   - Relationships & interpersonal
-   - Work & practical life`;
+  return `Under "## Multi-dimensional Assessment", use three subsections (### headings):
+   ### Inner State & Psychological
+   ### Relationships & Interpersonal
+   ### Work & Practical Life`;
 }
 
 function buildPrompt(
@@ -70,24 +70,21 @@ function buildPrompt(
 - 不要用過多的鼓勵性語句，不要說教
 - 直接切入牌義解讀，不要寒暄
 - 語氣自然真誠，像跟朋友聊天，可以偶爾口語化
-- 不要用 markdown 格式符號（不要 ###、**、- 等）
-- 用段落標題分隔不同區塊，標題用簡短的文字就好，例如「牌面解析」「感情面」等
+- 使用 Markdown 格式來排版（標題用 ##，粗體用 **，條列用 -）
 
-解讀架構：
-1. 牌面解析
-   逐張解讀每張牌在其位置上的含義，以及牌與牌之間的關聯和整體流動。
+解讀架構與格式：
+
+## 牌面解析
+用自然段落敘述，保持聊天的語感。逐張解讀每張牌在其位置上的含義，說明牌與牌之間的關聯和整體流動。重點的關鍵詞用 **粗體** 標記。
 
 ${assessment}
-   每個層面 2-3 句話就好，不要寫太長。點出核心就好。
+每個層面用條列（-）呈現，每點 1-2 句話，點出核心觀點就好。
 
-3. 建議與練習
-   給出 2-3 個具體可執行的建議或小練習。要實際、可操作，不要空泛的心靈雞湯。例如：
-   - 「這週試試看每天花 5 分鐘什麼都不做，就坐著感受呼吸」
-   - 「下次想發脾氣的時候，先暫停 10 秒，問自己：我真正在氣的是什麼？」
-   這類具體的東西。
+## 建議與練習
+用數字條列（1. 2. 3.）列出 2-3 個具體可執行的建議或小練習。要實際、可操作，不要空泛的心靈雞湯。
 
-4. 靜心提醒
-   最後用一句簡短的話作為結尾。
+## 靜心提醒
+最後用 blockquote 格式（>）寫一句簡短有力的靜心提醒作為結尾。
 
 用戶使用「${spread}」牌陣抽了以下的禪卡：
 
@@ -106,23 +103,21 @@ Rules:
 - No "dear friend" or any formal greetings
 - Jump straight into the reading, no small talk
 - Be direct, genuine, and conversational
-- Do not use markdown formatting (no ###, **, - etc)
-- Use short section titles as plain text to separate sections, e.g. "Card Analysis", "Relationships"
+- Use Markdown formatting (## for headings, ** for bold, - for bullet points)
 
-Reading structure:
-1. Card Analysis
-   Interpret each card in its position, explain how the cards connect, and describe the overall flow.
+Reading structure and format:
+
+## Card Analysis
+Use natural paragraphs with a conversational feel. Interpret each card in its position, explain how the cards connect, and describe the overall flow. Use **bold** for key terms.
 
 ${assessment}
-   Keep each dimension to 2-3 sentences. Hit the core point and move on.
+Use bullet points (-) for each dimension. 1-2 sentences per point, hit the core and move on.
 
-3. Advice & Practice
-   Give 2-3 concrete, actionable suggestions or small exercises. Be specific and practical, not vague platitudes. Examples:
-   - "This week, try spending 5 minutes each day doing nothing — just sit and feel your breath"
-   - "Next time you feel angry, pause for 10 seconds and ask yourself: what am I really upset about?"
+## Advice & Practice
+Use numbered list (1. 2. 3.) for 2-3 concrete, actionable suggestions. Be specific and practical.
 
-4. Meditation Reminder
-   Close with one brief sentence.
+## Meditation Reminder
+Close with a blockquote (>) containing one brief, powerful sentence.
 
 The user drew the following cards using the "${spread}" spread:
 
