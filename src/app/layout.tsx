@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import I18nProvider from "../components/I18nProvider";
+import Footer from "../components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -44,8 +45,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-TW">
-      <body>
-        <I18nProvider>{children}</I18nProvider>
+      <body className="flex flex-col min-h-screen">
+        <I18nProvider>
+          <div className="flex-1">{children}</div>
+          <Footer />
+        </I18nProvider>
         <Analytics />
         <SpeedInsights />
       </body>
