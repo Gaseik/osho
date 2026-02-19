@@ -4,9 +4,9 @@ import LanguageSwitcher from "../../components/LanguageSwitcher";
 import { SPREAD_DETAILS } from "../../data/spreadDetails";
 
 export const metadata: Metadata = {
-  title: "禪卡牌陣總覽 | 9種奧修禪卡牌陣 | 禪意靈卡",
+  title: "9 種禪卡牌陣介紹 | 禪意靈卡",
   description:
-    "9種奧修禪卡（Osho Zen Tarot）牌陣介紹。單牌、三牌陣、時間之流、二擇一、鑽石牌陣、鏡子牌陣等。免費線上禪卡抽牌。",
+    "單牌、時間之流、兩人關聯、二擇一、鑽石、鑰匙、鏡子等 9 種牌陣詳細介紹與使用建議。",
   keywords: [
     "奧修禪卡牌陣",
     "禪卡牌陣",
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
     "塔羅牌陣",
   ],
   openGraph: {
-    title: "禪卡牌陣總覽 | 9種奧修禪卡牌陣",
-    description: "9種奧修禪卡牌陣介紹與使用指南",
+    title: "9 種禪卡牌陣介紹 | 禪意靈卡",
+    description: "單牌、時間之流、兩人關聯、二擇一、鑽石、鑰匙、鏡子等 9 種牌陣詳細介紹與使用建議。",
   },
 };
 
