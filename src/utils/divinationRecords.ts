@@ -12,6 +12,7 @@ export interface DivinationRecord {
   spreadNameEn: string;
   cards: DivinationCard[];
   question: string;
+  aiReading: string;
   createdAt: string;
   review: string;
   reviewedAt: string | null;

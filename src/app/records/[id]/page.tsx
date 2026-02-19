@@ -7,6 +7,7 @@ import Link from "next/link";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import CardSpreadLayout from "../../../components/CardSpreadLayout";
 import StaticCard from "../../../components/StaticCard";
+import MarkdownReading from "../../../components/MarkdownReading";
 import { POSITION_LABELS, SPREAD_LAYOUTS } from "../../../data/spreads";
 import { CARD_DETAILS, type Card } from "../../../data/cards";
 import {
@@ -157,6 +158,20 @@ export default function RecordDetailPage() {
           renderCard={renderCard}
         />
       </div>
+
+      {/* AI Reading */}
+      {record.aiReading && (
+        <div className="w-full max-w-[500px] animate-fadeUp mt-6">
+          <div className="bg-white/[0.03] rounded-xl border border-zen-gold/20 p-5">
+            <div className="text-[11px] text-zen-gold/50 mb-3 tracking-wider">
+              {t("record.aiReading")}
+            </div>
+            <div className="text-sm leading-relaxed">
+              <MarkdownReading content={record.aiReading} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Divider */}
       <div className="w-10 h-px bg-gradient-to-r from-transparent via-zen-gold/30 to-transparent my-4" />

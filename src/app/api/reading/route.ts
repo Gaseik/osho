@@ -1,0 +1,210 @@
+export const runtime = "nodejs";
+
+import Groq from "groq-sdk";
+
+interface CardInfo {
+  position: string;
+  nameZh: string;
+  nameEn: string;
+  meaningZh: string;
+  meaningEn: string;
+}
+
+function getAssessmentZh(spreadId: string): string {
+  if (spreadId === "relationship") {
+    return `「## 多層面評估」底下分三個小節（用 ### 標記）：
+   ### 感情與關係面
+   ### 溝通與互動面
+   ### 這段關係的成長方向`;
+  }
+  if (spreadId === "two-choice") {
+    return `「## 多層面評估」底下分三個小節（用 ### 標記）：
+   ### 選項 A 的能量走向
+   ### 選項 B 的能量走向
+   ### 綜合比較`;
+  }
+  return `「## 多層面評估」底下分三個小節（用 ### 標記）：
+   ### 內在狀態與心理面
+   ### 人際與關係面
+   ### 工作與現實生活面`;
+}
+
+function getAssessmentEn(spreadId: string): string {
+  if (spreadId === "relationship") {
+    return `Under "## Multi-dimensional Assessment", use three subsections (### headings):
+   ### Emotions & Connection
+   ### Communication & Interaction
+   ### Growth Direction`;
+  }
+  if (spreadId === "two-choice") {
+    return `Under "## Multi-dimensional Assessment", use three subsections (### headings):
+   ### Option A Energy Direction
+   ### Option B Energy Direction
+   ### Comparison`;
+  }
+  return `Under "## Multi-dimensional Assessment", use three subsections (### headings):
+   ### Inner State & Psychological
+   ### Relationships & Interpersonal
+   ### Work & Practical Life`;
+}
+
+function buildPrompt(
+  spread: string,
+  spreadId: string,
+  cards: CardInfo[],
+  locale: string
+): string {
+  const isZh = locale.startsWith("zh");
+
+  if (isZh) {
+    const cardLines = cards
+      .map((c) => `${c.position}：${c.nameZh}（${c.nameEn}）- ${c.meaningZh}`)
+      .join("\n");
+
+    const assessment = getAssessmentZh(spreadId);
+
+    return `你是一位有深度的禪卡解讀者。語氣像一個有智慧的朋友在跟人聊天，不是靈性導師在佈道。
+
+規則：
+- 不要用「親愛的朋友」「親愛的」等客套稱呼
+- 不要用過多的鼓勵性語句，不要說教
+- 直接切入牌義解讀，不要寒暄
+- 語氣自然真誠，像跟朋友聊天，可以偶爾口語化
+- 使用 Markdown 格式來排版（標題用 ##，粗體用 **，條列用 -）
+
+解讀架構與格式：
+
+## 牌面解析
+用自然段落敘述，保持聊天的語感。逐張解讀每張牌在其位置上的含義，說明牌與牌之間的關聯和整體流動。重點的關鍵詞用 **粗體** 標記。
+
+${assessment}
+每個層面用條列（-）呈現，每點 1-2 句話，點出核心觀點就好。
+
+## 建議與練習
+用數字條列（1. 2. 3.）列出 2-3 個具體可執行的建議或小練習。要實際、可操作，不要空泛的心靈雞湯。
+
+## 靜心提醒
+最後用 blockquote 格式（>）寫一句簡短有力的靜心提醒作為結尾。
+
+用戶使用「${spread}」牌陣抽了以下的禪卡：
+
+${cardLines}`;
+  }
+
+  const cardLines = cards
+    .map((c) => `${c.position}: ${c.nameEn} - ${c.meaningEn}`)
+    .join("\n");
+
+  const assessment = getAssessmentEn(spreadId);
+
+  return `You are an insightful Zen card reader. Your tone is like a wise friend having a real conversation — not a spiritual guru giving a sermon.
+
+Rules:
+- No "dear friend" or any formal greetings
+- Jump straight into the reading, no small talk
+- Be direct, genuine, and conversational
+- Use Markdown formatting (## for headings, ** for bold, - for bullet points)
+
+Reading structure and format:
+
+## Card Analysis
+Use natural paragraphs with a conversational feel. Interpret each card in its position, explain how the cards connect, and describe the overall flow. Use **bold** for key terms.
+
+${assessment}
+Use bullet points (-) for each dimension. 1-2 sentences per point, hit the core and move on.
+
+## Advice & Practice
+Use numbered list (1. 2. 3.) for 2-3 concrete, actionable suggestions. Be specific and practical.
+
+## Meditation Reminder
+Close with a blockquote (>) containing one brief, powerful sentence.
+
+The user drew the following cards using the "${spread}" spread:
+
+${cardLines}`;
+}
+
+export async function POST(request: Request) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    console.log("Groq error: GROQ_API_KEY not set in environment");
+    return Response.json(
+      { error: "API key not configured – set GROQ_API_KEY in .env.local", status: 500 },
+      { status: 500 }
+    );
+  }
+
+  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string };
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json(
+      { error: "Invalid request body" },
+      { status: 400 }
+    );
+  }
+
+  const { spread, spreadId, cards, locale } = body;
+  if (!spread || !cards?.length || !locale) {
+    return Response.json(
+      { error: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  const prompt = buildPrompt(spread, spreadId ?? "", cards, locale);
+
+  try {
+    const groq = new Groq({ apiKey });
+    const response = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.8,
+      max_tokens: 2000,
+      stream: true,
+    });
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of response) {
+            const text = chunk.choices[0]?.delta?.content;
+            if (text) {
+              controller.enqueue(new TextEncoder().encode(text));
+            }
+          }
+          controller.close();
+        } catch (streamError) {
+          console.log("Groq stream error:", streamError);
+          controller.error(streamError);
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache",
+      },
+    });
+  } catch (error: unknown) {
+    const raw = error instanceof Error ? error.message : String(error);
+    console.log("Groq API error:", raw);
+
+    let status = 500;
+    let message = raw;
+    try {
+      const parsed = JSON.parse(raw);
+      const code = parsed.error?.code || parsed.code;
+      if (code && typeof code === "number") status = code;
+      message = parsed.error?.message || parsed.message || raw;
+    } catch {
+      // Not JSON, use raw message as-is
+    }
+
+    return Response.json(
+      { error: message, status },
+      { status }
+    );
+  }
+}
