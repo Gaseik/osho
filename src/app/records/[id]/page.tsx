@@ -158,6 +158,20 @@ export default function RecordDetailPage() {
         />
       </div>
 
+      {/* AI Reading */}
+      {record.aiReading && (
+        <div className="w-full max-w-[500px] animate-fadeUp mt-6">
+          <div className="bg-white/[0.03] rounded-xl border border-zen-gold/20 p-5">
+            <div className="text-[11px] text-zen-gold/50 mb-3 tracking-wider">
+              {t("record.aiReading")}
+            </div>
+            <div className="text-sm text-white/75 leading-relaxed whitespace-pre-line">
+              {record.aiReading}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Divider */}
       <div className="w-10 h-px bg-gradient-to-r from-transparent via-zen-gold/30 to-transparent my-4" />
 

@@ -209,6 +209,7 @@ export default function ResultPhase({
       spreadNameEn: spread.nameEn,
       cards: recordCards,
       question,
+      aiReading: aiText,
       createdAt: new Date().toISOString(),
       review: "",
       reviewedAt: null,
