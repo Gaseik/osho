@@ -34,7 +34,7 @@ export default function CardsPage() {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
+      className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                   text-white font-serif px-4 py-10"
     >
       <LanguageSwitcher />

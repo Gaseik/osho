@@ -3,7 +3,7 @@ import LanguageSwitcher from "../components/LanguageSwitcher";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
+    <div className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                     text-white font-serif flex flex-col items-center justify-center px-4">
       <LanguageSwitcher />
 

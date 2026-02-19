@@ -47,7 +47,7 @@ export default function RootLayout({
     <html lang="zh-TW">
       <body className="flex flex-col min-h-screen">
         <I18nProvider>
-          <div className="flex-1">{children}</div>
+          <div className="flex-1 flex flex-col">{children}</div>
           <Footer />
         </I18nProvider>
         <Analytics />
