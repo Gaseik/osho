@@ -125,6 +125,7 @@ export default function ResultPhase({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           spread: spreadName,
+          spreadId: spread.id,
           cards,
           locale: i18n.language,
         }),
