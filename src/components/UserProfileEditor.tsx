@@ -14,6 +14,13 @@ interface UserProfileEditorProps {
   compact?: boolean;
 }
 
+const READING_STYLES = [
+  { value: "natural", labelKey: "profile.styleNatural", descKey: "profile.styleNaturalDesc" },
+  { value: "warm", labelKey: "profile.styleWarm", descKey: "profile.styleWarmDesc" },
+  { value: "intuitive", labelKey: "profile.styleIntuitive", descKey: "profile.styleIntuitiveDesc" },
+  { value: "rational", labelKey: "profile.styleRational", descKey: "profile.styleRationalDesc" },
+];
+
 export default function UserProfileEditor({
   onSave,
   onSkip,
@@ -23,6 +30,7 @@ export default function UserProfileEditor({
   const [name, setName] = useState("");
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("");
+  const [readingStyle, setReadingStyle] = useState("natural");
 
   useEffect(() => {
     const existing = getUserProfile();
@@ -30,11 +38,12 @@ export default function UserProfileEditor({
       setName(existing.name);
       setGender(existing.gender);
       setAge(existing.age);
+      setReadingStyle(existing.readingStyle || "natural");
     }
   }, []);
 
   const handleSave = () => {
-    const profile: UserProfile = { name, gender, age };
+    const profile: UserProfile = { name, gender, age, readingStyle };
     saveUserProfile(profile);
     onSave?.(profile);
   };
@@ -101,6 +110,38 @@ export default function UserProfileEditor({
                      text-sm text-white/80 placeholder-white/30
                      focus:outline-none focus:border-zen-gold/30 transition-colors"
         />
+      </div>
+
+      {/* Reading Style */}
+      <div className="mb-5">
+        <label className="block text-xs text-white/50 mb-1.5 tracking-wider">
+          {t("profile.styleLabel")}
+        </label>
+        <div className="grid grid-cols-2 gap-2">
+          {READING_STYLES.map((style) => (
+            <button
+              key={style.value}
+              onClick={() => setReadingStyle(style.value)}
+              className={`py-2 px-3 rounded-lg border text-left transition-all duration-300
+                ${
+                  readingStyle === style.value
+                    ? "bg-zen-gold/15 border-zen-gold/40"
+                    : "bg-white/[0.04] border-white/10 hover:bg-white/[0.08]"
+                }`}
+            >
+              <div className={`text-sm tracking-wider ${
+                readingStyle === style.value ? "text-zen-gold" : "text-white/60"
+              }`}>
+                {t(style.labelKey)}
+              </div>
+              <div className={`text-[10px] mt-0.5 ${
+                readingStyle === style.value ? "text-zen-gold/60" : "text-white/30"
+              }`}>
+                {t(style.descKey)}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Actions */}

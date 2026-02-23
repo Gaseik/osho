@@ -2,6 +2,7 @@ export interface UserProfile {
   name: string;
   gender: string;
   age: string;
+  readingStyle: string;
 }
 
 const STORAGE_KEY = "zen-user-profile";
