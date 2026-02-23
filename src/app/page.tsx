@@ -1,9 +1,12 @@
 import Link from "next/link";
+import SideMenu from "../components/SideMenu";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
-                    text-white font-serif flex flex-col items-center justify-center px-4">
+    <div className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
+                    text-white font-serif flex flex-col items-center px-4 py-10">
+      <SideMenu />
+
       {/* Hero Section */}
       <div className="text-center animate-fadeUp max-w-lg">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">

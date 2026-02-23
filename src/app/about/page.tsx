@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import LanguageSwitcher from "../../components/LanguageSwitcher";
 
 export const metadata: Metadata = {
   title: "關於洞見 | About OSHO Zen Card Read",
@@ -10,9 +11,11 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
+      className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
+      <LanguageSwitcher />
+
       <div className="text-center mb-10 animate-fadeUp">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
           ☯︎ ZEN INSIGHT ☯︎
@@ -35,11 +38,21 @@ export default function AboutPage() {
           offers multiple spread types to help you explore your inner wisdom
           and intuitive guidance through meditation.
         </p>
-        <p className="text-white/40 text-xs leading-relaxed mb-10">
-          Inspired by Osho Zen Tarot. This is a fan-made tool for
-          self-reflection and is not affiliated with any official Osho
-          organization.
-        </p>
+        {/* Copyright Notice */}
+        <div className="border-t border-white/10 pt-6 mb-10 space-y-3">
+          <p className="text-white/40 text-xs leading-relaxed">
+            本網站的卡牌圖像源自奧修禪卡（Osho Zen Tarot），由 Ma Deva Padma
+            繪製，版權歸 Osho International Foundation
+            所有。本網站為非官方的個人創作，僅供個人靈性探索使用，與 Osho
+            International Foundation 無任何關聯。
+          </p>
+          <p className="text-white/30 text-xs leading-relaxed">
+            Card images are derived from the Osho Zen Tarot, illustrated by Ma
+            Deva Padma. All rights belong to Osho International Foundation. This
+            is an unofficial, non-commercial personal project for spiritual
+            exploration and is not affiliated with Osho International Foundation.
+          </p>
+        </div>
 
         <Link
           href="/reading"
