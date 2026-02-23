@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Card, CARDS, shuffle } from "../../../data/cards";
 import { SPREADS, POSITION_LABELS } from "../../../data/spreads";
 import DrawPhase from "../../../components/DrawPhase";
 import ResultPhase from "../../../components/ResultPhase";
-import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import SideMenu from "../../../components/SideMenu";
 
 type Phase = "draw" | "result";
 
@@ -15,7 +15,10 @@ export default function ReadingSpreadPage() {
   const { t, i18n } = useTranslation();
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const spreadId = params.spreadId as string;
+  const topic = searchParams.get("topic") || "";
+  const description = searchParams.get("desc") || "";
   const spread = SPREADS.find((s) => s.id === spreadId);
 
   const [phase, setPhase] = useState<Phase>("draw");
@@ -84,7 +87,7 @@ export default function ReadingSpreadPage() {
       className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
-      <LanguageSwitcher />
+      <SideMenu />
 
       {/* Header */}
       <div className={`text-center animate-fadeUp ${phase === "result" ? "mb-4" : "mb-10"}`}>
@@ -116,6 +119,8 @@ export default function ReadingSpreadPage() {
           drawn={drawn}
           flippedCount={flippedCount}
           copied={copied}
+          topic={topic}
+          description={description}
           onFlipped={() => setFlippedCount((p) => p + 1)}
           onCopyPrompt={copyPrompt}
           onReset={reset}

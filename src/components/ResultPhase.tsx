@@ -12,14 +12,17 @@ import {
   generateId,
   type DivinationCard,
 } from "../utils/divinationRecords";
+import { getUserProfile } from "../utils/userProfile";
 
-type AiState = "idle" | "loading" | "streaming" | "done" | "error";
+type AiState = "idle" | "loading" | "done" | "error";
 
 interface ResultPhaseProps {
   spread: Spread;
   drawn: Card[];
   flippedCount: number;
   copied: boolean;
+  topic?: string;
+  description?: string;
   onFlipped: () => void;
   onCopyPrompt: () => void;
   onReset: () => void;
@@ -30,6 +33,8 @@ export default function ResultPhase({
   drawn,
   flippedCount,
   copied,
+  topic,
+  description,
   onFlipped,
   onCopyPrompt,
   onReset,
@@ -37,7 +42,6 @@ export default function ResultPhase({
   const { t, i18n } = useTranslation();
   const resultRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
-  const aiResultRef = useRef<HTMLDivElement>(null);
   const layout = SPREAD_LAYOUTS[spread.id];
   const [revealed, setRevealed] = useState(false);
   const [question, setQuestion] = useState("");
@@ -58,29 +62,14 @@ export default function ResultPhase({
     if (!revealed) setRevealed(true);
   };
 
+  // 3-second timer: if still loading, show the copy prompt link
   useEffect(() => {
-    if (allFlipped && actionsRef.current) {
-      setTimeout(() => {
-        actionsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 400);
-    }
-  }, [allFlipped]);
-
-  // 3-second timer: if still loading/streaming, show the copy prompt link
-  useEffect(() => {
-    if (aiState !== "loading" && aiState !== "streaming") return;
+    if (aiState !== "loading") return;
     const timer = setTimeout(() => {
       setShowPromptLink(true);
     }, 3000);
     return () => clearTimeout(timer);
   }, [aiState]);
-
-  // Auto-scroll AI result area as text streams in
-  useEffect(() => {
-    if ((aiState === "streaming" || aiState === "done") && aiResultRef.current) {
-      aiResultRef.current.scrollTop = aiResultRef.current.scrollHeight;
-    }
-  }, [aiText, aiState]);
 
   const getSpreadLabels = (spreadId: string): string[] => {
     if (i18n.language === 'zh-TW') {
@@ -120,6 +109,9 @@ export default function ResultPhase({
       meaningEn: c.keywords.join(", "),
     }));
 
+    // Get user profile from localStorage
+    const userProfile = getUserProfile();
+
     try {
       const response = await fetch("/api/reading", {
         method: "POST",
@@ -129,6 +121,9 @@ export default function ResultPhase({
           spreadId: spread.id,
           cards,
           locale: i18n.language,
+          ...(userProfile && { userProfile }),
+          ...(topic && { topic }),
+          ...(description && { description }),
         }),
       });
 
@@ -142,6 +137,7 @@ export default function ResultPhase({
         return;
       }
 
+      // Read the full response as text (no streaming display)
       const reader = response.body?.getReader();
       if (!reader) {
         setAiState("error");
@@ -150,34 +146,24 @@ export default function ResultPhase({
         return;
       }
 
-      setAiState("streaming");
       const decoder = new TextDecoder();
       let accumulated = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        accumulated += chunk;
-        setAiText(accumulated);
+        accumulated += decoder.decode(value, { stream: true });
       }
 
+      setAiText(accumulated);
       setAiState("done");
       setShowPromptLink(true);
     } catch (err) {
-      // Network error or stream interrupted
       console.log("AI reading fetch error:", err);
-      setAiText((currentText) => {
-        if (currentText) {
-          setAiState("done");
-        } else {
-          setAiError(err instanceof Error ? err.message : String(err));
-          setAiState("error");
-          setShowPrompt(true);
-          setShowPromptLink(true);
-        }
-        return currentText;
-      });
+      setAiError(err instanceof Error ? err.message : String(err));
+      setAiState("error");
+      setShowPrompt(true);
+      setShowPromptLink(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spread, drawn, i18n.language]);
@@ -243,6 +229,48 @@ export default function ResultPhase({
     );
   };
 
+  // Pulse skeleton loading component
+  const PulseSkeleton = () => (
+    <div className="bg-white/[0.03] rounded-xl border border-zen-gold/20 p-5 max-w-[500px] w-full text-left mb-2">
+      <div className="space-y-4">
+        {/* Title line */}
+        <div className="h-5 w-2/5 bg-white/[0.08] rounded animate-pulse" />
+        {/* Paragraph lines */}
+        <div className="space-y-2.5">
+          <div className="h-3.5 w-full bg-white/[0.06] rounded animate-pulse" />
+          <div className="h-3.5 w-[92%] bg-white/[0.06] rounded animate-pulse" style={{ animationDelay: "150ms" }} />
+          <div className="h-3.5 w-[85%] bg-white/[0.06] rounded animate-pulse" style={{ animationDelay: "300ms" }} />
+          <div className="h-3.5 w-[78%] bg-white/[0.06] rounded animate-pulse" style={{ animationDelay: "450ms" }} />
+        </div>
+        {/* Section break */}
+        <div className="h-5 w-1/3 bg-white/[0.08] rounded animate-pulse" style={{ animationDelay: "200ms" }} />
+        {/* More lines */}
+        <div className="space-y-2.5">
+          <div className="h-3.5 w-full bg-white/[0.06] rounded animate-pulse" style={{ animationDelay: "350ms" }} />
+          <div className="h-3.5 w-[88%] bg-white/[0.06] rounded animate-pulse" style={{ animationDelay: "500ms" }} />
+          <div className="h-3.5 w-[95%] bg-white/[0.06] rounded animate-pulse" style={{ animationDelay: "650ms" }} />
+        </div>
+        {/* Another section */}
+        <div className="h-5 w-2/5 bg-white/[0.08] rounded animate-pulse" style={{ animationDelay: "400ms" }} />
+        <div className="space-y-2.5">
+          <div className="h-3.5 w-[90%] bg-white/[0.06] rounded animate-pulse" style={{ animationDelay: "550ms" }} />
+          <div className="h-3.5 w-[82%] bg-white/[0.06] rounded animate-pulse" style={{ animationDelay: "700ms" }} />
+        </div>
+      </div>
+      {/* Loading hint */}
+      <div className="mt-4 pt-3 border-t border-zen-gold/10 flex items-center justify-center gap-2">
+        <div className="flex gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-zen-gold/60 animate-pulse" style={{ animationDelay: "0ms" }} />
+          <span className="w-1.5 h-1.5 rounded-full bg-zen-gold/60 animate-pulse" style={{ animationDelay: "300ms" }} />
+          <span className="w-1.5 h-1.5 rounded-full bg-zen-gold/60 animate-pulse" style={{ animationDelay: "600ms" }} />
+        </div>
+        <span className="text-zen-gold/50 text-xs tracking-wider">
+          {t('result.aiReadingLoading')}
+        </span>
+      </div>
+    </div>
+  );
+
   return (
     <div className={`animate-fadeUp text-center w-full ${layout ? 'max-w-[900px]' : 'max-w-[700px]'}`}>
       <p
@@ -280,19 +308,8 @@ export default function ResultPhase({
         <div ref={actionsRef} className="animate-fadeUp flex flex-col items-center gap-3">
           <div className="w-10 h-px bg-gradient-to-r from-transparent via-zen-gold/30 to-transparent mb-2" />
 
-          {/* Loading State */}
-          {aiState === "loading" && (
-            <div className="flex items-center gap-3 px-8 py-3.5">
-              <div className="flex gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-zen-gold/60 animate-pulse" style={{ animationDelay: "0ms" }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-zen-gold/60 animate-pulse" style={{ animationDelay: "300ms" }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-zen-gold/60 animate-pulse" style={{ animationDelay: "600ms" }} />
-              </div>
-              <span className="text-zen-gold/70 text-sm tracking-wider">
-                {t('result.aiReadingLoading')}
-              </span>
-            </div>
-          )}
+          {/* Loading State - Pulse Skeleton */}
+          {aiState === "loading" && <PulseSkeleton />}
 
           {/* Error Message */}
           {aiState === "error" && (
@@ -308,38 +325,26 @@ export default function ResultPhase({
             </div>
           )}
 
-          {/* AI Reading Result */}
-          {(aiState === "streaming" || aiState === "done") && aiText && (
+          {/* AI Reading Result - shown at once when done */}
+          {aiState === "done" && aiText && (
             <div className="bg-white/[0.03] rounded-xl border border-zen-gold/20 p-5 max-w-[500px] w-full text-left mb-2">
-              <div
-                ref={aiResultRef}
-                className="text-sm leading-relaxed max-h-[60vh] overflow-y-auto"
-              >
-                {aiState === "streaming" ? (
-                  <div className="text-white/75 whitespace-pre-line">
-                    {aiText}
-                    <span className="inline-block w-1 h-4 bg-zen-gold/50 ml-0.5 animate-pulse align-text-bottom" />
-                  </div>
-                ) : (
-                  <MarkdownReading content={aiText} />
-                )}
+              <div className="text-sm leading-relaxed max-h-[60vh] overflow-y-auto">
+                <MarkdownReading content={aiText} />
               </div>
 
-              {/* Copy Reading button - show when done */}
-              {aiState === "done" && (
-                <div className="mt-4 pt-3 border-t border-zen-gold/10 flex justify-center">
-                  <button
-                    onClick={handleCopyReading}
-                    className={`px-5 py-2 rounded-lg border text-xs tracking-wider transition-all duration-300
-                      ${readingCopied
-                        ? 'bg-zen-gold/20 border-zen-gold/40 text-zen-gold'
-                        : 'bg-zen-gold/[0.06] border-zen-gold/20 text-zen-gold/70 hover:bg-zen-gold/[0.12]'
-                      }`}
-                  >
-                    {readingCopied ? `✓ ${t('result.copyReadingDone')}` : t('result.copyReading')}
-                  </button>
-                </div>
-              )}
+              {/* Copy Reading button */}
+              <div className="mt-4 pt-3 border-t border-zen-gold/10 flex justify-center">
+                <button
+                  onClick={handleCopyReading}
+                  className={`px-5 py-2 rounded-lg border text-xs tracking-wider transition-all duration-300
+                    ${readingCopied
+                      ? 'bg-zen-gold/20 border-zen-gold/40 text-zen-gold'
+                      : 'bg-zen-gold/[0.06] border-zen-gold/20 text-zen-gold/70 hover:bg-zen-gold/[0.12]'
+                    }`}
+                >
+                  {readingCopied ? `✓ ${t('result.copyReadingDone')}` : t('result.copyReading')}
+                </button>
+              </div>
             </div>
           )}
 

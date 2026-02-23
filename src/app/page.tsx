@@ -4,10 +4,10 @@ import SideMenu from "../components/SideMenu";
 export default function HomePage() {
   return (
     <div className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
-                    text-white font-serif flex flex-col items-center px-4 py-10">
+                    text-white font-serif flex flex-col items-center justify-between px-4 py-10">
       <SideMenu />
 
-      {/* Hero Section */}
+      {/* Hero Section - Top */}
       <div className="text-center animate-fadeUp max-w-lg">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
           ☯︎ ZEN INSIGHT ☯︎
@@ -21,17 +21,19 @@ export default function HomePage() {
         <p className="text-white/60 text-base leading-relaxed mb-4">
           免費線上禪卡抽牌，探索內在智慧與直覺指引。
         </p>
-        <p className="text-white/40 text-sm leading-relaxed mb-10">
+        <p className="text-white/40 text-sm leading-relaxed mb-6">
           Free online Zen tarot card reading with beautiful UI and multiple spreads.
           Inspired by Osho Zen Tarot.
         </p>
 
         {/* Spread options preview */}
-        <div className="text-white/30 text-xs mb-6 tracking-wider">
+        <div className="text-white/30 text-xs tracking-wider">
           單牌 · 三牌陣 · 時間之流 · 兩人關聯 · 五牌陣
         </div>
+      </div>
 
-        {/* CTA Button */}
+      {/* CTA Button - Bottom */}
+      <div className="text-center animate-fadeUp pb-4">
         <Link
           href="/reading"
           className="inline-flex items-center gap-3 px-10 py-4 rounded-full

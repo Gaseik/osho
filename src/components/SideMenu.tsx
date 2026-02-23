@@ -2,17 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02, HelpCircle } from '@untitled-ui/icons-react';
+import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02, HelpCircle, User01 } from '@untitled-ui/icons-react';
 import { getRecords } from '../utils/divinationRecords';
+import { getUserProfile } from '../utils/userProfile';
 
 export default function SideMenu() {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [recordCount, setRecordCount] = useState(0);
+  const [hasProfile, setHasProfile] = useState(false);
 
   useEffect(() => {
-    if (open) setRecordCount(getRecords().length);
+    if (open) {
+      setRecordCount(getRecords().length);
+      setHasProfile(!!getUserProfile());
+    }
   }, [open]);
 
   const toggleLanguage = () => {
@@ -56,15 +64,35 @@ export default function SideMenu() {
         </button>
 
         <div className="flex flex-col h-full pt-20 px-6">
-          {/* Reading */}
+          {/* Reading — always navigate to landing */}
+          <button
+            onClick={() => {
+              setOpen(false);
+              if (pathname === '/reading') {
+                router.refresh();
+              } else {
+                router.push('/reading');
+              }
+            }}
+            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                       transition-colors w-full text-left"
+          >
+            <MagicWand02 width={18} height={18} />
+            <span className="text-sm tracking-wider">{t('menu.reading')}</span>
+          </button>
+
+          {/* Profile */}
           <Link
-            href="/reading"
+            href="/profile"
             onClick={() => setOpen(false)}
             className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
                        transition-colors"
           >
-            <MagicWand02 width={18} height={18} />
-            <span className="text-sm tracking-wider">{t('menu.reading')}</span>
+            <User01 width={18} height={18} />
+            <span className="text-sm tracking-wider">{t('menu.profile')}</span>
+            {hasProfile && (
+              <span className="ml-auto text-xs text-zen-gold/60">✓</span>
+            )}
           </Link>
 
           {/* Card Meanings */}
