@@ -18,6 +18,7 @@ export default function ReadingSpreadPage() {
   const searchParams = useSearchParams();
   const spreadId = params.spreadId as string;
   const topic = searchParams.get("topic") || "";
+  const description = searchParams.get("desc") || "";
   const spread = SPREADS.find((s) => s.id === spreadId);
 
   const [phase, setPhase] = useState<Phase>("draw");
@@ -119,6 +120,7 @@ export default function ReadingSpreadPage() {
           flippedCount={flippedCount}
           copied={copied}
           topic={topic}
+          description={description}
           onFlipped={() => setFlippedCount((p) => p + 1)}
           onCopyPrompt={copyPrompt}
           onReset={reset}

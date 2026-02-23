@@ -35,6 +35,19 @@ const CATEGORY_ICONS: Record<CategoryId, string> = {
   custom: "✎",
 };
 
+// Dynamic placeholder keys per category
+const DESCRIBE_PLACEHOLDER_KEYS: Record<Exclude<CategoryId, "custom">, string> = {
+  daily: "guide.describePlaceholderDaily",
+  relationship: "guide.describePlaceholderRelationship",
+  career: "guide.describePlaceholderCareer",
+  decision: "guide.describePlaceholderDecision",
+  self: "guide.describePlaceholderSelf",
+  spiritual: "guide.describePlaceholderSpiritual",
+};
+
+// Steps: 1=profile, 2=category, 3=describe situation, 4=spread selection
+const TOTAL_STEPS = 4;
+
 interface GuidedFlowProps {
   onBack: () => void;
 }
@@ -45,6 +58,7 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null);
   const [customTopic, setCustomTopic] = useState("");
+  const [situationDesc, setSituationDesc] = useState("");
 
   // Auto-skip step 1 if profile already exists
   useEffect(() => {
@@ -64,14 +78,23 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
   const handleCategorySelect = (categoryId: CategoryId) => {
     setSelectedCategory(categoryId);
     if (categoryId !== "custom") {
-      setStep(3);
+      setStep(3); // go to describe step
     }
   };
 
   const handleCustomTopicSubmit = () => {
     if (customTopic.trim()) {
-      setStep(3);
+      setStep(4); // custom already has description, skip to spread selection
     }
+  };
+
+  const handleDescribeNext = () => {
+    setStep(4);
+  };
+
+  const handleDescribeSkip = () => {
+    setSituationDesc("");
+    setStep(4);
   };
 
   const getTopicText = (): string => {
@@ -82,14 +105,25 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
 
   const handleSpreadSelect = (spreadId: string) => {
     const topic = getTopicText();
-    const params = topic ? `?topic=${encodeURIComponent(topic)}` : "";
-    router.push(`/reading/${spreadId}${params}`);
+    const params = new URLSearchParams();
+    if (topic) params.set("topic", topic);
+    if (selectedCategory !== "custom" && situationDesc.trim()) {
+      params.set("desc", situationDesc.trim());
+    }
+    const queryString = params.toString();
+    router.push(`/reading/${spreadId}${queryString ? `?${queryString}` : ""}`);
   };
 
   const handleStepBack = () => {
-    if (step === 3) {
+    if (step === 4) {
+      if (selectedCategory === "custom") {
+        setStep(2); // custom has no describe step
+      } else {
+        setStep(3); // back to describe
+      }
+    } else if (step === 3) {
+      setSituationDesc("");
       setSelectedCategory(null);
-      setCustomTopic("");
       setStep(2);
     } else if (step === 2) {
       if (!getUserProfile()) {
@@ -109,11 +143,18 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
       ? CATEGORIES.find((c) => c.id === selectedCategory)?.spreadIds ?? []
       : [];
 
+  const stepLabels = [
+    t("guide.stepProfile"),
+    t("guide.stepCategory"),
+    t("guide.stepDescribe"),
+    t("guide.stepSpread"),
+  ];
+
   return (
     <div className="animate-fadeUp max-w-[500px] w-full">
       {/* Step Indicator */}
       <div className="flex items-center justify-center gap-3 mb-8">
-        {[1, 2, 3].map((s) => (
+        {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map((s) => (
           <div key={s} className="flex items-center gap-3">
             <div
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300
@@ -124,7 +165,7 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
                     : "bg-white/15"
                 }`}
             />
-            {s < 3 && (
+            {s < TOTAL_STEPS && (
               <div className={`w-8 h-px transition-colors duration-300 ${s < step ? "bg-zen-gold/30" : "bg-white/10"}`} />
             )}
           </div>
@@ -133,11 +174,7 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
 
       {/* Step Labels */}
       <div className="flex justify-between mb-6 px-2">
-        {[
-          t("guide.stepProfile"),
-          t("guide.stepCategory"),
-          t("guide.stepSpread"),
-        ].map((label, i) => (
+        {stepLabels.map((label, i) => (
           <span
             key={i}
             className={`text-[10px] tracking-wider transition-colors duration-300
@@ -238,8 +275,52 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
         </div>
       )}
 
-      {/* Step 3: Recommended Spreads */}
-      {step === 3 && selectedCategory && (
+      {/* Step 3: Describe Situation (optional, preset categories only) */}
+      {step === 3 && selectedCategory && selectedCategory !== "custom" && (
+        <div className="animate-fadeUp">
+          <div className="bg-white/[0.03] rounded-xl border border-zen-gold/15 p-5">
+            <div className="text-[15px] text-white/90 mb-1">
+              {t("guide.describeTitle")}
+            </div>
+            <div className="text-xs text-white/40 mb-4">
+              {t("guide.describeSubtitle")}
+            </div>
+            <textarea
+              value={situationDesc}
+              onChange={(e) => {
+                if (e.target.value.length <= 100) setSituationDesc(e.target.value);
+              }}
+              placeholder={t(DESCRIBE_PLACEHOLDER_KEYS[selectedCategory])}
+              className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2.5
+                       text-sm text-white/70 placeholder-white/30 resize-none
+                       focus:outline-none focus:border-zen-gold/30 transition-colors"
+              rows={3}
+              autoFocus
+            />
+            <div className="text-right text-[10px] text-white/25 mt-1">
+              {situationDesc.length}/100
+            </div>
+            <button
+              onClick={handleDescribeNext}
+              className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
+                       bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
+                       hover:bg-zen-gold/[0.15] transition-all duration-300"
+            >
+              {t("guide.describeNext")}
+            </button>
+            <button
+              onClick={handleDescribeSkip}
+              className="mt-2 w-full text-white/35 text-xs tracking-wider
+                       hover:text-white/55 transition-colors duration-200"
+            >
+              {t("guide.describeSkip")}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4: Recommended Spreads */}
+      {step === 4 && selectedCategory && (
         <div className="animate-fadeUp flex flex-col gap-3">
           {selectedCategorySpreads.map((spreadId, idx) => {
             const spreadData = SPREADS.find((s) => s.id === spreadId);

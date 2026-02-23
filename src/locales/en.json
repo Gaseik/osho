@@ -57,7 +57,18 @@
     "categoryCustom": "Custom Topic",
     "categoryCustomDesc": "Type your own question or topic",
     "customTopicPlaceholder": "e.g. I've been arguing with my partner a lot lately...",
-    "customTopicSubmit": "Choose Spread"
+    "customTopicSubmit": "Choose Spread",
+    "stepDescribe": "Describe",
+    "describeTitle": "Want to describe your situation?",
+    "describeSubtitle": "This helps AI give you a more personalized reading",
+    "describeNext": "Next",
+    "describeSkip": "Skip",
+    "describePlaceholderDaily": "e.g. I have an important meeting today",
+    "describePlaceholderRelationship": "e.g. Having some tension with my partner",
+    "describePlaceholderCareer": "e.g. Considering a career change",
+    "describePlaceholderDecision": "e.g. Deciding whether to move to another city",
+    "describePlaceholderSelf": "e.g. Feeling a bit lost lately",
+    "describePlaceholderSpiritual": "e.g. Want to understand my inner state better"
   },
   "spread": {
     "selectTitle": "Choose Your Spread",

@@ -22,6 +22,7 @@ interface ResultPhaseProps {
   flippedCount: number;
   copied: boolean;
   topic?: string;
+  description?: string;
   onFlipped: () => void;
   onCopyPrompt: () => void;
   onReset: () => void;
@@ -33,6 +34,7 @@ export default function ResultPhase({
   flippedCount,
   copied,
   topic,
+  description,
   onFlipped,
   onCopyPrompt,
   onReset,
@@ -121,6 +123,7 @@ export default function ResultPhase({
           locale: i18n.language,
           ...(userProfile && { userProfile }),
           ...(topic && { topic }),
+          ...(description && { description }),
         }),
       });
 

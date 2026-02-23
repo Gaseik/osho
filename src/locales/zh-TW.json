@@ -57,7 +57,18 @@
     "categoryCustom": "自定義主題",
     "categoryCustomDesc": "輸入你想問的問題或主題",
     "customTopicPlaceholder": "例如：最近跟另一半常吵架，想知道該怎麼相處...",
-    "customTopicSubmit": "選擇牌陣"
+    "customTopicSubmit": "選擇牌陣",
+    "stepDescribe": "描述狀況",
+    "describeTitle": "想更具體地描述一下嗎？",
+    "describeSubtitle": "填寫後 AI 解讀會更貼近你的狀況",
+    "describeNext": "下一步",
+    "describeSkip": "跳過",
+    "describePlaceholderDaily": "例如：今天有個重要的會議",
+    "describePlaceholderRelationship": "例如：最近跟另一半有點冷戰",
+    "describePlaceholderCareer": "例如：在考慮要不要換工作",
+    "describePlaceholderDecision": "例如：在猶豫要不要搬到另一個城市",
+    "describePlaceholderSelf": "例如：最近感覺迷失方向",
+    "describePlaceholderSpiritual": "例如：想更了解自己的內在狀態"
   },
   "spread": {
     "selectTitle": "選擇你的牌陣",
