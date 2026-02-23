@@ -2,7 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import SpreadSelector from "../../components/SpreadSelector";
-import LanguageSwitcher from "../../components/LanguageSwitcher";
+import SideMenu from "../../components/SideMenu";
 
 export default function ReadingPage() {
   const { t } = useTranslation();
@@ -12,7 +12,7 @@ export default function ReadingPage() {
       className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
-      <LanguageSwitcher />
+      <SideMenu />
 
       {/* Header */}
       <div className="text-center animate-fadeUp mb-10">

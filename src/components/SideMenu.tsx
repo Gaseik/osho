@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02, HelpCircle } from '@untitled-ui/icons-react';
 import { getRecords } from '../utils/divinationRecords';
 
-export default function LanguageSwitcher() {
+export default function SideMenu() {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [recordCount, setRecordCount] = useState(0);
@@ -25,7 +25,7 @@ export default function LanguageSwitcher() {
       {/* Hamburger button — top left */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed top-6 left-6 w-10 h-10 flex items-center justify-center
+        className="fixed top-10 left-4 w-10 h-10 flex items-center justify-center
                    rounded-lg border border-zen-gold/30 bg-zen-gold/5 text-zen-gold-dim
                    hover:bg-zen-gold/10 hover:border-zen-gold/50 transition-all duration-300 z-50"
       >
