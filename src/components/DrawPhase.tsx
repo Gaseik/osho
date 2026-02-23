@@ -17,10 +17,10 @@ interface DrawPhaseProps {
 type Stage = 'idle' | 'shuffling' | 'stacked' | 'fanned' | 'exiting';
 
 function useWindowWidth() {
-  const [width, setWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1024
-  );
+  // Use consistent initial value for SSR/client to prevent hydration mismatch CLS
+  const [width, setWidth] = useState(1024);
   useEffect(() => {
+    setWidth(window.innerWidth);
     const onResize = () => setWidth(window.innerWidth);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
@@ -228,20 +228,24 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         <p className="text-zen-gold/50 text-[13px]">
           {t('draw.selected', { current: drawn.length, total: spread.count })}
         </p>
-        {drawn.length < spread.count && (
-          <p className="text-zen-gold/80 text-sm mt-2 tracking-wider">
-            {t('draw.nextPosition', {
-              label: i18n.language === 'zh-TW'
-                ? POSITION_LABELS[spread.id]?.[drawn.length]
-                : t(`spread.${spread.id}Labels.${drawn.length}`)
-            })}
-          </p>
-        )}
+        <p
+          className="text-zen-gold/80 text-sm mt-2 tracking-wider transition-opacity duration-300"
+          style={{
+            opacity: drawn.length < spread.count ? 1 : 0,
+            minHeight: '1.5rem',
+          }}
+        >
+          {drawn.length < spread.count && t('draw.nextPosition', {
+            label: i18n.language === 'zh-TW'
+              ? POSITION_LABELS[spread.id]?.[drawn.length]
+              : t(`spread.${spread.id}Labels.${drawn.length}`)
+          })}
+        </p>
       </div>
 
-      {/* Drawn cards stack */}
-      {drawn.length > 0 && stage !== 'idle' && (
-        <div className="flex justify-center mt-4">
+      {/* Drawn cards stack — fixed height placeholder prevents CLS */}
+      <div style={{ minHeight: stage !== 'idle' ? 106 : 0 }} className="flex justify-center mt-4">
+        {drawn.length > 0 && stage !== 'idle' && (
           <div className="flex">
             {drawn.map((card, i) => {
               const posLabel = i18n.language === 'zh-TW'
@@ -266,6 +270,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
                   <img
                     src="/assets/cardback.jpeg"
                     alt=""
+                    width={60}
+                    height={90}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                   <div
@@ -294,19 +300,25 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
               );
             })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Shuffle button */}
-      {stage === 'idle' && (
-        <div className="animate-fadeUp flex flex-col items-center mt-16">
-          <button onClick={handleShuffle} className="shuffle-btn">
-            <span className="shuffle-btn-icon">☯︎</span>
-            <span>{t('draw.shuffle')}</span>
-          </button>
-          <p className="text-white/30 text-xs mt-4">{t('draw.shuffleHint')}</p>
-        </div>
-      )}
+      {/* Shuffle button — use opacity transition instead of conditional render to prevent CLS */}
+      <div
+        className="flex flex-col items-center mt-16 transition-opacity duration-300"
+        style={{
+          opacity: stage === 'idle' ? 1 : 0,
+          pointerEvents: stage === 'idle' ? 'auto' : 'none',
+          position: stage === 'idle' ? 'relative' : 'absolute',
+          visibility: stage === 'idle' ? 'visible' : 'hidden',
+        }}
+      >
+        <button onClick={handleShuffle} className="shuffle-btn">
+          <span className="shuffle-btn-icon">☯︎</span>
+          <span>{t('draw.shuffle')}</span>
+        </button>
+        <p className="text-white/30 text-xs mt-4">{t('draw.shuffleHint')}</p>
+      </div>
 
       {/* Fan scene */}
       {stage !== 'idle' && (
