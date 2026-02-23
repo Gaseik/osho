@@ -78,12 +78,21 @@ function getAssessmentEn(spreadId: string): string {
    ### Work & Practical Life`;
 }
 
+function buildTopicContextZh(topic: string): string {
+  return `\n\n用戶的提問主題：「${topic}」\n請特別針對這個主題方向來解讀牌面，讓解讀緊扣用戶關心的議題。`;
+}
+
+function buildTopicContextEn(topic: string): string {
+  return `\n\nUser's topic/question: "${topic}"\nPlease focus the reading specifically on this topic, making the interpretation directly relevant to what the user is asking about.`;
+}
+
 function buildPrompt(
   spread: string,
   spreadId: string,
   cards: CardInfo[],
   locale: string,
-  userProfile?: UserProfileInfo
+  userProfile?: UserProfileInfo,
+  topic?: string
 ): string {
   const isZh = locale.startsWith("zh");
 
@@ -119,7 +128,7 @@ ${assessment}
 
 用戶使用「${spread}」牌陣抽了以下的禪卡：
 
-${cardLines}${userProfile ? buildUserContextZh(userProfile) : ""}`;
+${cardLines}${topic ? buildTopicContextZh(topic) : ""}${userProfile ? buildUserContextZh(userProfile) : ""}`;
   }
 
   const cardLines = cards
@@ -152,7 +161,7 @@ Close with a blockquote (>) containing one brief, powerful sentence.
 
 The user drew the following cards using the "${spread}" spread:
 
-${cardLines}${userProfile ? buildUserContextEn(userProfile) : ""}`;
+${cardLines}${topic ? buildTopicContextEn(topic) : ""}${userProfile ? buildUserContextEn(userProfile) : ""}`;
 }
 
 export async function POST(request: Request) {
@@ -165,7 +174,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo };
+  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string };
   try {
     body = await request.json();
   } catch {
@@ -175,7 +184,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { spread, spreadId, cards, locale, userProfile } = body;
+  const { spread, spreadId, cards, locale, userProfile, topic } = body;
   if (!spread || !cards?.length || !locale) {
     return Response.json(
       { error: "Missing required fields" },
@@ -183,7 +192,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const prompt = buildPrompt(spread, spreadId ?? "", cards, locale, userProfile);
+  const prompt = buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic);
 
   try {
     const groq = new Groq({ apiKey });

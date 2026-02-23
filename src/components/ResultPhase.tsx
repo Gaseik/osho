@@ -21,6 +21,7 @@ interface ResultPhaseProps {
   drawn: Card[];
   flippedCount: number;
   copied: boolean;
+  topic?: string;
   onFlipped: () => void;
   onCopyPrompt: () => void;
   onReset: () => void;
@@ -31,6 +32,7 @@ export default function ResultPhase({
   drawn,
   flippedCount,
   copied,
+  topic,
   onFlipped,
   onCopyPrompt,
   onReset,
@@ -118,6 +120,7 @@ export default function ResultPhase({
           cards,
           locale: i18n.language,
           ...(userProfile && { userProfile }),
+          ...(topic && { topic }),
         }),
       });
 

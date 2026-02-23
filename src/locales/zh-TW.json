@@ -53,7 +53,11 @@
     "categorySelf": "自我探索",
     "categorySelfDesc": "內在狀態與自我了解",
     "categorySpiritual": "靈性成長",
-    "categorySpiritualDesc": "靈性覺察與生命意義"
+    "categorySpiritualDesc": "靈性覺察與生命意義",
+    "categoryCustom": "自定義主題",
+    "categoryCustomDesc": "輸入你想問的問題或主題",
+    "customTopicPlaceholder": "例如：最近跟另一半常吵架，想知道該怎麼相處...",
+    "customTopicSubmit": "選擇牌陣"
   },
   "spread": {
     "selectTitle": "選擇你的牌陣",

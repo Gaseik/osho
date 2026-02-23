@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Card, CARDS, shuffle } from "../../../data/cards";
 import { SPREADS, POSITION_LABELS } from "../../../data/spreads";
@@ -15,7 +15,9 @@ export default function ReadingSpreadPage() {
   const { t, i18n } = useTranslation();
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const spreadId = params.spreadId as string;
+  const topic = searchParams.get("topic") || "";
   const spread = SPREADS.find((s) => s.id === spreadId);
 
   const [phase, setPhase] = useState<Phase>("draw");
@@ -116,6 +118,7 @@ export default function ReadingSpreadPage() {
           drawn={drawn}
           flippedCount={flippedCount}
           copied={copied}
+          topic={topic}
           onFlipped={() => setFlippedCount((p) => p + 1)}
           onCopyPrompt={copyPrompt}
           onReset={reset}

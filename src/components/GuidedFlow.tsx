@@ -7,7 +7,7 @@ import UserProfileEditor from "./UserProfileEditor";
 import { getUserProfile } from "../utils/userProfile";
 import { SPREADS } from "../data/spreads";
 
-type CategoryId = "daily" | "relationship" | "career" | "decision" | "self" | "spiritual";
+type CategoryId = "daily" | "relationship" | "career" | "decision" | "self" | "spiritual" | "custom";
 
 interface CategoryConfig {
   id: CategoryId;
@@ -32,6 +32,7 @@ const CATEGORY_ICONS: Record<CategoryId, string> = {
   decision: "⚖",
   self: "◎",
   spiritual: "❋",
+  custom: "✎",
 };
 
 interface GuidedFlowProps {
@@ -43,6 +44,7 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null);
+  const [customTopic, setCustomTopic] = useState("");
 
   // Auto-skip step 1 if profile already exists
   useEffect(() => {
@@ -61,16 +63,33 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
 
   const handleCategorySelect = (categoryId: CategoryId) => {
     setSelectedCategory(categoryId);
-    setStep(3);
+    if (categoryId !== "custom") {
+      setStep(3);
+    }
+  };
+
+  const handleCustomTopicSubmit = () => {
+    if (customTopic.trim()) {
+      setStep(3);
+    }
+  };
+
+  const getTopicText = (): string => {
+    if (selectedCategory === "custom") return customTopic.trim();
+    if (!selectedCategory) return "";
+    return t(CATEGORIES.find((c) => c.id === selectedCategory)?.labelKey ?? "");
   };
 
   const handleSpreadSelect = (spreadId: string) => {
-    router.push(`/reading/${spreadId}`);
+    const topic = getTopicText();
+    const params = topic ? `?topic=${encodeURIComponent(topic)}` : "";
+    router.push(`/reading/${spreadId}${params}`);
   };
 
   const handleStepBack = () => {
     if (step === 3) {
       setSelectedCategory(null);
+      setCustomTopic("");
       setStep(2);
     } else if (step === 2) {
       if (!getUserProfile()) {
@@ -83,9 +102,12 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
     }
   };
 
-  const selectedCategorySpreads = selectedCategory
-    ? CATEGORIES.find((c) => c.id === selectedCategory)?.spreadIds ?? []
-    : [];
+  // For custom topic, show all spreads; otherwise show category-specific ones
+  const selectedCategorySpreads = selectedCategory === "custom"
+    ? SPREADS.map((s) => s.id)
+    : selectedCategory
+      ? CATEGORIES.find((c) => c.id === selectedCategory)?.spreadIds ?? []
+      : [];
 
   return (
     <div className="animate-fadeUp max-w-[500px] w-full">
@@ -168,6 +190,51 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
               </div>
             </button>
           ))}
+
+          {/* Custom Topic Option */}
+          {selectedCategory !== "custom" ? (
+            <button
+              onClick={() => handleCategorySelect("custom")}
+              className="p-4 px-5 rounded-xl bg-white/[0.03] border border-dashed border-white/20
+                       transition-all duration-300 hover:bg-zen-gold/[0.08] hover:border-zen-gold/30
+                       text-left flex items-center gap-4"
+            >
+              <span className="text-2xl w-8 text-center opacity-70">
+                {CATEGORY_ICONS.custom}
+              </span>
+              <div>
+                <div className="text-[15px] text-white/90">{t("guide.categoryCustom")}</div>
+                <div className="text-xs text-white/45 mt-0.5">{t("guide.categoryCustomDesc")}</div>
+              </div>
+            </button>
+          ) : (
+            <div className="animate-fadeUp p-4 px-5 rounded-xl bg-white/[0.03] border border-zen-gold/30">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-lg opacity-70">{CATEGORY_ICONS.custom}</span>
+                <span className="text-[15px] text-white/90">{t("guide.categoryCustom")}</span>
+              </div>
+              <textarea
+                value={customTopic}
+                onChange={(e) => setCustomTopic(e.target.value)}
+                placeholder={t("guide.customTopicPlaceholder")}
+                className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2.5
+                         text-sm text-white/70 placeholder-white/30 resize-none
+                         focus:outline-none focus:border-zen-gold/30 transition-colors"
+                rows={2}
+                autoFocus
+              />
+              <button
+                onClick={handleCustomTopicSubmit}
+                disabled={!customTopic.trim()}
+                className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
+                         bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
+                         hover:bg-zen-gold/[0.15] transition-all duration-300
+                         disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                {t("guide.customTopicSubmit")}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
