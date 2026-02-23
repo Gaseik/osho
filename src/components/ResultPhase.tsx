@@ -51,6 +51,7 @@ export default function ResultPhase({
   const [aiState, setAiState] = useState<AiState>("idle");
   const [aiText, setAiText] = useState("");
   const [aiError, setAiError] = useState("");
+  const [isRateLimited, setIsRateLimited] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
   const [showPromptLink, setShowPromptLink] = useState(false);
   const [readingCopied, setReadingCopied] = useState(false);
@@ -95,6 +96,7 @@ export default function ResultPhase({
     setAiState("loading");
     setAiText("");
     setAiError("");
+    setIsRateLimited(false);
     setShowPrompt(false);
     setShowPromptLink(false);
 
@@ -130,6 +132,9 @@ export default function ResultPhase({
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
         console.log("AI reading error:", response.status, errData);
+        if (response.status === 429) {
+          setIsRateLimited(true);
+        }
         setAiError(errData.error || `HTTP ${response.status}`);
         setAiState("error");
         setShowPrompt(true);
@@ -323,14 +328,24 @@ export default function ResultPhase({
 
         {/* Error Message */}
         {aiState === "error" && (
-          <div className="bg-white/[0.03] rounded-xl border border-red-500/20 p-4 max-w-[500px] w-full text-left mb-2">
+          <div className={`bg-white/[0.03] rounded-xl border ${isRateLimited ? 'border-zen-gold/30' : 'border-red-500/20'} p-4 max-w-[500px] w-full text-left mb-2`}>
             <div className="text-xs text-white/60 leading-relaxed">
-              {t('result.aiReadingError')}
+              {isRateLimited ? t('result.rateLimitError') : t('result.aiReadingError')}
             </div>
-            {aiError && (
+            {aiError && !isRateLimited && (
               <div className="mt-2 text-[10px] text-red-400/70 font-mono leading-relaxed break-all">
                 {aiError}
               </div>
+            )}
+            {isRateLimited && (
+              <button
+                onClick={handleAiReading}
+                className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
+                         bg-zen-gold/[0.08] text-zen-gold text-xs tracking-wider
+                         hover:bg-zen-gold/[0.15] transition-all duration-300"
+              >
+                {t('result.retryReading')}
+              </button>
             )}
           </div>
         )}
