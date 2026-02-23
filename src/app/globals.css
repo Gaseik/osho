@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ================================================
+   Font fallback: prevent CLS from font swap
+   ================================================ */
+@font-face {
+  font-family: 'Georgia';
+  src: local('Georgia');
+  font-display: swap;
+  size-adjust: 100%;
+  ascent-override: normal;
+  descent-override: normal;
+  line-gap-override: normal;
+}
+
 body {
   margin: 0;
   font-family: 'Georgia', serif;
@@ -250,11 +263,9 @@ body {
 @keyframes stackSlideIn {
   from {
     opacity: 0;
-    transform: translateY(30px) scale(0.6);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
   }
 }
 

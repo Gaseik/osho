@@ -173,8 +173,9 @@ export default function SideMenu() {
           <div className="pb-8 flex justify-center">
             <a href="https://ko-fi.com/I2I51TYYE8" target="_blank" rel="noopener noreferrer">
               <img
-                height="36"
-                style={{ border: 0, height: 36 }}
+                width={143}
+                height={36}
+                style={{ border: 0, height: 36, width: 143 }}
                 src="https://storage.ko-fi.com/cdn/kofi3.png?v=6"
                 alt="Buy Me a Coffee at ko-fi.com"
               />

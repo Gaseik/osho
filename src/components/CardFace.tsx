@@ -49,6 +49,8 @@ export default function CardFace({ card, label, small }: CardFaceProps) {
           key={useFallback ? 'fallback' : 'primary'}
           src={getImagePath()}
           alt={card.name}
+          width={small ? 100 : 140}
+          height={small ? 150 : 210}
           onError={handleImageError}
           style={{
             width: "100%",
