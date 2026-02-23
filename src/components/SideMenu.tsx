@@ -3,16 +3,21 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02, HelpCircle } from '@untitled-ui/icons-react';
+import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02, HelpCircle, User01 } from '@untitled-ui/icons-react';
 import { getRecords } from '../utils/divinationRecords';
+import { getUserProfile } from '../utils/userProfile';
 
 export default function SideMenu() {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [recordCount, setRecordCount] = useState(0);
+  const [hasProfile, setHasProfile] = useState(false);
 
   useEffect(() => {
-    if (open) setRecordCount(getRecords().length);
+    if (open) {
+      setRecordCount(getRecords().length);
+      setHasProfile(!!getUserProfile());
+    }
   }, [open]);
 
   const toggleLanguage = () => {
@@ -65,6 +70,20 @@ export default function SideMenu() {
           >
             <MagicWand02 width={18} height={18} />
             <span className="text-sm tracking-wider">{t('menu.reading')}</span>
+          </Link>
+
+          {/* Profile */}
+          <Link
+            href="/profile"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                       transition-colors"
+          >
+            <User01 width={18} height={18} />
+            <span className="text-sm tracking-wider">{t('menu.profile')}</span>
+            {hasProfile && (
+              <span className="ml-auto text-xs text-zen-gold/60">✓</span>
+            )}
           </Link>
 
           {/* Card Meanings */}

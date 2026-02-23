@@ -7,7 +7,7 @@ import { Card, CARDS, shuffle } from "../../../data/cards";
 import { SPREADS, POSITION_LABELS } from "../../../data/spreads";
 import DrawPhase from "../../../components/DrawPhase";
 import ResultPhase from "../../../components/ResultPhase";
-import LanguageSwitcher from "../../../components/LanguageSwitcher";
+import SideMenu from "../../../components/SideMenu";
 
 type Phase = "draw" | "result";
 
@@ -84,7 +84,7 @@ export default function ReadingSpreadPage() {
       className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
-      <LanguageSwitcher />
+      <SideMenu />
 
       {/* Header */}
       <div className={`text-center animate-fadeUp ${phase === "result" ? "mb-4" : "mb-10"}`}>

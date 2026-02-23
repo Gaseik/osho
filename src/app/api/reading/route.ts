@@ -10,6 +10,36 @@ interface CardInfo {
   meaningEn: string;
 }
 
+interface UserProfileInfo {
+  name?: string;
+  gender?: string;
+  age?: string;
+}
+
+function buildUserContextZh(profile: UserProfileInfo): string {
+  const parts: string[] = [];
+  if (profile.name) parts.push(`稱呼：${profile.name}`);
+  if (profile.gender) {
+    const genderMap: Record<string, string> = { male: "男性", female: "女性", other: "其他" };
+    parts.push(`性別：${genderMap[profile.gender] || profile.gender}`);
+  }
+  if (profile.age) parts.push(`年齡：${profile.age} 歲`);
+  if (parts.length === 0) return "";
+  return `\n\n用戶資訊：\n${parts.join("\n")}\n請根據用戶的背景資訊，讓解讀更加個人化和貼近。`;
+}
+
+function buildUserContextEn(profile: UserProfileInfo): string {
+  const parts: string[] = [];
+  if (profile.name) parts.push(`Name: ${profile.name}`);
+  if (profile.gender) {
+    const genderMap: Record<string, string> = { male: "Male", female: "Female", other: "Other" };
+    parts.push(`Gender: ${genderMap[profile.gender] || profile.gender}`);
+  }
+  if (profile.age) parts.push(`Age: ${profile.age}`);
+  if (parts.length === 0) return "";
+  return `\n\nUser info:\n${parts.join("\n")}\nPlease personalize the reading based on the user's background.`;
+}
+
 function getAssessmentZh(spreadId: string): string {
   if (spreadId === "relationship") {
     return `「## 多層面評估」底下分三個小節（用 ### 標記）：
@@ -52,7 +82,8 @@ function buildPrompt(
   spread: string,
   spreadId: string,
   cards: CardInfo[],
-  locale: string
+  locale: string,
+  userProfile?: UserProfileInfo
 ): string {
   const isZh = locale.startsWith("zh");
 
@@ -88,7 +119,7 @@ ${assessment}
 
 用戶使用「${spread}」牌陣抽了以下的禪卡：
 
-${cardLines}`;
+${cardLines}${userProfile ? buildUserContextZh(userProfile) : ""}`;
   }
 
   const cardLines = cards
@@ -121,7 +152,7 @@ Close with a blockquote (>) containing one brief, powerful sentence.
 
 The user drew the following cards using the "${spread}" spread:
 
-${cardLines}`;
+${cardLines}${userProfile ? buildUserContextEn(userProfile) : ""}`;
 }
 
 export async function POST(request: Request) {
@@ -134,7 +165,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string };
+  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo };
   try {
     body = await request.json();
   } catch {
@@ -144,7 +175,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { spread, spreadId, cards, locale } = body;
+  const { spread, spreadId, cards, locale, userProfile } = body;
   if (!spread || !cards?.length || !locale) {
     return Response.json(
       { error: "Missing required fields" },
@@ -152,7 +183,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const prompt = buildPrompt(spread, spreadId ?? "", cards, locale);
+  const prompt = buildPrompt(spread, spreadId ?? "", cards, locale, userProfile);
 
   try {
     const groq = new Groq({ apiKey });
