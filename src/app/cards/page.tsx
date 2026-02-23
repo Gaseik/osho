@@ -5,9 +5,9 @@ import LanguageSwitcher from "../../components/LanguageSwitcher";
 import { CARD_DETAILS, getCardImagePath, getSuitLabel } from "../../data/cardDetails";
 
 export const metadata: Metadata = {
-  title: "禪卡牌義總覽 | 79張奧修禪卡完整解讀 | 禪意靈卡",
+  title: "79 張禪卡牌義解讀 | 禪意靈卡",
   description:
-    "79張奧修禪卡（Osho Zen Tarot）完整牌義總覽。包含大阿爾克納、火、水、雲、彩虹五大牌組的牌義解讀。免費線上奧修禪卡抽牌與牌義查詢。",
+    "完整 79 張奧修禪卡牌義解讀，包含大阿爾克納、火、水、雲、彩虹牌組。中英雙語。",
   keywords: [
     "奧修禪卡",
     "禪卡牌義",
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
     "禪卡總覽",
   ],
   openGraph: {
-    title: "禪卡牌義總覽 | 79張奧修禪卡完整解讀",
-    description: "79張奧修禪卡完整牌義總覽，按牌組分類",
+    title: "79 張禪卡牌義解讀 | 禪意靈卡",
+    description: "完整 79 張奧修禪卡牌義解讀，包含大阿爾克納、火、水、雲、彩虹牌組。中英雙語。",
   },
 };
 
@@ -34,7 +34,7 @@ export default function CardsPage() {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
+      className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
                   text-white font-serif px-4 py-10"
     >
       <LanguageSwitcher />
