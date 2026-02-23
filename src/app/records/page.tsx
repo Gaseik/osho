@@ -152,15 +152,6 @@ export default function RecordsPage() {
         />
       </div>
 
-      {/* Back to reading */}
-      <Link
-        href="/reading"
-        className="text-zen-gold/50 text-xs tracking-wider hover:text-zen-gold/80
-                   transition-colors mb-6"
-      >
-        ← {t("record.backToReading")}
-      </Link>
-
       {/* Records */}
       <div className="w-full max-w-[540px] flex flex-col gap-4 animate-fadeUp">
         {records.length === 0 ? (

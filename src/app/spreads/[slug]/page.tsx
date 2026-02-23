@@ -231,7 +231,7 @@ export default async function SpreadDetailPage({
         {/* CTA */}
         <div className="text-center mt-12 mb-10 animate-fadeUp">
           <Link
-            href={`/reading?spread=${spread.id}`}
+            href={`/reading/${spread.id}`}
             className="inline-flex items-center gap-3 px-8 py-3 rounded-full
                        border border-zen-gold/35
                        bg-gradient-to-r from-zen-gold/[0.08] to-zen-gold/[0.02]

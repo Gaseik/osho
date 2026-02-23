@@ -12,7 +12,6 @@ interface DrawPhaseProps {
   drawn: Card[];
   onDrawCard: (index: number) => void;
   onComplete?: () => void;
-  onBack?: () => void;
 }
 
 type Stage = 'idle' | 'shuffling' | 'stacked' | 'fanned' | 'exiting';
@@ -29,7 +28,7 @@ function useWindowWidth() {
   return width;
 }
 
-export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete, onBack }: DrawPhaseProps) {
+export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete }: DrawPhaseProps) {
   const { t, i18n } = useTranslation();
   const [stage, setStage] = useState<Stage>('idle');
   const [selectedIndex, setSelectedIndex] = useState(40);
@@ -221,16 +220,6 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete,
 
   return (
     <>
-      {/* Back to spread selection */}
-      {onBack && drawn.length === 0 && (
-        <button
-          onClick={onBack}
-          className="animate-fadeUp text-zen-gold/50 text-xs tracking-wider hover:text-zen-gold/80 transition-colors mb-4"
-        >
-          ← {t('draw.reselect')}
-        </button>
-      )}
-
       {/* Info text */}
       <div className="animate-fadeUp text-center w-full mb-4">
         <p className="text-white/60 text-sm mb-2">
