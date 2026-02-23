@@ -12,7 +12,6 @@ interface DrawPhaseProps {
   drawn: Card[];
   onDrawCard: (index: number) => void;
   onComplete?: () => void;
-  onBack?: () => void;
 }
 
 type Stage = 'idle' | 'shuffling' | 'stacked' | 'fanned' | 'exiting';
@@ -29,7 +28,7 @@ function useWindowWidth() {
   return width;
 }
 
-export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete, onBack }: DrawPhaseProps) {
+export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete }: DrawPhaseProps) {
   const { t, i18n } = useTranslation();
   const [stage, setStage] = useState<Stage>('idle');
   const [selectedIndex, setSelectedIndex] = useState(40);
