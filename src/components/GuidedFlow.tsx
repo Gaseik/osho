@@ -183,17 +183,19 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
                 onClick={() => handleSpreadSelect(spreadId)}
                 className="p-5 px-6 rounded-xl bg-white/[0.03] border border-zen-gold/15
                          transition-all duration-300 hover:bg-zen-gold/[0.08] hover:border-zen-gold/40
-                         text-left relative"
+                         text-left"
               >
-                {idx === 0 && (
-                  <span className="absolute top-3 right-4 text-[10px] bg-zen-gold/20 text-zen-gold
-                                   px-2 py-0.5 rounded-full border border-zen-gold/30 tracking-wider">
-                    {t("guide.recommended")}
-                  </span>
-                )}
                 <div className="flex justify-between items-center">
-                  <div className="text-[15px] text-white/90">
-                    {t(`spread.${spreadId}`)}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[15px] text-white/90">
+                      {t(`spread.${spreadId}`)}
+                    </span>
+                    {idx === 0 && (
+                      <span className="text-[10px] bg-zen-gold/20 text-zen-gold
+                                       px-2 py-0.5 rounded-full border border-zen-gold/30 tracking-wider">
+                        {t("guide.recommended")}
+                      </span>
+                    )}
                   </div>
                   <div className="text-xs text-zen-gold-dim">
                     {spreadData.count}{t("spread.cards")}
