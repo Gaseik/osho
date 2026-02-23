@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
-import BackButton from "../../../components/BackButton";
 import CardDetailContent from "../../../components/CardDetailContent";
 import { CARD_DETAILS, getCardBySlug } from "../../../data/cardDetails";
 import zhTW from "../../../locales/zh-TW.json";
@@ -59,7 +58,6 @@ export default async function CardDetailPage({
                   text-white font-serif px-4 py-10"
     >
       <LanguageSwitcher />
-      <BackButton href="/cards" />
       <CardDetailContent card={card} prev={prev} next={next} />
     </div>
   );

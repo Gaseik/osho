@@ -22,10 +22,10 @@ export default function LanguageSwitcher() {
 
   return (
     <>
-      {/* Hamburger button — top right */}
+      {/* Hamburger button — top left */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed top-6 right-6 w-10 h-10 flex items-center justify-center
+        className="fixed top-6 left-6 w-10 h-10 flex items-center justify-center
                    rounded-lg border border-zen-gold/30 bg-zen-gold/5 text-zen-gold-dim
                    hover:bg-zen-gold/10 hover:border-zen-gold/50 transition-all duration-300 z-50"
       >
@@ -44,12 +44,12 @@ export default function LanguageSwitcher() {
       {/* Side panel */}
       <div
         className="side-menu"
-        style={{ transform: open ? 'translateX(0)' : 'translateX(100%)' }}
+        style={{ transform: open ? 'translateX(0)' : 'translateX(-100%)' }}
       >
         {/* Close */}
         <button
           onClick={() => setOpen(false)}
-          className="absolute top-6 left-5 text-white/40 hover:text-white/70
+          className="absolute top-6 right-5 text-white/40 hover:text-white/70
                      transition-colors"
         >
           <XClose width={20} height={20} />

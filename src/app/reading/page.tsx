@@ -3,7 +3,6 @@
 import { useTranslation } from "react-i18next";
 import SpreadSelector from "../../components/SpreadSelector";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
-import BackButton from "../../components/BackButton";
 
 export default function ReadingPage() {
   const { t } = useTranslation();
@@ -14,7 +13,6 @@ export default function ReadingPage() {
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
       <LanguageSwitcher />
-      <BackButton href="/" />
 
       {/* Header */}
       <div className="text-center animate-fadeUp mb-10">

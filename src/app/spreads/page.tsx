@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
-import BackButton from "../../components/BackButton";
 import { SPREAD_DETAILS } from "../../data/spreadDetails";
 
 export const metadata: Metadata = {
@@ -28,7 +27,6 @@ export default function SpreadsPage() {
                   text-white font-serif px-4 py-10"
     >
       <LanguageSwitcher />
-      <BackButton href="/" />
 
       {/* Header */}
       <div className="text-center mb-12 animate-fadeUp">

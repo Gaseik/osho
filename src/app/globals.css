@@ -20,13 +20,13 @@ body {
 .side-menu {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   height: 100%;
   width: 260px;
   background: rgba(18, 18, 40, 0.97);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-left: 1px solid rgba(255, 215, 0, 0.12);
+  border-right: 1px solid rgba(255, 215, 0, 0.12);
   z-index: 50;
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }

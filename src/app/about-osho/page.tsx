@@ -3,7 +3,6 @@
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
-import BackButton from "../../components/BackButton";
 
 export default function AboutOshoPage() {
   const { t } = useTranslation();
@@ -35,7 +34,6 @@ export default function AboutOshoPage() {
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
       <LanguageSwitcher />
-      <BackButton href="/" />
 
       {/* Header */}
       <div className="text-center mb-12 animate-fadeUp">

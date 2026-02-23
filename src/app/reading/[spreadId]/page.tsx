@@ -8,7 +8,6 @@ import { SPREADS, POSITION_LABELS } from "../../../data/spreads";
 import DrawPhase from "../../../components/DrawPhase";
 import ResultPhase from "../../../components/ResultPhase";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
-import BackButton from "../../../components/BackButton";
 
 type Phase = "draw" | "result";
 
@@ -86,7 +85,6 @@ export default function ReadingSpreadPage() {
                     text-white font-serif flex flex-col items-center px-4 py-10"
     >
       <LanguageSwitcher />
-      <BackButton href="/reading" />
 
       {/* Header */}
       <div className={`text-center animate-fadeUp ${phase === "result" ? "mb-4" : "mb-10"}`}>

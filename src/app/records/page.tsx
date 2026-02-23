@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
-import BackButton from "../../components/BackButton";
 import {
   getRecords,
   deleteRecord,
@@ -138,7 +137,6 @@ export default function RecordsPage() {
                   text-white font-serif flex flex-col items-center px-4 py-10"
     >
       <LanguageSwitcher />
-      <BackButton href="/reading" />
 
       {/* Header */}
       <div className="text-center animate-fadeUp mb-8">
