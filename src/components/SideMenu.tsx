@@ -106,7 +106,7 @@ export default function SideMenu() {
                          transition-colors"
             >
               <BookOpen01 width={18} height={18} />
-              <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌義總覽' : 'Card Meanings'}</span>
+              <span className="text-sm tracking-wider">{t('menu.cardMeanings')}</span>
             </Link>
 
             {/* Spread Types */}
@@ -117,7 +117,7 @@ export default function SideMenu() {
                          transition-colors"
             >
               <Globe01 width={18} height={18} />
-              <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌陣介紹' : 'Spread Types'}</span>
+              <span className="text-sm tracking-wider">{t('menu.spreadTypes')}</span>
             </Link>
 
             {/* About Osho */}

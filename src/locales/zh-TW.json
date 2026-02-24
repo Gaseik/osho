@@ -9,7 +9,9 @@
     "records": "占卜紀錄",
     "reading": "奧修卡抽牌",
     "aboutOsho": "什麼是奧修",
-    "profile": "個人資料"
+    "profile": "個人資料",
+    "cardMeanings": "牌義總覽",
+    "spreadTypes": "牌陣介紹"
   },
   "profile": {
     "title": "個人資料",
