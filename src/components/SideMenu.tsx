@@ -63,7 +63,7 @@ export default function SideMenu() {
           <XClose width={20} height={20} />
         </button>
 
-        <div className="flex flex-col h-full pt-20 px-6">
+        <div className="flex flex-col h-full pt-20 px-6 overflow-y-auto">
           {/* Reading — always navigate to landing */}
           <button
             onClick={() => {
