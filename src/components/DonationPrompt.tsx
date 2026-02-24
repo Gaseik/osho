@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const READING_COUNT_KEY = "zen-reading-count";
-const MIN_READINGS_TO_SHOW = 3;
+const MIN_READINGS_TO_SHOW = 2;
 
 function getReadingCount(): number {
   if (typeof window === "undefined") return 0;
