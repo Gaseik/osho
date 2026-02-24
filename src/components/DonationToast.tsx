@@ -1,26 +1,49 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
+
+const READING_COUNT_KEY = "zen-reading-count";
+const MIN_READINGS_FOR_TOAST = 2;
+
+function getAndIncrementCount(): number {
+  if (typeof window === "undefined") return 0;
+  const current = parseInt(localStorage.getItem(READING_COUNT_KEY) || "0", 10) || 0;
+  const next = current + 1;
+  localStorage.setItem(READING_COUNT_KEY, String(next));
+  return next;
+}
 
 export default function DonationToast() {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
+  const hasChecked = useRef(false);
 
   const dismiss = useCallback(() => setDismissed(true), []);
 
+  // Check reading count on mount
   useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+    const count = getAndIncrementCount();
+    if (count >= MIN_READINGS_FOR_TOAST) {
+      setShouldRender(true);
+    }
+  }, []);
+
+  // Scroll listener — only if toast should render
+  useEffect(() => {
+    if (!shouldRender) return;
     let triggered = false;
 
     const onScroll = () => {
-      // Show toast once user scrolls down a bit (200px)
       if (!triggered && window.scrollY > 200) {
         triggered = true;
         setShow(true);
       }
 
-      // Auto-dismiss when donation section is in view
       const section = document.getElementById("donation-section");
       if (section) {
         const rect = section.getBoundingClientRect();
@@ -32,7 +55,7 @@ export default function DonationToast() {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [shouldRender]);
 
   const handleClick = () => {
     const el = document.getElementById("donation-section");
@@ -47,7 +70,7 @@ export default function DonationToast() {
     dismiss();
   };
 
-  if (dismissed) return null;
+  if (!shouldRender || dismissed) return null;
 
   return (
     <div
