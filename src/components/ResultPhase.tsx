@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
@@ -170,6 +171,7 @@ export default function ResultPhase({
       setAiText(accumulated);
       setAiState("done");
       setShowPromptLink(true);
+      sendGAEvent("event", "reading_complete", { spread_type: spread.id });
     } catch (err) {
       console.log("AI reading fetch error:", err);
       setAiError(err instanceof Error ? err.message : String(err));
@@ -215,6 +217,7 @@ export default function ResultPhase({
       reviewedAt: null,
     });
     setSaved(true);
+    sendGAEvent("event", "save_reading", { spread_type: spread.id });
   };
 
   const labels = getSpreadLabels(spread.id);

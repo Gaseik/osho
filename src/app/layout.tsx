@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import I18nProvider from "../components/I18nProvider";
 import Footer from "../components/Footer";
 import "./globals.css";
@@ -55,6 +56,9 @@ export default function RootLayout({
         </I18nProvider>
         <Analytics />
         <SpeedInsights />
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
       </body>
     </html>
   );

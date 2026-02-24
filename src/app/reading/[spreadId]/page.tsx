@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
 import { Card, CARDS, shuffle } from "../../../data/cards";
 import { SPREADS, POSITION_LABELS } from "../../../data/spreads";
@@ -46,6 +47,7 @@ export default function ReadingSpreadPage() {
     const card = deck[idx];
     setDrawn((p) => [...p, card]);
     setDeck((p) => p.filter((_, i) => i !== idx));
+    sendGAEvent("event", "draw_card", { spread_type: spread.id });
   };
 
   const onDrawComplete = () => {
@@ -75,6 +77,7 @@ export default function ReadingSpreadPage() {
     navigator.clipboard.writeText(prompt).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      sendGAEvent("event", "copy_prompt", { spread_type: spread.id });
     });
   };
 
