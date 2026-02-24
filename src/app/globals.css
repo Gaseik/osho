@@ -270,6 +270,43 @@ body {
 }
 
 /* ================================================
+   Donation Prompt — scroll-triggered animation
+   ================================================ */
+
+.donation-prompt {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.donation-prompt--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.donation-kofi-pulse a {
+  display: inline-block;
+  animation: kofiPulse 2.5s ease-in-out 0.8s infinite;
+}
+
+@keyframes kofiPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .donation-prompt {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .donation-kofi-pulse a {
+    animation: none;
+  }
+}
+
+/* ================================================
    Spread Grid — responsive scaling for grid layouts
    ================================================ */
 

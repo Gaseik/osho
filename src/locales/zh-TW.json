@@ -206,6 +206,10 @@
     "copyReadingDone": "已複製解讀結果",
     "orCopyPrompt": "或複製 Prompt 自行解讀"
   },
+  "donation": {
+    "message": "如果這次的解讀對你有啟發，可以請我喝杯咖啡 ☕",
+    "submessage": "你的支持是這個專案持續運作的動力 🙏"
+  },
   "record": {
     "saveTitle": "儲存此次占卜紀錄",
     "questionPlaceholder": "輸入你的提問或描述（選填）",
