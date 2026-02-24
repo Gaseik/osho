@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import UserProfileEditor from "./UserProfileEditor";
@@ -77,6 +78,7 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
 
   const handleCategorySelect = (categoryId: CategoryId) => {
     setSelectedCategory(categoryId);
+    sendGAEvent("event", "select_category", { category: categoryId });
     if (categoryId !== "custom") {
       setStep(3); // go to describe step
     }
@@ -104,6 +106,7 @@ export default function GuidedFlow({ onBack }: GuidedFlowProps) {
   };
 
   const handleSpreadSelect = (spreadId: string) => {
+    sendGAEvent("event", "select_spread", { spread_type: spreadId, source: "guided" });
     const topic = getTopicText();
     const params = new URLSearchParams();
     if (topic) params.set("topic", topic);

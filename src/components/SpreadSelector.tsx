@@ -1,5 +1,6 @@
 "use client";
 
+import { sendGAEvent } from '@next/third-parties/google';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { SPREADS } from "../data/spreads";
@@ -17,6 +18,7 @@ export default function SpreadSelector() {
           <Link
             key={s.id}
             href={`/reading/${s.id}`}
+            onClick={() => sendGAEvent("event", "select_spread", { spread_type: s.id, source: "direct" })}
             className="p-5 px-6 rounded-xl bg-white/[0.03] border border-zen-gold/15
                      transition-all duration-300 hover:bg-zen-gold/[0.08] hover:border-zen-gold/40
                      no-underline"

@@ -52,6 +52,7 @@ export default function ReadingSpreadPage() {
 
   const onDrawComplete = () => {
     setPhase("result");
+    sendGAEvent("event", "all_cards_drawn", { spread_type: spread.id });
   };
 
   const getSpreadLabels = (sid: string): string[] => {
