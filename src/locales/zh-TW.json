@@ -199,6 +199,8 @@
     "aiReading": "✦ AI 解讀",
     "aiReadingLoading": "正在解讀中...",
     "aiReadingError": "目前使用人數較多，請複製提示詞到 ChatGPT 或 Claude 進行解讀",
+    "rateLimitError": "目前使用人數較多，伺服器忙碌中，請稍後再試 ☕",
+    "retryReading": "重新嘗試解讀",
     "copyReading": "複製解讀結果",
     "copyReadingDone": "已複製解讀結果",
     "orCopyPrompt": "或複製 Prompt 自行解讀"

@@ -263,13 +263,26 @@ export async function POST(request: Request) {
 
     let status = 500;
     let message = raw;
+
+    // Detect rate-limit from Groq SDK (status property on error object)
+    const errObj = error as Record<string, unknown>;
+    if (errObj?.status === 429 || errObj?.statusCode === 429) {
+      status = 429;
+    }
+
     try {
       const parsed = JSON.parse(raw);
       const code = parsed.error?.code || parsed.code;
-      if (code && typeof code === "number") status = code;
+      if (code === 429 || code === "rate_limit_exceeded") status = 429;
+      if (code && typeof code === "number" && status === 500) status = code;
       message = parsed.error?.message || parsed.message || raw;
     } catch {
       // Not JSON, use raw message as-is
+    }
+
+    // Also detect rate-limit keywords in the message
+    if (status === 500 && /rate.?limit|too many requests|429/i.test(raw)) {
+      status = 429;
     }
 
     return Response.json(

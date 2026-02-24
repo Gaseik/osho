@@ -199,6 +199,8 @@
     "aiReading": "✦ AI Reading",
     "aiReadingLoading": "Reading in progress...",
     "aiReadingError": "High traffic right now. Please copy the prompt and paste it into ChatGPT or Claude for your reading.",
+    "rateLimitError": "Too many users right now. The server is busy, please try again shortly.",
+    "retryReading": "Retry Reading",
     "copyReading": "Copy Reading",
     "copyReadingDone": "Reading Copied",
     "orCopyPrompt": "Or copy prompt for self-reading"
