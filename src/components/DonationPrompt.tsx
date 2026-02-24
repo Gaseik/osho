@@ -68,7 +68,7 @@ export default function DonationPrompt() {
       <div className="bg-white/[0.03] rounded-xl border border-zen-gold/15 p-5">
         {/* Icon + Main text */}
         <div className="text-center mb-3">
-          <span className="text-lg">☕</span>
+          <span className="text-lg">✦</span>
         </div>
         <p className="text-sm text-zen-gold/80 text-center leading-relaxed tracking-wider mb-1">
           {t("donation.message")}
