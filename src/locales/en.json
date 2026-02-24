@@ -208,7 +208,8 @@
   },
   "donation": {
     "message": "If this reading inspired you, consider supporting this project ✦",
-    "submessage": "Your support keeps this project running 🙏"
+    "submessage": "Your support keeps this project running 🙏",
+    "toastMessage": "Helpful? Scroll down to support ✦"
   },
   "record": {
     "saveTitle": "Save This Reading",

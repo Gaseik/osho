@@ -294,6 +294,40 @@ body {
   50% { transform: scale(1.05); }
 }
 
+/* ================================================
+   Donation Toast — slide in from left + floating
+   ================================================ */
+
+.donation-toast {
+  position: fixed;
+  top: 5rem;
+  left: 0;
+  z-index: 90;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(-100%);
+  transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  padding: 0.625rem 1rem;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 170, 110, 0.2);
+  border-left: none;
+  border-radius: 0 0.75rem 0.75rem 0;
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.donation-toast--visible {
+  opacity: 1;
+  transform: translateX(0);
+  animation: donationFloat 3s ease-in-out 0.8s infinite;
+}
+
+@keyframes donationFloat {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
 /* Respect reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
   .donation-prompt {
@@ -302,6 +336,12 @@ body {
     transform: none;
   }
   .donation-kofi-pulse a {
+    animation: none;
+  }
+  .donation-toast {
+    transition: none;
+  }
+  .donation-toast--visible {
     animation: none;
   }
 }

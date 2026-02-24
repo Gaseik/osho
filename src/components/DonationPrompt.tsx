@@ -3,42 +3,13 @@
 import { useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-const READING_COUNT_KEY = "zen-reading-count";
-const MIN_READINGS_TO_SHOW = 2;
-
-function getReadingCount(): number {
-  if (typeof window === "undefined") return 0;
-  const val = localStorage.getItem(READING_COUNT_KEY);
-  return val ? parseInt(val, 10) || 0 : 0;
-}
-
-function incrementReadingCount(): number {
-  const current = getReadingCount();
-  const next = current + 1;
-  localStorage.setItem(READING_COUNT_KEY, String(next));
-  return next;
-}
-
 export default function DonationPrompt() {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [shouldRender, setShouldRender] = useState(false);
-  const hasIncremented = useRef(false);
-
-  // Check reading count and increment on mount
-  useEffect(() => {
-    if (hasIncremented.current) return;
-    hasIncremented.current = true;
-    const count = incrementReadingCount();
-    if (count >= MIN_READINGS_TO_SHOW) {
-      setShouldRender(true);
-    }
-  }, []);
 
   // Intersection Observer for scroll-triggered animation
   useEffect(() => {
-    if (!shouldRender) return;
     const el = containerRef.current;
     if (!el) return;
 
@@ -54,12 +25,11 @@ export default function DonationPrompt() {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [shouldRender]);
-
-  if (!shouldRender) return null;
+  }, []);
 
   return (
     <div
+      id="donation-section"
       ref={containerRef}
       className={`donation-prompt max-w-[500px] w-full mb-2 ${
         visible ? "donation-prompt--visible" : ""
@@ -77,7 +47,7 @@ export default function DonationPrompt() {
           {t("donation.submessage")}
         </p>
 
-        {/* Ko-fi button — same as sidebar */}
+        {/* Ko-fi button */}
         <div className={`flex justify-center ${visible ? "donation-kofi-pulse" : ""}`}>
           <a
             href="https://ko-fi.com/I2I51TYYE8"

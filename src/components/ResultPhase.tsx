@@ -8,6 +8,7 @@ import FlipCard from "./FlipCard";
 import CardSpreadLayout from "./CardSpreadLayout";
 import MarkdownReading from "./MarkdownReading";
 import DonationPrompt from "./DonationPrompt";
+import DonationToast from "./DonationToast";
 import {
   saveRecord,
   generateId,
@@ -454,7 +455,10 @@ export default function ResultPhase({
           </div>
         )}
 
-        {/* Donation Prompt */}
+        {/* Donation Toast — floats in from left */}
+        <DonationToast />
+
+        {/* Donation Prompt — bottom card */}
         <DonationPrompt />
 
         <div className="flex gap-3 flex-wrap justify-center">
