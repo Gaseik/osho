@@ -2,6 +2,56 @@ export const runtime = "nodejs";
 
 import Groq from "groq-sdk";
 
+// --- Rate Limiting (in-memory, resets on cold start) ---
+const DAILY_LIMIT = 10;
+
+interface RateLimitEntry {
+  count: number;
+  date: string; // UTC date string "YYYY-MM-DD"
+}
+
+const rateLimitMap = new Map<string, RateLimitEntry>();
+
+function getUTCDateString(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
+  const today = getUTCDateString();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || entry.date !== today) {
+    rateLimitMap.set(ip, { count: 1, date: today });
+    return { allowed: true, remaining: DAILY_LIMIT - 1 };
+  }
+
+  if (entry.count >= DAILY_LIMIT) {
+    return { allowed: false, remaining: 0 };
+  }
+
+  entry.count += 1;
+  return { allowed: true, remaining: DAILY_LIMIT - entry.count };
+}
+
+// --- CORS ---
+function isAllowedOrigin(origin: string | null): boolean {
+  if (!origin) return false;
+  const allowed = process.env.ALLOWED_ORIGIN;
+  if (allowed) {
+    return origin === allowed;
+  }
+  // Allow same-origin requests on Vercel preview/production and localhost
+  if (origin.endsWith(".vercel.app") || origin.includes("localhost") || origin.includes("127.0.0.1")) {
+    return true;
+  }
+  // Allow custom domain if set via NEXT_PUBLIC_SITE_URL
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (siteUrl && origin === siteUrl) {
+    return true;
+  }
+  return false;
+}
+
 interface CardInfo {
   position: string;
   nameZh: string;
@@ -195,6 +245,33 @@ ${cardLines}${topic ? buildTopicContextEn(topic, description) : ""}${userProfile
 }
 
 export async function POST(request: Request) {
+  // --- CORS check ---
+  const origin = request.headers.get("origin");
+  if (!isAllowedOrigin(origin)) {
+    return Response.json(
+      { error: "Forbidden" },
+      { status: 403 }
+    );
+  }
+
+  // --- Rate limiting ---
+  const forwarded = request.headers.get("x-forwarded-for");
+  const ip = forwarded?.split(",")[0]?.trim() || "unknown";
+  const { allowed, remaining } = checkRateLimit(ip);
+
+  if (!allowed) {
+    return Response.json(
+      { error: "今日免費次數已用完，請明天再來 🙏", dailyLimit: true },
+      {
+        status: 429,
+        headers: {
+          "X-RateLimit-Limit": String(DAILY_LIMIT),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
+
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     console.log("Groq error: GROQ_API_KEY not set in environment");
@@ -255,6 +332,8 @@ export async function POST(request: Request) {
       headers: {
         "Content-Type": "text/plain; charset=utf-8",
         "Cache-Control": "no-cache",
+        "X-RateLimit-Limit": String(DAILY_LIMIT),
+        "X-RateLimit-Remaining": String(remaining),
       },
     });
   } catch (error: unknown) {
