@@ -33,6 +33,9 @@ export const metadata: Metadata = {
     title: "禪意靈卡 | 免費線上禪卡抽牌・AI 解讀",
     description: "79 張牌、9 種牌陣、AI 即時解讀。免費、不用註冊。",
   },
+  verification: {
+    google: "dWOy49FQqp-sBNcMAVRLis1WKr0Yp9nQsw8dyF0DXSQ",
+  },
   other: {
     "theme-color": "#0a0a1a",
   },
