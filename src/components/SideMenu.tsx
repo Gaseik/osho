@@ -64,113 +64,113 @@ export default function SideMenu() {
         </button>
 
         <div className="flex flex-col h-full pt-20 px-6">
-          {/* Reading — always navigate to landing */}
-          <button
-            onClick={() => {
-              setOpen(false);
-              if (pathname === '/reading') {
-                router.refresh();
-              } else {
-                router.push('/reading');
-              }
-            }}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors w-full text-left"
-          >
-            <MagicWand02 width={18} height={18} />
-            <span className="text-sm tracking-wider">{t('menu.reading')}</span>
-          </button>
+          {/* Scrollable menu area */}
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            {/* Reading — always navigate to landing */}
+            <button
+              onClick={() => {
+                setOpen(false);
+                if (pathname === '/reading') {
+                  router.refresh();
+                } else {
+                  router.push('/reading');
+                }
+              }}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors w-full text-left"
+            >
+              <MagicWand02 width={18} height={18} />
+              <span className="text-sm tracking-wider">{t('menu.reading')}</span>
+            </button>
 
-          {/* Profile */}
-          <Link
-            href="/profile"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors"
-          >
-            <User01 width={18} height={18} />
-            <span className="text-sm tracking-wider">{t('menu.profile')}</span>
-            {hasProfile && (
-              <span className="ml-auto text-xs text-zen-gold/60">✓</span>
-            )}
-          </Link>
+            {/* Profile */}
+            <Link
+              href="/profile"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors"
+            >
+              <User01 width={18} height={18} />
+              <span className="text-sm tracking-wider">{t('menu.profile')}</span>
+              {hasProfile && (
+                <span className="ml-auto text-xs text-zen-gold/60">✓</span>
+              )}
+            </Link>
 
-          {/* Card Meanings */}
-          <Link
-            href="/cards"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors"
-          >
-            <BookOpen01 width={18} height={18} />
-            <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌義總覽' : 'Card Meanings'}</span>
-          </Link>
+            {/* Card Meanings */}
+            <Link
+              href="/cards"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors"
+            >
+              <BookOpen01 width={18} height={18} />
+              <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌義總覽' : 'Card Meanings'}</span>
+            </Link>
 
-          {/* Spread Types */}
-          <Link
-            href="/spreads"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors"
-          >
-            <Globe01 width={18} height={18} />
-            <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌陣介紹' : 'Spread Types'}</span>
-          </Link>
+            {/* Spread Types */}
+            <Link
+              href="/spreads"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors"
+            >
+              <Globe01 width={18} height={18} />
+              <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '牌陣介紹' : 'Spread Types'}</span>
+            </Link>
 
-          {/* About Osho */}
-          <Link
-            href="/about-osho"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors"
-          >
-            <HelpCircle width={18} height={18} />
-            <span className="text-sm tracking-wider">{t('menu.aboutOsho')}</span>
-          </Link>
+            {/* About Osho */}
+            <Link
+              href="/about-osho"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors"
+            >
+              <HelpCircle width={18} height={18} />
+              <span className="text-sm tracking-wider">{t('menu.aboutOsho')}</span>
+            </Link>
 
-          {/* Divination Records */}
-          <Link
-            href="/records"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors"
-          >
-            <BookOpen01 width={18} height={18} />
-            <span className="text-sm tracking-wider">{t('menu.records')}</span>
-            {recordCount > 0 && (
-              <span className="ml-auto text-xs text-white/40">{recordCount}</span>
-            )}
-          </Link>
+            {/* Divination Records */}
+            <Link
+              href="/records"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors"
+            >
+              <BookOpen01 width={18} height={18} />
+              <span className="text-sm tracking-wider">{t('menu.records')}</span>
+              {recordCount > 0 && (
+                <span className="ml-auto text-xs text-white/40">{recordCount}</span>
+              )}
+            </Link>
 
-          {/* Contact */}
-          <Link
-            href="/contact"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors"
-          >
-            <Mail01 width={18} height={18} />
-            <span className="text-sm tracking-wider">{t('menu.contact')}</span>
-          </Link>
+            {/* Contact */}
+            <Link
+              href="/contact"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors"
+            >
+              <Mail01 width={18} height={18} />
+              <span className="text-sm tracking-wider">{t('menu.contact')}</span>
+            </Link>
 
-          {/* Language */}
-          <button
-            onClick={toggleLanguage}
-            className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                       transition-colors text-left"
-          >
-            <Globe01 width={18} height={18} />
-            <span className="text-sm tracking-wider">{t('menu.language')}</span>
-            <span className="ml-auto text-xs text-white/40">
-              {i18n.language === 'zh-TW' ? 'EN' : '中文'}
-            </span>
-          </button>
+            {/* Language */}
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors text-left"
+            >
+              <Globe01 width={18} height={18} />
+              <span className="text-sm tracking-wider">{t('menu.language')}</span>
+              <span className="ml-auto text-xs text-white/40">
+                {i18n.language === 'zh-TW' ? 'EN' : '中文'}
+              </span>
+            </button>
+          </div>
 
-          {/* Spacer */}
-          <div className="flex-1" />
-
-          {/* Ko-fi donate — pinned to bottom */}
-          <div className="pb-8 flex justify-center">
+          {/* Ko-fi donate — always visible at bottom */}
+          <div className="flex-shrink-0 py-6 flex justify-center">
             <a href="https://ko-fi.com/I2I51TYYE8" target="_blank" rel="noopener noreferrer">
               <img
                 width={143}

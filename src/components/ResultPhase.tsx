@@ -7,6 +7,8 @@ import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
 import FlipCard from "./FlipCard";
 import CardSpreadLayout from "./CardSpreadLayout";
 import MarkdownReading from "./MarkdownReading";
+import DonationPrompt from "./DonationPrompt";
+import DonationToast from "./DonationToast";
 import {
   saveRecord,
   generateId,
@@ -452,6 +454,12 @@ export default function ResultPhase({
             ✓ {t('record.saved')}
           </div>
         )}
+
+        {/* Donation Toast — floats in from left */}
+        <DonationToast />
+
+        {/* Donation Prompt — bottom card */}
+        <DonationPrompt />
 
         <div className="flex gap-3 flex-wrap justify-center">
           <button

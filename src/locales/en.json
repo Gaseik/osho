@@ -206,6 +206,11 @@
     "copyReadingDone": "Reading Copied",
     "orCopyPrompt": "Or copy prompt for self-reading"
   },
+  "donation": {
+    "message": "If this reading inspired you, consider supporting this project ✦",
+    "submessage": "Your support keeps this project running 🙏",
+    "toastMessage": "Helpful? Scroll down to support ✦"
+  },
   "record": {
     "saveTitle": "Save This Reading",
     "questionPlaceholder": "Enter your question or description (optional)",

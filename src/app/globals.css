@@ -270,6 +270,82 @@ body {
 }
 
 /* ================================================
+   Donation Prompt — scroll-triggered animation
+   ================================================ */
+
+.donation-prompt {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.donation-prompt--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.donation-kofi-pulse a {
+  display: inline-block;
+  animation: kofiPulse 2.5s ease-in-out 0.8s infinite;
+}
+
+@keyframes kofiPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ================================================
+   Donation Toast — pop up from bottom + floating
+   ================================================ */
+
+.donation-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  z-index: 90;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  padding: 0.625rem 1rem;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 170, 110, 0.2);
+  border-radius: 0.75rem;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.donation-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  animation: donationFloat 3s ease-in-out 0.8s infinite;
+}
+
+@keyframes donationFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .donation-prompt {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .donation-kofi-pulse a {
+    animation: none;
+  }
+  .donation-toast {
+    transition: none;
+  }
+  .donation-toast--visible {
+    animation: none;
+  }
+}
+
+/* ================================================
    Spread Grid — responsive scaling for grid layouts
    ================================================ */
 
