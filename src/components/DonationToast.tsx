@@ -1,36 +1,50 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-interface DonationToastProps {
-  /** Delay in ms before the toast slides in */
-  delay?: number;
-}
-
-export default function DonationToast({ delay = 2000 }: DonationToastProps) {
+export default function DonationToast() {
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [dismissed, setDismissed] = useState(false);
 
+  const dismiss = useCallback(() => setDismissed(true), []);
+
   useEffect(() => {
-    const timer = setTimeout(() => setShow(true), delay);
-    return () => clearTimeout(timer);
-  }, [delay]);
+    let triggered = false;
+
+    const onScroll = () => {
+      // Show toast once user scrolls down a bit (200px)
+      if (!triggered && window.scrollY > 200) {
+        triggered = true;
+        setShow(true);
+      }
+
+      // Auto-dismiss when donation section is in view
+      const section = document.getElementById("donation-section");
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 50) {
+          setDismissed(true);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const handleClick = () => {
-    // Scroll to the donation section at bottom
     const el = document.getElementById("donation-section");
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-    // Dismiss after a short delay so user sees the scroll
-    setTimeout(() => setDismissed(true), 600);
+    setTimeout(dismiss, 600);
   };
 
   const handleDismiss = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setDismissed(true);
+    dismiss();
   };
 
   if (dismissed) return null;
