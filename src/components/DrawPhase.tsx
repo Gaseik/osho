@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS } from "../data/spreads";
@@ -61,7 +62,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const handleShuffle = useCallback(() => {
     setStage('shuffling');
     setTimeout(() => setStage('stacked'), 1200);
-  }, []);
+    sendGAEvent("event", "start_shuffle", { spread_type: spread.id });
+  }, [spread.id]);
 
   useEffect(() => {
     if (stage === 'stacked') {

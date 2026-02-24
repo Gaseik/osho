@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
 
 export default function DonationPrompt() {
@@ -53,6 +54,7 @@ export default function DonationPrompt() {
             href="https://ko-fi.com/I2I51TYYE8"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => sendGAEvent("event", "kofi_click", { location: "result_page" })}
           >
             <img
               width={143}

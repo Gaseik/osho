@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { useTranslation } from 'react-i18next';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -171,7 +172,7 @@ export default function SideMenu() {
 
           {/* Ko-fi donate — always visible at bottom */}
           <div className="flex-shrink-0 py-6 flex justify-center">
-            <a href="https://ko-fi.com/I2I51TYYE8" target="_blank" rel="noopener noreferrer">
+            <a href="https://ko-fi.com/I2I51TYYE8" target="_blank" rel="noopener noreferrer" onClick={() => sendGAEvent("event", "kofi_click", { location: "sidebar" })}>
               <img
                 width={143}
                 height={36}
