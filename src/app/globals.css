@@ -327,6 +327,49 @@ body {
   50% { transform: translateX(-50%) translateY(-5px); }
 }
 
+/* ================================================
+   Structured Reading — section animations
+   ================================================ */
+
+/* Each reading section fades in + slides up on scroll */
+.reading-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reading-section--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gold highlight for **bold** keywords in reading body */
+.reading-highlight {
+  color: rgba(255, 215, 0, 0.9);
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+}
+
+/* Step number circle glow */
+.step-circle {
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.08);
+}
+
+/* Zen reminder — text reveal animation */
+.zen-reminder-section.reading-section--visible .zen-reminder-text {
+  animation: zenTextReveal 1.2s ease-out 0.3s both;
+}
+
+@keyframes zenTextReveal {
+  from {
+    opacity: 0;
+    letter-spacing: 0.15em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: normal;
+  }
+}
+
 /* Respect reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
   .donation-prompt {
@@ -341,6 +384,14 @@ body {
     transition: none;
   }
   .donation-toast--visible {
+    animation: none;
+  }
+  .reading-section {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .zen-reminder-section.reading-section--visible .zen-reminder-text {
     animation: none;
   }
 }
