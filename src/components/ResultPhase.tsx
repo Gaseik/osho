@@ -7,7 +7,7 @@ import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
 import FlipCard from "./FlipCard";
 import CardSpreadLayout from "./CardSpreadLayout";
-import MarkdownReading from "./MarkdownReading";
+import StructuredReading from "./StructuredReading";
 import DonationPrompt from "./DonationPrompt";
 import DonationToast from "./DonationToast";
 import {
@@ -291,25 +291,29 @@ export default function ResultPhase({
 
   return (
     <div className={`animate-fadeUp text-center w-full ${layout ? 'max-w-[900px]' : 'max-w-[700px]'}`}>
-      {/* Fixed-height container prevents CLS from text visibility changes */}
-      <div style={{ height: 40, marginBottom: 24 }}>
-        <p
-          className="text-white/60 text-sm transition-opacity duration-500 ease-out"
-          style={{
-            opacity: flippedCount > 0 ? 0 : 1,
-          }}
-        >
+      {/* Title — collapses once cards start flipping */}
+      <div
+        className="transition-all duration-500 ease-out overflow-hidden"
+        style={{
+          height: flippedCount > 0 ? 0 : 40,
+          marginBottom: flippedCount > 0 ? 0 : 16,
+          opacity: flippedCount > 0 ? 0 : 1,
+        }}
+      >
+        <p className="text-white/60 text-sm">
           {t('result.title')}
         </p>
       </div>
 
-      <div style={{ height: 30, marginBottom: 16 }}>
-        <p
-          className="text-white/50 text-xs transition-opacity duration-700 ease-out"
-          style={{
-            opacity: revealed && !allFlipped ? 0 : revealed ? 1 : 0,
-          }}
-        >
+      {/* Zoom hint — compact spacing */}
+      <div
+        className="transition-opacity duration-700 ease-out"
+        style={{
+          opacity: revealed && !allFlipped ? 0 : revealed ? 1 : 0,
+          marginBottom: 8,
+        }}
+      >
+        <p className="text-white/50 text-xs">
           {t('result.zoomHint')}
         </p>
       </div>
@@ -366,13 +370,11 @@ export default function ResultPhase({
 
         {/* AI Reading Result - shown at once when done */}
         {aiState === "done" && aiText && (
-          <div className="bg-white/[0.03] rounded-xl border border-zen-gold/20 p-5 max-w-[500px] w-full text-left mb-2">
-            <div className="text-sm leading-relaxed max-h-[60vh] overflow-y-auto">
-              <MarkdownReading content={aiText} />
-            </div>
+          <div className="max-w-[540px] w-full text-left mb-2">
+            <StructuredReading content={aiText} />
 
             {/* Copy Reading button */}
-            <div className="mt-4 pt-3 border-t border-zen-gold/10 flex justify-center">
+            <div className="mt-5 flex justify-center">
               <button
                 onClick={handleCopyReading}
                 className={`px-5 py-2 rounded-lg border text-xs tracking-wider transition-all duration-300

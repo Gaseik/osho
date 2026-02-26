@@ -185,7 +185,9 @@
     "selected": "Selected {{current}} / {{total}}",
     "shuffle": "Shuffle",
     "shuffleHint": "Take a moment, trust your intuition",
-    "dragHint": "← Drag to browse, tap the lifted card to draw →",
+    "dragHint": "Hold & swipe to browse cards",
+    "dragHint2": "Tap the lifted card to draw",
+    "dragHintDismiss": "Tap anywhere to continue",
     "nextPosition": "Next: {{label}}",
     "reselect": "Re-select Spread"
   },

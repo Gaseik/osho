@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS } from "../data/spreads";
 import CardBack from "./CardBack";
+import { Pointer } from "lucide-react";
 
 interface DrawPhaseProps {
   spread: Spread;
@@ -35,6 +36,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const [selectedIndex, setSelectedIndex] = useState(40);
   const [isDragging, setIsDragging] = useState(false);
   const [hasEverDragged, setHasEverDragged] = useState(false);
+  const [hintDismissed, setHintDismissed] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
 
@@ -375,10 +377,32 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         </div>
       )}
 
-      {/* Drag hint — fixed to viewport bottom, outside fan-scene */}
-      {stage === 'fanned' && !hasEverDragged && (
-        <div className="fan-hint">
-          {t('draw.dragHint')}
+      {/* Instruction overlay — centered, tap anywhere to dismiss */}
+      {stage === 'fanned' && !hintDismissed && (
+        <div
+          className="draw-hint-overlay"
+          onClick={() => setHintDismissed(true)}
+        >
+          <div className="draw-hint-content">
+            {/* Swipe gesture animation — Lucide pointer icon */}
+            <div className="draw-hint-anim">
+              <Pointer
+                size={48}
+                strokeWidth={1.5}
+                className="draw-hint-hand"
+                color="rgba(255,255,255,0.7)"
+              />
+              {/* Arrows */}
+              <div className="draw-hint-arrows">
+                <span className="draw-hint-arrow draw-hint-arrow--left">‹</span>
+                <span className="draw-hint-arrow draw-hint-arrow--right">›</span>
+              </div>
+            </div>
+
+            <p className="draw-hint-line1">{t('draw.dragHint')}</p>
+            <p className="draw-hint-line2">{t('draw.dragHint2')}</p>
+            <p className="draw-hint-dismiss">{t('draw.dragHintDismiss')}</p>
+          </div>
         </div>
       )}
     </>
