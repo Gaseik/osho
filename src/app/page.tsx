@@ -32,8 +32,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* CTA Button - Bottom */}
-      <div className="text-center animate-fadeUp pb-4">
+      {/* CTA Buttons - Bottom */}
+      <div className="text-center animate-fadeUp pb-4 flex flex-col items-center gap-4">
         <Link
           href="/reading"
           className="inline-flex items-center gap-3 px-10 py-4 rounded-full
@@ -45,10 +45,24 @@ export default function HomePage() {
                      transition-all duration-400 no-underline"
         >
           <span className="text-2xl">☯︎</span>
-          <span>開始抽牌</span>
+          <span>奧修禪卡</span>
         </Link>
 
-        <p className="text-white/25 text-xs mt-6">
+        <Link
+          href="/tarot"
+          className="inline-flex items-center gap-3 px-10 py-4 rounded-full
+                     border border-purple-400/35
+                     bg-gradient-to-r from-purple-500/[0.08] to-purple-400/[0.02]
+                     text-purple-300/90 text-lg tracking-[3px]
+                     hover:border-purple-400/60 hover:scale-105
+                     hover:shadow-[0_0_30px_rgba(160,100,255,0.15),inset_0_0_20px_rgba(160,100,255,0.05)]
+                     transition-all duration-400 no-underline"
+        >
+          <span className="text-2xl">🃏</span>
+          <span>傳統塔羅</span>
+        </Link>
+
+        <p className="text-white/25 text-xs mt-4">
           靜心片刻，感受你的直覺
         </p>
       </div>

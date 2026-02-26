@@ -67,6 +67,11 @@ export default function SideMenu() {
         <div className="flex flex-col h-full pt-20 px-6">
           {/* Scrollable menu area */}
           <div className="flex-1 min-h-0 overflow-y-auto">
+            {/* ── Section: Osho Zen Tarot ── */}
+            <div className="text-[10px] text-zen-gold/40 tracking-[0.2em] uppercase mt-1 mb-2">
+              {i18n.language === 'zh-TW' ? '🔮 奧修禪卡' : '🔮 Osho Zen Tarot'}
+            </div>
+
             {/* Reading — always navigate to landing */}
             <button
               onClick={() => {
@@ -83,20 +88,6 @@ export default function SideMenu() {
               <MagicWand02 width={18} height={18} />
               <span className="text-sm tracking-wider">{t('menu.reading')}</span>
             </button>
-
-            {/* Profile */}
-            <Link
-              href="/profile"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors"
-            >
-              <User01 width={18} height={18} />
-              <span className="text-sm tracking-wider">{t('menu.profile')}</span>
-              {hasProfile && (
-                <span className="ml-auto text-xs text-zen-gold/60">✓</span>
-              )}
-            </Link>
 
             {/* Card Meanings */}
             <Link
@@ -129,6 +120,66 @@ export default function SideMenu() {
             >
               <HelpCircle width={18} height={18} />
               <span className="text-sm tracking-wider">{t('menu.aboutOsho')}</span>
+            </Link>
+
+            {/* ── Divider ── */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-3" />
+
+            {/* ── Section: Classic Tarot ── */}
+            <div className="text-[10px] text-purple-300/40 tracking-[0.2em] uppercase mb-2">
+              {i18n.language === 'zh-TW' ? '🃏 傳統塔羅' : '🃏 Classic Tarot'}
+            </div>
+
+            <Link
+              href="/tarot/single"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-2.5 text-white/70 hover:text-purple-300
+                         transition-colors pl-1"
+            >
+              <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '單牌' : 'Single Card'}</span>
+            </Link>
+            <Link
+              href="/tarot/three-card"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-2.5 text-white/70 hover:text-purple-300
+                         transition-colors pl-1"
+            >
+              <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '三牌陣' : 'Three Card Spread'}</span>
+            </Link>
+            <Link
+              href="/tarot/celtic-cross"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-2.5 text-white/70 hover:text-purple-300
+                         transition-colors pl-1"
+            >
+              <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '凱爾特十字' : 'Celtic Cross'}</span>
+            </Link>
+            <Link
+              href="/tarot/relationship"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-2.5 text-white/70 hover:text-purple-300
+                         transition-colors pl-1"
+            >
+              <span className="text-sm tracking-wider">{i18n.language === 'zh-TW' ? '關係牌陣' : 'Relationship Spread'}</span>
+            </Link>
+
+            {/* ── Divider ── */}
+            <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-3" />
+
+            {/* ── Section: Common ── */}
+
+            {/* Profile */}
+            <Link
+              href="/profile"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
+                         transition-colors"
+            >
+              <User01 width={18} height={18} />
+              <span className="text-sm tracking-wider">{t('menu.profile')}</span>
+              {hasProfile && (
+                <span className="ml-auto text-xs text-zen-gold/60">✓</span>
+              )}
             </Link>
 
             {/* Divination Records */}

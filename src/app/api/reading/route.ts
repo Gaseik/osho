@@ -244,6 +244,125 @@ The user drew the following cards using the "${spread}" spread:
 ${cardLines}${topic ? buildTopicContextEn(topic, description) : ""}${userProfile ? buildUserContextEn(userProfile) : ""}`;
 }
 
+function buildTarotPrompt(
+  spread: string,
+  spreadId: string,
+  cards: CardInfo[],
+  locale: string,
+  userProfile?: UserProfileInfo,
+  userQuestion?: string,
+): string {
+  const isZh = locale.startsWith("zh");
+
+  if (isZh) {
+    const cardLines = cards
+      .map((c) => `${c.position}：${c.nameZh}（${c.nameEn}）- ${c.meaningZh}`)
+      .join("\n");
+
+    const questionLine = userQuestion ? `\n\n使用者的問題：${userQuestion}` : "";
+
+    return `你是一位專業的塔羅牌解讀師，精通韋特塔羅體系。
+
+解讀規則：
+1. 根據每張牌的正位或逆位給出不同的解讀
+2. 結合牌的位置含義（如過去/現在/未來）進行整體分析
+3. 牌與牌之間要有關聯性解讀，不是各說各的
+4. 根據使用者的具體問題來針對性回答
+
+時間預測指引：
+- 權杖牌（Wands/火元素）：暗示天到週的時間範圍
+- 聖杯牌（Cups/水元素）：暗示週到月的時間範圍
+- 寶劍牌（Swords/風元素）：暗示天到週的時間範圍
+- 錢幣牌（Pentacles/土元素）：暗示月到年的時間範圍
+- 大牌：根據牌義和問題推估，通常代表較長的週期或重大時間節點
+- 在解讀中自然地融入時間預測，例如「這張牌暗示大約在 2-3 個月內可能會...」
+- 時間預測要具體但保留彈性，不要過度武斷
+
+語氣與風格：
+- 溫暖但專業，像一位有經驗的塔羅師在跟你對話
+- 給予具體可行的建議，不要只說模糊的好話
+- 如果牌面顯示挑戰或困難，要誠實但有建設性地指出
+- 使用 Markdown 格式（## 標題、** 粗體、- 條列）
+- 不要用「親愛的」等客套稱呼
+- 直接切入牌義解讀
+
+解讀架構：
+
+## 牌面解析
+逐張解讀每張牌在其位置上的含義，說明正逆位的影響，以及牌與牌之間的關聯。
+
+## 整體分析
+綜合所有牌的能量，結合使用者的問題給出全面的分析。融入時間預測。
+
+## 建議與行動
+用數字條列（1. 2. 3.）列出 2-3 個具體可執行的建議。
+
+## 寄語
+最後用 blockquote 格式（>）寫一句簡短有力的寄語。
+${questionLine}
+
+使用「${spread}」牌陣，抽到以下塔羅牌：
+
+${cardLines}
+
+請根據每張牌的位置和正逆位，結合使用者的問題，給出完整的解讀和建議。
+請在解讀中包含時間預測的分析。${userProfile ? buildUserContextZh(userProfile) : ""}`;
+  }
+
+  // English
+  const cardLines = cards
+    .map((c) => `${c.position}: ${c.nameEn} - ${c.meaningEn}`)
+    .join("\n");
+
+  const questionLine = userQuestion ? `\n\nUser's question: ${userQuestion}` : "";
+
+  return `You are a professional tarot reader, well-versed in the Rider-Waite tarot system.
+
+Reading rules:
+1. Provide different interpretations based on each card's upright or reversed position
+2. Integrate position meanings (e.g., past/present/future) for a holistic analysis
+3. Show connections between cards — don't read them in isolation
+4. Address the user's specific question directly
+
+Time prediction guidelines:
+- Wands (Fire): suggests days to weeks timeframe
+- Cups (Water): suggests weeks to months timeframe
+- Swords (Air): suggests days to weeks timeframe
+- Pentacles (Earth): suggests months to years timeframe
+- Major Arcana: estimate based on card meaning and context, usually longer cycles
+- Naturally weave time predictions into the reading
+- Be specific but flexible with timing
+
+Tone & Style:
+- Warm but professional, like an experienced tarot reader having a conversation
+- Give concrete, actionable advice — not just vague positivity
+- Be honest about challenges shown in the cards, but constructive
+- Use Markdown formatting (## for headings, ** for bold, - for bullets)
+- No "dear friend" or formal greetings — jump right in
+
+Reading structure:
+
+## Card Analysis
+Interpret each card in its position, explain upright/reversed influence, and show connections between cards.
+
+## Overall Analysis
+Synthesize all card energies with the user's question. Include time predictions.
+
+## Advice & Action
+Use numbered list (1. 2. 3.) for 2-3 concrete suggestions.
+
+## Closing Thought
+End with a blockquote (>) containing one powerful sentence.
+${questionLine}
+
+Using the "${spread}" spread, the following tarot cards were drawn:
+
+${cardLines}
+
+Please provide a complete reading based on each card's position and orientation, addressing the user's question.
+Include time prediction analysis.${userProfile ? buildUserContextEn(userProfile) : ""}`;
+}
+
 export async function POST(request: Request) {
   // --- CORS check ---
   const origin = request.headers.get("origin");
@@ -281,7 +400,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string };
+  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deckType?: string; userQuestion?: string };
   try {
     body = await request.json();
   } catch {
@@ -291,7 +410,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { spread, spreadId, cards, locale, userProfile, topic, description } = body;
+  const { spread, spreadId, cards, locale, userProfile, topic, description, deckType, userQuestion } = body;
   if (!spread || !cards?.length || !locale) {
     return Response.json(
       { error: "Missing required fields" },
@@ -299,7 +418,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const prompt = buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic, description);
+  const prompt = deckType === "tarot"
+    ? buildTarotPrompt(spread, spreadId ?? "", cards, locale, userProfile, userQuestion)
+    : buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic, description);
 
   try {
     const groq = new Groq({ apiKey });
