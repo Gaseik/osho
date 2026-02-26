@@ -463,21 +463,56 @@ function ZenReminderSection({ section }: { section: ReadingSection }) {
   );
 }
 
+/* ── 5. Generic Section (fallback for unrecognized ## headings) ── */
+function GenericSection({ section }: { section: ReadingSection }) {
+  return (
+    <AnimatedSection>
+      <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
+        <h2 className="text-zen-gold/85 text-base md:text-lg font-semibold tracking-wide mb-4">
+          {section.title}
+        </h2>
+        <div className="text-white/80 text-sm leading-[1.9]">
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+              strong: ({ children }) => (
+                <strong className="reading-highlight font-semibold">{children}</strong>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-zen-gold/70 text-[0.95rem] font-medium mt-4 mb-2">{children}</h3>
+              ),
+              ul: ({ children }) => <ul className="pl-5 mb-3">{children}</ul>,
+              ol: ({ children }) => <ol className="pl-5 mb-3 list-decimal">{children}</ol>,
+              li: ({ children }) => <li className="text-white/75 leading-[1.8] mb-1">{children}</li>,
+              blockquote: ({ children }) => (
+                <blockquote className="border-l-2 border-zen-gold/30 pl-4 text-white/60 italic my-3">{children}</blockquote>
+              ),
+            }}
+          >
+            {section.body}
+          </ReactMarkdown>
+        </div>
+      </div>
+    </AnimatedSection>
+  );
+}
+
 /* ── Section renderer by id ── */
 function renderSection(section: ReadingSection) {
   switch (section.id) {
     case "card-meanings":
-      return <CardMeaningsSection key={section.id} section={section} />;
+      return <CardMeaningsSection section={section} />;
     case "card-reading":
-      return <CardReadingSection key={section.id} section={section} />;
+      return <CardReadingSection section={section} />;
     case "deeper-insight":
-      return <DeeperInsightSection key={section.id} section={section} />;
+      return <DeeperInsightSection section={section} />;
     case "practical-guidance":
-      return <PracticalGuidanceSection key={section.id} section={section} />;
+      return <PracticalGuidanceSection section={section} />;
     case "zen-reminder":
-      return <ZenReminderSection key={section.id} section={section} />;
+      return <ZenReminderSection section={section} />;
+    case "generic":
     default:
-      return null;
+      return <GenericSection section={section} />;
   }
 }
 
@@ -497,7 +532,7 @@ export default function StructuredReading({ content }: StructuredReadingProps) {
   return (
     <div className="structured-reading flex flex-col">
       {sections.map((section, i) => (
-        <Fragment key={section.id}>
+        <Fragment key={`${section.id}-${i}`}>
           {i > 0 && <SectionDivider />}
           {renderSection(section)}
         </Fragment>

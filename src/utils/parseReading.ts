@@ -22,28 +22,33 @@
  */
 
 export interface ReadingSection {
-  id: "card-meanings" | "card-reading" | "deeper-insight" | "practical-guidance" | "zen-reminder";
+  id: "card-meanings" | "card-reading" | "deeper-insight" | "practical-guidance" | "zen-reminder" | "generic";
   title: string;
   body: string;
 }
 
-// Match section headers in both ZH and EN
+// Match section headers in both ZH and EN (including old prompt variants)
 const SECTION_PATTERNS: {
   id: ReadingSection["id"];
   pattern: RegExp;
 }[] = [
   { id: "card-meanings", pattern: /^##\s+.*(?:牌意解讀|Card\s*Meanings?)/i },
-  { id: "card-reading", pattern: /^##\s+.*(?:牌面解析|Card\s*Reading)/i },
-  { id: "deeper-insight", pattern: /^##\s+.*(?:深層洞察|Deeper\s*Insight)/i },
-  { id: "practical-guidance", pattern: /^##\s+.*(?:具體指引|Practical\s*Guidance)/i },
-  { id: "zen-reminder", pattern: /^##\s+.*(?:靜心提醒|Zen\s*Reminder)/i },
+  { id: "card-reading", pattern: /^##\s+.*(?:牌面解析|Card\s*(?:Reading|Analysis))/i },
+  { id: "deeper-insight", pattern: /^##\s+.*(?:深層洞察|多層面評估|Deeper\s*Insight|Multi.?dimensional\s*Assessment)/i },
+  { id: "practical-guidance", pattern: /^##\s+.*(?:具體指引|建議與練習|Practical\s*Guidance|Advice\s*[&＆]\s*Practice)/i },
+  { id: "zen-reminder", pattern: /^##\s+.*(?:靜心提醒|Zen\s*Reminder|Meditation\s*Reminder)/i },
 ];
+
+/** Check if a line is any ## heading */
+const H2_PATTERN = /^##\s+\S/;
 
 function matchSection(line: string): ReadingSection["id"] | null {
   const trimmed = line.trim();
   for (const { id, pattern } of SECTION_PATTERNS) {
     if (pattern.test(trimmed)) return id;
   }
+  // Any unrecognized ## heading becomes a generic section
+  if (H2_PATTERN.test(trimmed)) return "generic";
   return null;
 }
 
