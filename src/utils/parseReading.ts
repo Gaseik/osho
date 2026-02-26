@@ -40,8 +40,8 @@ const SECTION_PATTERNS: {
   { id: "zen-reminder", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:靜心提醒|Zen\s*Reminder|Meditation\s*Reminder|冥想提醒)/i },
 ];
 
-/** Check if a line is any heading: #, ##, ###, or **bold-only line** */
-const H2_PATTERN = /^(?:#{1,3}\s*\S)/;
+/** Check if a line is a # or ## heading (NOT ### which is a sub-heading inside sections) */
+const H2_PATTERN = /^#{1,2}(?!#)\s*\S/;
 
 /** Check if a line is a standalone bold heading like **Title** */
 const BOLD_LINE_PATTERN = /^\*\*[^*]+\*\*\s*$/;
@@ -51,7 +51,8 @@ function matchSection(line: string): ReadingSection["id"] | null {
   for (const { id, pattern } of SECTION_PATTERNS) {
     if (pattern.test(trimmed)) return id;
   }
-  // Any unrecognized # / ## / ### heading or standalone **bold** line becomes a generic section
+  // Any unrecognized # or ## heading or standalone **bold** line becomes a generic section
+  // Note: ### is NOT matched here — it's used for sub-headings within sections (e.g. card names)
   if (H2_PATTERN.test(trimmed) || BOLD_LINE_PATTERN.test(trimmed)) return "generic";
   return null;
 }

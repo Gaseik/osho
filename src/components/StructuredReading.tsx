@@ -190,15 +190,15 @@ function CardIcon() {
   );
 }
 
-/* ── 0. Card Meanings Section ── */
+/* ── 0. Card Meanings Section — compact layout ── */
 function CardMeaningsSection({ section }: { section: ReadingSection }) {
   const entries = parseCardMeanings(section.body);
   const hasEntries = entries.length > 0;
 
   return (
     <AnimatedSection>
-      <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
-        <div className="flex items-center gap-2.5 mb-4">
+      <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-4 md:p-5">
+        <div className="flex items-center gap-2.5 mb-3">
           <CardIcon />
           <h2 className="text-zen-gold/85 text-base md:text-lg font-semibold tracking-wide">
             {section.title}
@@ -206,21 +206,17 @@ function CardMeaningsSection({ section }: { section: ReadingSection }) {
         </div>
 
         {hasEntries ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-0 divide-y divide-zen-gold/10">
             {entries.map((entry, i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-zen-gold/10 bg-white/[0.02] p-4
-                           transition-colors duration-300 hover:border-zen-gold/20 hover:bg-white/[0.04]"
-              >
-                <h3 className="text-zen-gold/80 text-sm font-semibold tracking-wide mb-2">
+              <div key={i} className="py-2.5 first:pt-0 last:pb-0">
+                <h3 className="text-zen-gold/80 text-sm font-semibold tracking-wide mb-1">
                   {entry.name}
                 </h3>
-                <div className="text-white/75 text-sm leading-[1.8]">
+                <div className="text-white/75 text-[13px] leading-[1.7]">
                   <ReactMarkdown
                     components={{
                       p: ({ children }) => (
-                        <p className="mb-2 last:mb-0">{children}</p>
+                        <p className="mb-1 last:mb-0">{children}</p>
                       ),
                       strong: ({ children }) => (
                         <strong className="reading-highlight font-semibold">
@@ -236,15 +232,15 @@ function CardMeaningsSection({ section }: { section: ReadingSection }) {
             ))}
           </div>
         ) : (
-          <div className="text-white/80 text-sm leading-[1.8]">
+          <div className="text-white/80 text-sm leading-[1.7]">
             <ReactMarkdown
               components={{
-                p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
                 strong: ({ children }) => (
                   <strong className="reading-highlight font-semibold">{children}</strong>
                 ),
                 h3: ({ children }) => (
-                  <h3 className="text-zen-gold/70 text-[0.95rem] font-medium mt-4 mb-2">{children}</h3>
+                  <h3 className="text-zen-gold/70 text-[0.95rem] font-medium mt-3 mb-1">{children}</h3>
                 ),
               }}
             >
