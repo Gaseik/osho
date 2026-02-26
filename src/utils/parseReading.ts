@@ -2,6 +2,10 @@
  * Parse AI reading markdown into structured sections.
  *
  * Expected format:
+ *   ## 牌意解讀 / Card Meanings
+ *   ### Card Name
+ *   ...interpretation paragraphs...
+ *
  *   ## 牌面解析 / Card Reading
  *   ...paragraphs with **bold**...
  *
@@ -18,7 +22,7 @@
  */
 
 export interface ReadingSection {
-  id: "card-reading" | "deeper-insight" | "practical-guidance" | "zen-reminder";
+  id: "card-meanings" | "card-reading" | "deeper-insight" | "practical-guidance" | "zen-reminder";
   title: string;
   body: string;
 }
@@ -28,6 +32,7 @@ const SECTION_PATTERNS: {
   id: ReadingSection["id"];
   pattern: RegExp;
 }[] = [
+  { id: "card-meanings", pattern: /^##\s+.*(?:牌意解讀|Card\s*Meanings?)/i },
   { id: "card-reading", pattern: /^##\s+.*(?:牌面解析|Card\s*Reading)/i },
   { id: "deeper-insight", pattern: /^##\s+.*(?:深層洞察|Deeper\s*Insight)/i },
   { id: "practical-guidance", pattern: /^##\s+.*(?:具體指引|Practical\s*Guidance)/i },
@@ -81,6 +86,38 @@ export function parseReading(markdown: string): ReadingSection[] {
   }
 
   return sections;
+}
+
+/** Parse card meanings body into individual card entries (split by ### headings) */
+export interface CardMeaningEntry {
+  name: string;
+  body: string;
+}
+
+export function parseCardMeanings(body: string): CardMeaningEntry[] {
+  const entries: CardMeaningEntry[] = [];
+  let currentName = "";
+  let bodyLines: string[] = [];
+
+  for (const line of body.split("\n")) {
+    const trimmed = line.trim();
+    // Match ### heading (card name)
+    const match = trimmed.match(/^###\s+(.+)/);
+    if (match) {
+      if (currentName) {
+        entries.push({ name: currentName, body: bodyLines.join("\n").trim() });
+      }
+      currentName = match[1];
+      bodyLines = [];
+    } else if (currentName) {
+      bodyLines.push(line);
+    }
+  }
+  if (currentName) {
+    entries.push({ name: currentName, body: bodyLines.join("\n").trim() });
+  }
+
+  return entries;
 }
 
 /** Extract blockquote text from body (strips leading >) */

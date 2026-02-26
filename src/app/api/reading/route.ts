@@ -174,10 +174,13 @@ function buildPrompt(
 
 ## Reading Structure & Format
 
+### ## Card Meanings (牌意解讀)
+For each card drawn, use a ### subheading with the card name. In 2-3 sentences, explain what this card means in its specific position — connect it to the user's question, not just the textbook definition. Highlight the most important keyword or phrase in **bold**.
+
 ### ## Card Reading (牌面解析)
 Open with 1-2 sentences stating the **core message** of the entire reading — if all the cards could say one thing, what would it be?
 
-Then use natural flowing paragraphs. Do NOT interpret each card separately. Instead, weave them together as a narrative: "Card A in this position shows your starting point is..., and Card B here reveals..., together they point toward..."
+Then use natural flowing paragraphs. Do NOT repeat the individual card interpretations. Instead, weave them together as a narrative — show how the cards connect, conflict, or build upon each other to tell one coherent story.
 
 Use **bold** for key insights.
 

@@ -4,6 +4,7 @@ import { useRef, useEffect, useState, Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   parseReading,
+  parseCardMeanings,
   extractBlockquote,
   parseBulletList,
   parseNumberedList,
@@ -168,10 +169,98 @@ function LotusIcon() {
   );
 }
 
+/* ── SVG: Tarot card icon for card meanings ── */
+function CardIcon() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="text-zen-gold/70"
+    >
+      <rect x="4" y="2" width="16" height="20" rx="2" />
+      <path d="M12 8l2 4-2 1-2-1 2-4Z" fill="currentColor" opacity="0.3" />
+      <circle cx="12" cy="16" r="1.5" opacity="0.5" />
+    </svg>
+  );
+}
+
+/* ── 0. Card Meanings Section ── */
+function CardMeaningsSection({ section }: { section: ReadingSection }) {
+  const entries = parseCardMeanings(section.body);
+  const hasEntries = entries.length > 0;
+
+  return (
+    <AnimatedSection>
+      <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
+        <div className="flex items-center gap-2.5 mb-4">
+          <CardIcon />
+          <h2 className="text-zen-gold/85 text-base md:text-lg font-semibold tracking-wide">
+            {section.title}
+          </h2>
+        </div>
+
+        {hasEntries ? (
+          <div className="flex flex-col gap-3">
+            {entries.map((entry, i) => (
+              <div
+                key={i}
+                className="rounded-lg border border-zen-gold/10 bg-white/[0.02] p-4
+                           transition-colors duration-300 hover:border-zen-gold/20 hover:bg-white/[0.04]"
+              >
+                <h3 className="text-zen-gold/80 text-sm font-semibold tracking-wide mb-2">
+                  {entry.name}
+                </h3>
+                <div className="text-white/75 text-sm leading-[1.8]">
+                  <ReactMarkdown
+                    components={{
+                      p: ({ children }) => (
+                        <p className="mb-2 last:mb-0">{children}</p>
+                      ),
+                      strong: ({ children }) => (
+                        <strong className="reading-highlight font-semibold">
+                          {children}
+                        </strong>
+                      ),
+                    }}
+                  >
+                    {entry.body}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-white/80 text-sm leading-[1.8]">
+            <ReactMarkdown
+              components={{
+                p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                strong: ({ children }) => (
+                  <strong className="reading-highlight font-semibold">{children}</strong>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="text-zen-gold/70 text-[0.95rem] font-medium mt-4 mb-2">{children}</h3>
+                ),
+              }}
+            >
+              {section.body}
+            </ReactMarkdown>
+          </div>
+        )}
+      </div>
+    </AnimatedSection>
+  );
+}
+
 /* ── 1. Card Reading Section ── */
 function CardReadingSection({ section }: { section: ReadingSection }) {
   return (
-    <AnimatedSection>
+    <AnimatedSection delay={80}>
       <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
         <div className="flex items-center gap-2.5 mb-4">
           <CrystalBallIcon />
@@ -228,7 +317,7 @@ function DeeperInsightSection({ section }: { section: ReadingSection }) {
   const hasBullets = items.length > 0;
 
   return (
-    <AnimatedSection delay={100}>
+    <AnimatedSection delay={160}>
       <div className="rounded-xl border border-zen-gold/25 bg-gradient-to-b from-zen-gold/[0.04] to-transparent p-5 md:p-6">
         <div className="flex items-center gap-2.5 mb-4">
           <EyeIcon />
@@ -288,7 +377,7 @@ function PracticalGuidanceSection({ section }: { section: ReadingSection }) {
   const hasSteps = steps.length > 0;
 
   return (
-    <AnimatedSection delay={200}>
+    <AnimatedSection delay={240}>
       <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
         <div className="flex items-center gap-2.5 mb-4">
           <CompassIcon />
@@ -350,7 +439,7 @@ function ZenReminderSection({ section }: { section: ReadingSection }) {
   const quote = extractBlockquote(section.body);
 
   return (
-    <AnimatedSection delay={300} className="zen-reminder-section">
+    <AnimatedSection delay={320} className="zen-reminder-section">
       <div className="rounded-xl border border-zen-gold/10 bg-gradient-to-b from-zen-gold/[0.03] via-zen-darker to-zen-dark p-6 md:p-8">
         {/* Top decorative line */}
         <div className="flex items-center justify-center gap-2 mb-5">
@@ -377,6 +466,8 @@ function ZenReminderSection({ section }: { section: ReadingSection }) {
 /* ── Section renderer by id ── */
 function renderSection(section: ReadingSection) {
   switch (section.id) {
+    case "card-meanings":
+      return <CardMeaningsSection key={section.id} section={section} />;
     case "card-reading":
       return <CardReadingSection key={section.id} section={section} />;
     case "deeper-insight":
