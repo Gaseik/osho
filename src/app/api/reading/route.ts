@@ -174,17 +174,19 @@ function buildPrompt(
 
 ## Reading Structure & Format
 
-### ## Card Meanings (牌意解讀)
+IMPORTANT: You MUST use exactly these ## headings to structure your response. Each section MUST start with ## followed by a space and the section title. Do NOT skip any section.
+
+## 牌意解讀
 For each card drawn, use a ### subheading with the card name. In 2-3 sentences, explain what this card means in its specific position — connect it to the user's question, not just the textbook definition. Highlight the most important keyword or phrase in **bold**.
 
-### ## Card Reading (牌面解析)
+## 牌面解析
 Open with 1-2 sentences stating the **core message** of the entire reading — if all the cards could say one thing, what would it be?
 
 Then use natural flowing paragraphs. Do NOT repeat the individual card interpretations. Instead, weave them together as a narrative — show how the cards connect, conflict, or build upon each other to tell one coherent story.
 
 Use **bold** for key insights.
 
-### ## Deeper Insight (深層洞察)
+## 深層洞察
 This is the most important section. Surface the blind spots and unconscious patterns the user may not see.
 - On the surface you're asking about ___, but what the cards reveal at a deeper level is ___
 - A pattern you may not have noticed is ___
@@ -192,13 +194,13 @@ This is the most important section. Surface the blind spots and unconscious patt
 
 Each point needs concrete descriptions and relatable examples. Keep it to 2-3 points. No fluff.
 
-### ## Practical Guidance (具體指引)
+## 具體指引
 Use numbered list (1. 2. 3.) with 2-3 actionable steps.
 Every suggestion must be **specific, actionable, and time-bound**.
 ❌ Don't: "Spend more time reflecting on your inner world"
 ✅ Do: "This week, find a quiet moment and write down three recurring thoughts you have about this relationship. Then ask yourself: are these facts, or fears?"
 
-### ## Zen Reminder (靜心提醒)
+## 靜心提醒
 Use blockquote format (>) for one short, powerful line.
 
 No chicken soup for the soul. Make it a gentle but precise nudge that makes the reader stop and think.

@@ -524,8 +524,8 @@ interface StructuredReadingProps {
 export default function StructuredReading({ content }: StructuredReadingProps) {
   const sections = parseReading(content);
 
-  // Fallback: if parsing found fewer than 2 sections, render with MarkdownReading
-  if (sections.length < 2) {
+  // Fallback: if parsing found no sections at all, render with MarkdownReading
+  if (sections.length === 0) {
     return <MarkdownReading content={content} />;
   }
 

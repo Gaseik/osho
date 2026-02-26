@@ -28,27 +28,31 @@ export interface ReadingSection {
 }
 
 // Match section headers in both ZH and EN (including old prompt variants)
+// Supports: ## Title, ### Title, **Title**, ##Title (no space)
 const SECTION_PATTERNS: {
   id: ReadingSection["id"];
   pattern: RegExp;
 }[] = [
-  { id: "card-meanings", pattern: /^##\s+.*(?:牌意解讀|Card\s*Meanings?)/i },
-  { id: "card-reading", pattern: /^##\s+.*(?:牌面解析|Card\s*(?:Reading|Analysis))/i },
-  { id: "deeper-insight", pattern: /^##\s+.*(?:深層洞察|多層面評估|Deeper\s*Insight|Multi.?dimensional\s*Assessment)/i },
-  { id: "practical-guidance", pattern: /^##\s+.*(?:具體指引|建議與練習|Practical\s*Guidance|Advice\s*[&＆]\s*Practice)/i },
-  { id: "zen-reminder", pattern: /^##\s+.*(?:靜心提醒|Zen\s*Reminder|Meditation\s*Reminder)/i },
+  { id: "card-meanings", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:牌意解讀|Card\s*Meanings?)/i },
+  { id: "card-reading", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:牌面解析|Card\s*(?:Reading|Analysis)|綜合解讀|整體解讀)/i },
+  { id: "deeper-insight", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:深層洞察|多層面評估|Deeper\s*Insight|Multi.?dimensional\s*Assessment|深入分析|深層)/i },
+  { id: "practical-guidance", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:具體指引|建議與練習|Practical\s*Guidance|Advice\s*[&＆]\s*Practice|行動指引|實際建議)/i },
+  { id: "zen-reminder", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:靜心提醒|Zen\s*Reminder|Meditation\s*Reminder|冥想提醒)/i },
 ];
 
-/** Check if a line is any ## heading */
-const H2_PATTERN = /^##\s+\S/;
+/** Check if a line is any heading: #, ##, ###, or **bold-only line** */
+const H2_PATTERN = /^(?:#{1,3}\s*\S)/;
+
+/** Check if a line is a standalone bold heading like **Title** */
+const BOLD_LINE_PATTERN = /^\*\*[^*]+\*\*\s*$/;
 
 function matchSection(line: string): ReadingSection["id"] | null {
   const trimmed = line.trim();
   for (const { id, pattern } of SECTION_PATTERNS) {
     if (pattern.test(trimmed)) return id;
   }
-  // Any unrecognized ## heading becomes a generic section
-  if (H2_PATTERN.test(trimmed)) return "generic";
+  // Any unrecognized # / ## / ### heading or standalone **bold** line becomes a generic section
+  if (H2_PATTERN.test(trimmed) || BOLD_LINE_PATTERN.test(trimmed)) return "generic";
   return null;
 }
 
@@ -72,8 +76,10 @@ export function parseReading(markdown: string): ReadingSection[] {
         });
       }
       currentId = sectionId;
-      // Extract just the title text (remove ## prefix)
-      currentTitle = line.trim().replace(/^##\s+/, "");
+      // Extract just the title text (remove #/##/### prefix or **bold** markers)
+      currentTitle = line.trim()
+        .replace(/^#{1,3}\s*/, "")
+        .replace(/^\*\*(.+)\*\*$/, "$1");
       bodyLines = [];
     } else if (currentId) {
       bodyLines.push(line);
