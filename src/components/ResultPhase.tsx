@@ -291,25 +291,29 @@ export default function ResultPhase({
 
   return (
     <div className={`animate-fadeUp text-center w-full ${layout ? 'max-w-[900px]' : 'max-w-[700px]'}`}>
-      {/* Fixed-height container prevents CLS from text visibility changes */}
-      <div style={{ height: 40, marginBottom: 24 }}>
-        <p
-          className="text-white/60 text-sm transition-opacity duration-500 ease-out"
-          style={{
-            opacity: flippedCount > 0 ? 0 : 1,
-          }}
-        >
+      {/* Title — collapses once cards start flipping */}
+      <div
+        className="transition-all duration-500 ease-out overflow-hidden"
+        style={{
+          height: flippedCount > 0 ? 0 : 40,
+          marginBottom: flippedCount > 0 ? 0 : 16,
+          opacity: flippedCount > 0 ? 0 : 1,
+        }}
+      >
+        <p className="text-white/60 text-sm">
           {t('result.title')}
         </p>
       </div>
 
-      <div style={{ height: 30, marginBottom: 16 }}>
-        <p
-          className="text-white/50 text-xs transition-opacity duration-700 ease-out"
-          style={{
-            opacity: revealed && !allFlipped ? 0 : revealed ? 1 : 0,
-          }}
-        >
+      {/* Zoom hint — compact spacing */}
+      <div
+        className="transition-opacity duration-700 ease-out"
+        style={{
+          opacity: revealed && !allFlipped ? 0 : revealed ? 1 : 0,
+          marginBottom: 8,
+        }}
+      >
+        <p className="text-white/50 text-xs">
           {t('result.zoomHint')}
         </p>
       </div>
