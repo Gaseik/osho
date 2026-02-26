@@ -35,6 +35,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const [selectedIndex, setSelectedIndex] = useState(40);
   const [isDragging, setIsDragging] = useState(false);
   const [hasEverDragged, setHasEverDragged] = useState(false);
+  const [hintDismissed, setHintDismissed] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
 
@@ -375,10 +376,32 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         </div>
       )}
 
-      {/* Drag hint — fixed to viewport bottom, outside fan-scene */}
-      {stage === 'fanned' && !hasEverDragged && (
-        <div className="fan-hint">
-          {t('draw.dragHint')}
+      {/* Instruction overlay — centered, tap anywhere to dismiss */}
+      {stage === 'fanned' && !hintDismissed && (
+        <div
+          className="draw-hint-overlay"
+          onClick={() => setHintDismissed(true)}
+        >
+          <div className="draw-hint-content">
+            {/* Swipe gesture animation */}
+            <div className="draw-hint-anim">
+              <svg width="80" height="50" viewBox="0 0 80 50" fill="none" className="draw-hint-hand">
+                {/* Card silhouette */}
+                <rect x="28" y="2" width="24" height="34" rx="3" stroke="rgba(255,215,0,0.4)" strokeWidth="1.5" fill="rgba(255,215,0,0.06)" />
+                {/* Hand/finger */}
+                <circle cx="40" cy="42" r="6" fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+              </svg>
+              {/* Arrows */}
+              <div className="draw-hint-arrows">
+                <span className="draw-hint-arrow draw-hint-arrow--left">‹</span>
+                <span className="draw-hint-arrow draw-hint-arrow--right">›</span>
+              </div>
+            </div>
+
+            <p className="draw-hint-line1">{t('draw.dragHint')}</p>
+            <p className="draw-hint-line2">{t('draw.dragHint2')}</p>
+            <p className="draw-hint-dismiss">{t('draw.dragHintDismiss')}</p>
+          </div>
         </div>
       )}
     </>
