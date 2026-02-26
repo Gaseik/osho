@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS } from "../data/spreads";
 import CardBack from "./CardBack";
+import { Pointer } from "lucide-react";
 
 interface DrawPhaseProps {
   spread: Spread;
@@ -383,19 +384,14 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
           onClick={() => setHintDismissed(true)}
         >
           <div className="draw-hint-content">
-            {/* Swipe gesture animation — thumb icon */}
+            {/* Swipe gesture animation — Lucide pointer icon */}
             <div className="draw-hint-anim">
-              <svg width="60" height="60" viewBox="0 0 60 60" fill="none" className="draw-hint-hand">
-                {/* Thumb pointing up */}
-                <path
-                  d="M30 8 C30 8, 22 10, 22 18 L22 30 C22 30, 18 30, 16 32 C14 34, 14 38, 16 40 L22 44 C24 46, 28 48, 34 48 C40 48, 44 46, 44 42 L44 24 C44 20, 42 16, 38 14 L34 10 C32 8, 30 8, 30 8Z"
-                  fill="rgba(255,255,255,0.2)"
-                  stroke="rgba(255,255,255,0.6)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Pointer
+                size={48}
+                strokeWidth={1.5}
+                className="draw-hint-hand"
+                color="rgba(255,255,255,0.7)"
+              />
               {/* Arrows */}
               <div className="draw-hint-arrows">
                 <span className="draw-hint-arrow draw-hint-arrow--left">‹</span>
