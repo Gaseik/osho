@@ -7,7 +7,7 @@ import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
 import FlipCard from "./FlipCard";
 import CardSpreadLayout from "./CardSpreadLayout";
-import StructuredReading from "./StructuredReading";
+import MarkdownReading from "./MarkdownReading";
 import DonationPrompt from "./DonationPrompt";
 import DonationToast from "./DonationToast";
 import {
@@ -367,7 +367,7 @@ export default function ResultPhase({
         {/* AI Reading Result - shown at once when done */}
         {aiState === "done" && aiText && (
           <div className="max-w-[540px] w-full text-left mb-2">
-            <StructuredReading content={aiText} />
+            <MarkdownReading content={aiText} />
 
             {/* Copy Reading button */}
             <div className="mt-5 flex justify-center">
