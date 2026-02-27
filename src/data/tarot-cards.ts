@@ -777,3 +777,318 @@ export const wandsCards: TarotCard[] = [
     image: '/assets/tarot/wands/king-of-wands.jpg',
   },
 ]
+
+// ============================================
+// Minor Arcana — Cups 聖杯 (36–49)
+// ============================================
+
+export const cupsCards: TarotCard[] = [
+  {
+    id: 36,
+    name: { en: 'Ace of Cups', zh: '聖杯王牌' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 1,
+    keywords: {
+      en: ['new love', 'emotional awakening', 'compassion', 'creativity'],
+      zh: ['新的愛', '情感覺醒', '慈悲', '創造力'],
+    },
+    upright: {
+      en: 'A profound wave of love, compassion, or creative inspiration is overflowing into your life. Open your heart fully — this is the beginning of deep emotional fulfilment. Whether it arrives as a new relationship, a spiritual awakening, or an artistic breakthrough, receive it with gratitude.',
+      zh: '一股深刻的愛、慈悲或創作靈感正滿溢地湧入你的生命。完全敞開你的心——這是深層情感滿足的開端。無論它以新戀情、靈性覺醒還是藝術突破的形式到來，都以感恩之心接受。',
+    },
+    reversed: {
+      en: 'Emotional blockages are preventing you from giving or receiving love freely. You may be suppressing your feelings, or a creative well has run dry. Look inward to find what is damming the flow — healing begins when you stop guarding your vulnerability.',
+      zh: '情感上的阻塞正在阻止你自由地付出或接受愛。你可能在壓抑自己的感受，或者創意之泉已經枯竭。向內審視是什麼在阻擋這股流動——當你不再防衛自己的脆弱時，療癒就開始了。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/ace-of-cups.jpg',
+  },
+  {
+    id: 37,
+    name: { en: 'Two of Cups', zh: '聖杯二' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 2,
+    keywords: {
+      en: ['partnership', 'mutual attraction', 'unity', 'connection'],
+      zh: ['伴侶關係', '相互吸引', '合一', '連結'],
+    },
+    upright: {
+      en: 'A genuine and balanced connection is forming between you and another — this is a meeting of equals. Mutual respect, attraction, and shared understanding are the foundation of this bond. Whether romantic or platonic, honour the rare gift of true reciprocity.',
+      zh: '你與另一個人之間正在形成一種真誠而平衡的連結——這是平等之間的相遇。相互尊重、吸引和共同理解是這份連結的基礎。無論是浪漫的還是友誼的，珍惜真正互惠的稀有禮物。',
+    },
+    reversed: {
+      en: 'An imbalance of power or unspoken resentment is eroding a once-harmonious relationship. One side may be giving far more than the other, or trust has been quietly broken. Address the disconnect honestly before the gap becomes too wide to bridge.',
+      zh: '權力的失衡或未說出口的怨恨正在侵蝕一段曾經和諧的關係。一方可能付出遠多於另一方，或者信任已悄然破裂。在裂痕擴大到無法彌合之前，誠實地面對這種疏離。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/two-of-cups.jpg',
+  },
+  {
+    id: 38,
+    name: { en: 'Three of Cups', zh: '聖杯三' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 3,
+    keywords: {
+      en: ['celebration', 'friendship', 'community', 'joy'],
+      zh: ['慶祝', '友誼', '社群', '喜悅'],
+    },
+    upright: {
+      en: 'Gather with the people who lift your spirits — this is a time for shared joy and heartfelt celebration. Friendships and creative collaborations are thriving, and the support of your community strengthens you. Let laughter flow freely; connection is its own reward.',
+      zh: '與那些振奮你精神的人相聚——這是分享喜悅和真心慶祝的時刻。友誼和創意合作正蓬勃發展，社群的支持讓你更加堅強。讓笑聲自由流淌；連結本身就是最好的回報。',
+    },
+    reversed: {
+      en: 'Social circles may be sources of gossip, exclusion, or superficial connection rather than genuine support. Overindulgence in pleasure is masking deeper emotional needs. Step back and evaluate which relationships truly nourish you and which are draining your energy.',
+      zh: '社交圈可能成為八卦、排擠或膚淺交往的來源，而非真正的支持。過度沉溺於享樂正在掩蓋更深層的情感需求。退後一步，評估哪些關係真正滋養你，哪些正在消耗你的能量。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/three-of-cups.jpg',
+  },
+  {
+    id: 39,
+    name: { en: 'Four of Cups', zh: '聖杯四' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 4,
+    keywords: {
+      en: ['apathy', 'contemplation', 'discontent', 're-evaluation'],
+      zh: ['冷漠', '沉思', '不滿', '重新評估'],
+    },
+    upright: {
+      en: 'A sense of emotional stagnation or boredom has settled in, and opportunities that once excited you now feel flat. Before dismissing what is being offered, look more carefully — there may be a gift you are overlooking because your gaze is turned inward. Sometimes what we need most is what we least expect.',
+      zh: '一種情感停滯或無聊感已經降臨，曾經讓你興奮的機會現在感覺平淡。在拒絕眼前的事物之前，更仔細地看——可能有一份你因為目光向內而忽略的禮物。有時我們最需要的正是我們最意想不到的。',
+    },
+    reversed: {
+      en: 'You are emerging from a period of withdrawal with renewed clarity about what you truly want. The fog of apathy is lifting, and motivation is slowly returning. Seize this moment of re-engagement before old patterns of avoidance pull you back under.',
+      zh: '你正從一段退縮的時期中走出，對自己真正想要的東西有了重新的清晰認識。冷漠的迷霧正在散去，動力正慢慢回歸。在逃避的老模式再次將你拉回去之前，抓住這個重新投入的時刻。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/four-of-cups.jpg',
+  },
+  {
+    id: 40,
+    name: { en: 'Five of Cups', zh: '聖杯五' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 5,
+    keywords: {
+      en: ['grief', 'loss', 'regret', 'disappointment'],
+      zh: ['悲傷', '失去', '遺憾', '失望'],
+    },
+    upright: {
+      en: 'Grief over what has been lost is consuming your attention, and the pain feels all-encompassing. Honour your sorrow — it is real and it matters — but do not forget that not everything has been taken from you. Two cups still stand behind you; when you are ready, turn around.',
+      zh: '對失去之物的悲傷正佔據你全部的注意力，痛苦似乎無處不在。尊重你的悲傷——它是真實的，也是重要的——但不要忘記並非一切都已失去。兩個杯子仍立在你身後；當你準備好時，轉過身來。',
+    },
+    reversed: {
+      en: 'The heavy cloud of mourning is beginning to part as you find the strength to accept and move on. You are learning that loss does not erase what was meaningful — it transforms it. Forgiveness of yourself or others may be the final key to releasing the grief.',
+      zh: '當你找到接受並繼續前行的力量時，沉重的哀悼之雲開始散去。你正在學習：失去並不會抹消那些有意義的事物——它只是轉化了它們。對自己或他人的寬恕可能是釋放悲傷的最後一把鑰匙。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/five-of-cups.jpg',
+  },
+  {
+    id: 41,
+    name: { en: 'Six of Cups', zh: '聖杯六' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 6,
+    keywords: {
+      en: ['nostalgia', 'childhood', 'innocence', 'reunion'],
+      zh: ['懷舊', '童年', '純真', '重逢'],
+    },
+    upright: {
+      en: 'Sweet memories of the past are resurfacing, bringing comfort and a sense of innocence. A reunion with someone from your history or a return to a familiar place may be on the horizon. Allow yourself to revisit the joy of simpler times while staying rooted in the present.',
+      zh: '過去的美好回憶正在浮現，帶來慰藉和一種純真感。與過去某人的重逢或回到一個熟悉的地方可能即將到來。允許自己重溫更單純時光的喜悅，同時仍然紮根於當下。',
+    },
+    reversed: {
+      en: 'You may be trapped in nostalgia, idealising a past that was not as perfect as memory suggests. Living in yesterday prevents you from building a meaningful today. Alternatively, unresolved childhood wounds are resurfacing and asking to be healed rather than romanticised.',
+      zh: '你可能困在懷舊中，將過去理想化成記憶所暗示的那般完美。活在昨天會阻止你建立有意義的今天。或者，未解決的童年傷口正在重新浮現，要求被療癒而非被浪漫化。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/six-of-cups.jpg',
+  },
+  {
+    id: 42,
+    name: { en: 'Seven of Cups', zh: '聖杯七' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 7,
+    keywords: {
+      en: ['illusion', 'fantasy', 'choices', 'wishful thinking'],
+      zh: ['幻象', '幻想', '選擇', '一廂情願'],
+    },
+    upright: {
+      en: 'A dazzling array of possibilities stretches before you, but not all of them are real. Fantasies and wishful thinking can be seductive distractions from the work that genuine dreams require. Sort through the illusions with clear eyes and commit to the one vision that is grounded in truth.',
+      zh: '一連串令人目眩的可能性在你面前展開，但並非所有都是真實的。幻想和一廂情願可能是誘人的干擾，讓你遠離真正夢想所需的努力。以清明的眼光分辨幻象，投入那個扎根於真實的願景。',
+    },
+    reversed: {
+      en: 'The fog of confusion is clearing and you are finally seeing your options for what they truly are. A dose of realism is helping you cut through the daydreams and focus on what is actually achievable. Use this clarity to make a decisive choice before the window of opportunity shifts.',
+      zh: '迷惑的霧氣正在消散，你終於看清了各個選項的真面目。一劑現實主義正在幫助你穿透白日夢，專注於真正可實現的事物。利用這份清明在機會之窗轉移之前做出果斷的選擇。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/seven-of-cups.jpg',
+  },
+  {
+    id: 43,
+    name: { en: 'Eight of Cups', zh: '聖杯八' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 8,
+    keywords: {
+      en: ['departure', 'letting go', 'seeking deeper meaning', 'withdrawal'],
+      zh: ['離去', '放下', '尋求更深意義', '退出'],
+    },
+    upright: {
+      en: 'Something that once filled your cup no longer satisfies, and your soul is urging you to walk away in search of deeper meaning. This departure is not failure — it is the courage to honour your own growth. Leave with grace; what you seek cannot be found where you have been standing.',
+      zh: '曾經填滿你杯子的東西不再能滿足你，你的靈魂正催促你離開，去尋找更深的意義。這次離去不是失敗——而是尊重自身成長的勇氣。優雅地離開；你尋找的東西無法在你駐足之處找到。',
+    },
+    reversed: {
+      en: 'Fear of the unknown is keeping you tethered to a situation you have emotionally outgrown. You know it is time to move on, but comfort and familiarity hold a powerful grip. Alternatively, you may be running away from something that still deserves your attention and effort.',
+      zh: '對未知的恐懼讓你緊繫在一個你已經在情感上超越的處境中。你知道是時候繼續前進了，但舒適和熟悉有著強大的牽絆力。或者，你可能正在逃離某個仍然值得你關注和努力的事物。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/eight-of-cups.jpg',
+  },
+  {
+    id: 44,
+    name: { en: 'Nine of Cups', zh: '聖杯九' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 9,
+    keywords: {
+      en: ['contentment', 'satisfaction', 'wish fulfilment', 'gratitude'],
+      zh: ['滿足', '滿意', '願望實現', '感恩'],
+    },
+    upright: {
+      en: 'Your wishes are being granted and a deep sense of contentment fills your heart. This is the card of emotional fulfilment — savour the pleasure of having what you once only dreamed of. Gratitude amplifies the joy; acknowledge how your inner work brought you here.',
+      zh: '你的願望正在被實現，一種深深的滿足感充盈你的內心。這是情感滿足之牌——品味擁有你曾經只能夢想之物的喜悅。感恩會放大喜悅；承認是你的內在修煉帶你走到了這裡。',
+    },
+    reversed: {
+      en: 'Outward abundance masks an inner emptiness — material comfort alone is not bringing the happiness you expected. You may be chasing pleasure as a substitute for genuine emotional connection. Reassess what true fulfilment means to you beyond surface-level desires.',
+      zh: '外在的豐盛掩蓋了內在的空虛——單純的物質舒適並未帶來你期望的幸福。你可能在追逐享樂作為真正情感連結的替代品。重新評估真正的滿足對你而言意味著什麼，超越表面的慾望。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/nine-of-cups.jpg',
+  },
+  {
+    id: 45,
+    name: { en: 'Ten of Cups', zh: '聖杯十' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 10,
+    keywords: {
+      en: ['harmony', 'family', 'lasting happiness', 'emotional fulfilment'],
+      zh: ['和諧', '家庭', '持久的幸福', '情感圓滿'],
+    },
+    upright: {
+      en: 'Lasting emotional harmony and deep familial love surround you — this is the fulfilment of the heart\'s deepest longing. The rainbow after the storm has arrived, bringing peace, belonging, and shared joy. Treasure this chapter; it is the reward for the emotional work you have done.',
+      zh: '持久的情感和諧與深厚的家庭之愛環繞著你——這是內心最深渴望的實現。暴風雨後的彩虹已經到來，帶來平靜、歸屬感和共同的喜悅。珍惜這個篇章；這是你所做的情感功課的回報。',
+    },
+    reversed: {
+      en: 'The picture-perfect family or relationship is showing cracks beneath the surface. Unspoken tensions and misaligned values are undermining what appears harmonious from the outside. True happiness requires honest communication, not just the performance of togetherness.',
+      zh: '完美的家庭或關係正在表面之下顯露裂痕。未說出口的緊張和不一致的價值觀正在削弱從外表看似和諧的一切。真正的幸福需要誠實的溝通，而不僅僅是團聚的表演。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/ten-of-cups.jpg',
+  },
+  {
+    id: 46,
+    name: { en: 'Page of Cups', zh: '聖杯侍者' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 11,
+    keywords: {
+      en: ['creative message', 'intuitive child', 'curiosity', 'imagination'],
+      zh: ['創意訊息', '直覺之子', '好奇心', '想像力'],
+    },
+    upright: {
+      en: 'A gentle, intuitive message is arriving — perhaps through a dream, a synchronicity, or a sudden spark of imagination. Approach the world with childlike wonder and let your creative instincts guide you. This tender energy invites you to feel deeply without judgement.',
+      zh: '一個溫柔而直覺的訊息正在到來——也許通過夢境、巧合或突如其來的想像力火花。以赤子般的好奇心面對世界，讓你的創作直覺引導你。這股溫柔的能量邀請你不帶批判地深刻感受。',
+    },
+    reversed: {
+      en: 'Emotional immaturity or excessive daydreaming is preventing you from grounding your creative gifts in reality. You may be overly sensitive to criticism or using fantasy to escape uncomfortable truths. Channel your rich inner world into something tangible before it becomes mere escapism.',
+      zh: '情感上的不成熟或過度的白日夢正在阻止你將創作天賦落實到現實中。你可能對批評過度敏感，或利用幻想來逃避令人不舒服的真相。在你豐富的內在世界變成純粹的逃避之前，將它導向具體的事物。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/page-of-cups.jpg',
+  },
+  {
+    id: 47,
+    name: { en: 'Knight of Cups', zh: '聖杯騎士' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 12,
+    keywords: {
+      en: ['romance', 'idealism', 'charm', 'following the heart'],
+      zh: ['浪漫', '理想主義', '魅力', '追隨內心'],
+    },
+    upright: {
+      en: 'A romantic or creative proposal is approaching with grace and sincerity. Follow your heart with the courage of one who believes in beauty and meaning. This energy is charming and emotionally generous — let it lead you toward what inspires your deepest feelings.',
+      zh: '一個浪漫的或創意的提議正以優雅和真誠向你走來。以相信美麗和意義之人的勇氣追隨你的心。這股能量既迷人又在情感上慷慨——讓它引領你走向激發你最深感受的事物。',
+    },
+    reversed: {
+      en: 'Romantic idealism has disconnected from reality, leading to empty promises or unrealistic expectations. Charm without substance is a seductive trap — either in someone approaching you or in your own behaviour. Ground your emotions in honesty before making any commitments.',
+      zh: '浪漫的理想主義已與現實脫節，導致空洞的承諾或不切實際的期望。沒有內涵的魅力是一個誘人的陷阱——無論是在接近你的人身上還是你自己的行為中。在做出任何承諾之前，將你的情感扎根於誠實。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/knight-of-cups.jpg',
+  },
+  {
+    id: 48,
+    name: { en: 'Queen of Cups', zh: '聖杯皇后' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 13,
+    keywords: {
+      en: ['emotional depth', 'empathy', 'nurturing', 'intuition'],
+      zh: ['情感深度', '同理心', '滋養', '直覺'],
+    },
+    upright: {
+      en: 'Your emotional intelligence and empathy are your greatest strengths right now. You hold space for others with a depth of compassion that heals without words. Trust your intuitive knowing — you sense what lies beneath the surface long before others see it.',
+      zh: '你的情商和同理心是你現在最大的優勢。你以一種無需言語就能療癒的深沉慈悲為他人保留空間。信任你的直覺認知——你在他人看見之前就能感應到表面之下的東西。',
+    },
+    reversed: {
+      en: 'Your empathy may be overwhelming you — absorbing everyone else\'s pain at the expense of your own wellbeing. Emotional boundaries have dissolved, leaving you drained and codependent. Nurturing yourself is not selfish; you cannot pour from a cup that has been emptied for others.',
+      zh: '你的同理心可能正壓倒你——以犧牲自己的健康為代價吸收每個人的痛苦。情感界線已經溶解，讓你疲憊不堪並陷入相互依賴。滋養自己不是自私；你無法從一個已為他人倒空的杯子中再倒出什麼。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/queen-of-cups.jpg',
+  },
+  {
+    id: 49,
+    name: { en: 'King of Cups', zh: '聖杯國王' },
+    arcana: 'minor',
+    suit: 'cups',
+    number: 14,
+    keywords: {
+      en: ['emotional mastery', 'diplomacy', 'composure', 'wisdom'],
+      zh: ['情感掌握', '外交手腕', '沉著', '智慧'],
+    },
+    upright: {
+      en: 'You have mastered the art of navigating deep emotions without being swept away by them. Your calm composure and diplomatic wisdom make you a steady anchor for those around you. Lead with your heart and your head in equal measure — that balance is your true authority.',
+      zh: '你已精通在深層情感中航行而不被捲走的藝術。你沉穩的風度和外交智慧使你成為周圍人穩定的錨點。以同等的心與腦來引領——這份平衡才是你真正的權威。',
+    },
+    reversed: {
+      en: 'Emotional suppression disguised as composure is creating a pressure that will eventually erupt. You may be using coldness or manipulation to maintain control over situations that require genuine vulnerability. Allow yourself to feel without fearing that emotion equals weakness.',
+      zh: '偽裝成沉著的情感壓抑正在累積終將爆發的壓力。你可能在用冷漠或操控來維持對需要真正脆弱的情境的控制。允許自己去感受，不要害怕情感等同於軟弱。',
+    },
+    element: 'Water',
+    timeframe: 'Weeks to months',
+    image: '/assets/tarot/cups/king-of-cups.jpg',
+  },
+]
