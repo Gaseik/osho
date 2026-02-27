@@ -462,3 +462,318 @@ export const majorArcana: TarotCard[] = [
     image: '/assets/tarot/major/the-world.jpg',
   },
 ]
+
+// ============================================
+// Minor Arcana — Wands 權杖 (22–35)
+// ============================================
+
+export const wandsCards: TarotCard[] = [
+  {
+    id: 22,
+    name: { en: 'Ace of Wands', zh: '權杖王牌' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 1,
+    keywords: {
+      en: ['inspiration', 'new opportunity', 'creative spark', 'potential'],
+      zh: ['靈感', '新機會', '創意火花', '潛能'],
+    },
+    upright: {
+      en: 'A bold new opportunity is igniting your passion — seize it before the flame fades. Creative energy is surging through you, urging you to begin something meaningful. Trust the spark; this is the seed of something powerful.',
+      zh: '一個大膽的新機會正在點燃你的熱情——趁火焰未滅之前抓住它。創造力正在你體內湧動，催促你開始某件有意義的事。相信這道火花；這是某個強大事物的種子。',
+    },
+    reversed: {
+      en: 'A promising idea is stalling because of hesitation or poor timing. You may feel creatively frustrated, unable to channel your energy into anything concrete. Revisit your motivations — the spark is still there, but it needs the right conditions to catch fire.',
+      zh: '一個充滿前景的想法因猶豫或時機不佳而停滯不前。你可能感到創造力受阻，無法將能量導入任何具體的事物。重新審視你的動機——火花仍在，但它需要合適的條件才能燃起。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/ace-of-wands.jpg',
+  },
+  {
+    id: 23,
+    name: { en: 'Two of Wands', zh: '權杖二' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 2,
+    keywords: {
+      en: ['planning', 'future vision', 'decision', 'discovery'],
+      zh: ['規劃', '未來願景', '決定', '探索'],
+    },
+    upright: {
+      en: 'You stand at a crossroads with the world spread before you — it is time to plan your next move. Your vision extends beyond the familiar; dare to explore uncharted territory. Make a decision and commit to it; waiting will only shrink your options.',
+      zh: '你站在十字路口，世界在你面前展開——是時候規劃下一步了。你的視野已超越熟悉的範圍；敢於探索未知的領域。做出決定並全力投入；等待只會讓你的選擇越來越少。',
+    },
+    reversed: {
+      en: 'Fear of the unknown is keeping you confined to your comfort zone. You may be overthinking your options to the point of paralysis, or a lack of long-term vision is leaving you directionless. Step back and clarify what you truly want before the window closes.',
+      zh: '對未知的恐懼讓你困在舒適圈裡。你可能過度思考各種選項而導致癱瘓，或者缺乏長期願景讓你失去方向。在窗口關閉之前退後一步，釐清你真正想要的是什麼。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/two-of-wands.jpg',
+  },
+  {
+    id: 24,
+    name: { en: 'Three of Wands', zh: '權杖三' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 3,
+    keywords: {
+      en: ['expansion', 'foresight', 'progress', 'opportunity abroad'],
+      zh: ['擴展', '遠見', '進展', '海外機會'],
+    },
+    upright: {
+      en: 'Your early efforts are bearing fruit and the horizon is expanding. Opportunities from unexpected directions — perhaps even overseas — are heading your way. Keep your eyes on the bigger picture; momentum is building and your ships are coming in.',
+      zh: '你早期的努力正在結出果實，視野正在擴展。來自意想不到方向的機會——甚至可能來自海外——正朝你而來。放眼更大的格局；動能正在積累，你的船正駛來。',
+    },
+    reversed: {
+      en: 'Delays and setbacks are testing your patience, and plans that looked promising are hitting obstacles. You may be playing it too safe or failing to adapt when circumstances shift. Reevaluate your strategy rather than stubbornly pushing the original plan.',
+      zh: '延遲和挫折正在考驗你的耐心，看起來很有前景的計畫正遇到阻礙。你可能過於保守，或在情勢轉變時未能及時調整。重新評估你的策略，而非固執地推進原來的計畫。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/three-of-wands.jpg',
+  },
+  {
+    id: 25,
+    name: { en: 'Four of Wands', zh: '權杖四' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 4,
+    keywords: {
+      en: ['celebration', 'homecoming', 'harmony', 'milestone'],
+      zh: ['慶祝', '歸來', '和諧', '里程碑'],
+    },
+    upright: {
+      en: 'A joyful milestone deserves to be celebrated — gather with those who matter and honour how far you have come. Stability and harmony are gracing your home and community. This is a moment of well-earned pride; let gratitude fill the space.',
+      zh: '一個喜悅的里程碑值得慶祝——與重要的人相聚，向你走過的路致敬。穩定與和諧正降臨在你的家庭和社群。這是一個當之無愧的驕傲時刻；讓感恩充滿這個空間。',
+    },
+    reversed: {
+      en: 'Tension beneath the surface is disrupting what should be a harmonious time. A celebration may feel hollow, or a sense of not belonging is nagging at you. Look at what needs to be addressed in your personal foundations before you can truly relax.',
+      zh: '表面之下的緊張正在擾亂本應和諧的時光。一場慶祝可能感覺空洞，或一種不屬於此地的感覺在啃噬你。在你能真正放鬆之前，看看你的個人根基有什麼需要處理的。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/four-of-wands.jpg',
+  },
+  {
+    id: 26,
+    name: { en: 'Five of Wands', zh: '權杖五' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 5,
+    keywords: {
+      en: ['conflict', 'competition', 'tension', 'disagreement'],
+      zh: ['衝突', '競爭', '緊張', '分歧'],
+    },
+    upright: {
+      en: 'Clashing egos and competing agendas are creating chaos — but this friction can be productive if channelled well. Healthy competition sharpens your skills and reveals your true priorities. Engage with the challenge rather than avoiding it; growth lives on the other side of discomfort.',
+      zh: '相互碰撞的自尊和競爭的議程正在製造混亂——但如果引導得當，這種摩擦可以是有建設性的。良性競爭能磨練你的技能，揭示你真正的優先順序。迎接挑戰而非逃避它；成長就在不適的另一端。',
+    },
+    reversed: {
+      en: 'You may be avoiding necessary confrontation or, conversely, escalating petty disputes into full-blown battles. The energy spent on internal bickering is draining everyone involved. Seek common ground and redirect the group\'s fire toward a shared goal.',
+      zh: '你可能正在迴避必要的對峙，或者相反地，將瑣碎的爭執升級為全面的戰爭。花在內部爭吵上的精力正在耗盡所有相關的人。尋找共識，將團體的火焰重新導向共同的目標。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/five-of-wands.jpg',
+  },
+  {
+    id: 27,
+    name: { en: 'Six of Wands', zh: '權杖六' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 6,
+    keywords: {
+      en: ['victory', 'recognition', 'success', 'public acclaim'],
+      zh: ['勝利', '認可', '成功', '公眾讚譽'],
+    },
+    upright: {
+      en: 'Victory is yours and others are taking notice — accept the recognition you have earned with grace. Your confidence and persistence have paid off, and this success boosts your momentum. Enjoy the spotlight, but remember that true leadership inspires others to rise as well.',
+      zh: '勝利屬於你，旁人也注意到了——優雅地接受你贏得的認可。你的自信和堅持已經得到回報，這次成功為你增添了動力。享受聚光燈，但記住真正的領導力是激勵他人一同崛起。',
+    },
+    reversed: {
+      en: 'The applause you expected has not arrived, or success feels empty despite outward appearances. Self-doubt may be undermining your achievements, or you are seeking validation from the wrong audience. Define success on your own terms instead of measuring it by others\' approval.',
+      zh: '你期待的掌聲遲遲未來，或者儘管表面上一切光鮮，成功卻感覺空洞。自我懷疑可能正在削弱你的成就，或者你正從錯誤的對象尋求認可。用你自己的標準定義成功，而非以他人的認可來衡量。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/six-of-wands.jpg',
+  },
+  {
+    id: 28,
+    name: { en: 'Seven of Wands', zh: '權杖七' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 7,
+    keywords: {
+      en: ['defiance', 'perseverance', 'standing ground', 'courage'],
+      zh: ['抵抗', '堅持', '堅守立場', '勇氣'],
+    },
+    upright: {
+      en: 'Others are challenging your position, but you have the high ground — hold it. This is not the time to back down; your convictions are worth defending. The pressure you feel is proof that what you have built matters enough to be contested.',
+      zh: '他人正在挑戰你的位置，但你佔據了有利地形——守住它。現在不是退縮的時候；你的信念值得捍衛。你感受到的壓力恰恰證明你所建立的東西足夠重要，才會被質疑。',
+    },
+    reversed: {
+      en: 'Constant defensiveness is wearing you down, and you may be fighting battles that are no longer worth the cost. Consider whether stubbornness has replaced strategic thinking. Sometimes the bravest move is knowing when to step aside and conserve your energy for what truly matters.',
+      zh: '持續的防禦姿態正在消耗你，你可能在打一些不再值得代價的仗。想想固執是否已經取代了戰略性思考。有時最勇敢的舉動是知道何時退開，把精力留給真正重要的事。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/seven-of-wands.jpg',
+  },
+  {
+    id: 29,
+    name: { en: 'Eight of Wands', zh: '權杖八' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 8,
+    keywords: {
+      en: ['swift action', 'momentum', 'rapid progress', 'movement'],
+      zh: ['迅速行動', '動能', '快速進展', '移動'],
+    },
+    upright: {
+      en: 'Events are accelerating rapidly — the waiting is over and things are falling into place. Strike while the iron is hot; delays and overthinking will only slow a momentum that is working in your favour. Messages, travel, or breakthroughs may arrive sooner than expected.',
+      zh: '事情正在飛速發展——等待已經結束，一切都在就位。趁熱打鐵；拖延和過度思考只會減緩正在對你有利的動能。訊息、旅行或突破可能比預期更早到來。',
+    },
+    reversed: {
+      en: 'Frustrating delays are slowing progress that should be swift. Miscommunication, cancelled plans, or a sense of being stuck in limbo is testing your patience. Rather than forcing the pace, use this pause to double-check the direction — speed without clarity leads to wrong destinations.',
+      zh: '令人沮喪的延遲正在拖慢本應迅速的進展。溝通不良、計畫取消或困在不上不下的狀態正在考驗你的耐心。與其強迫進度，不如利用這個停頓重新確認方向——沒有清晰目標的速度只會通往錯誤的終點。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/eight-of-wands.jpg',
+  },
+  {
+    id: 30,
+    name: { en: 'Nine of Wands', zh: '權杖九' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 9,
+    keywords: {
+      en: ['resilience', 'persistence', 'last stand', 'boundaries'],
+      zh: ['韌性', '堅持不懈', '最後防線', '界線'],
+    },
+    upright: {
+      en: 'You have been through the fire and you are still standing — do not give up now when the finish line is so close. Your scars are proof of your resilience, not your weakness. Set firm boundaries to protect what you have fought so hard to build.',
+      zh: '你已經歷過烈火的考驗而依然屹立——不要在終點線如此接近時放棄。你的傷疤是你韌性的證明，而非軟弱。設立堅定的界線來保護你奮力建立的一切。',
+    },
+    reversed: {
+      en: 'Exhaustion and paranoia are clouding your judgement — you are seeing threats where none exist. The walls you have built for protection have become a prison. It is time to lay down the defensive posture and accept that not every situation requires a fight.',
+      zh: '疲憊和多疑正蒙蔽你的判斷力——你在沒有威脅的地方看到了威脅。你為了保護自己而築起的牆已經變成了牢籠。是時候放下防禦姿態，接受並非每個情況都需要戰鬥。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/nine-of-wands.jpg',
+  },
+  {
+    id: 31,
+    name: { en: 'Ten of Wands', zh: '權杖十' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 10,
+    keywords: {
+      en: ['burden', 'overwhelm', 'responsibility', 'hard work'],
+      zh: ['重擔', '不堪負荷', '責任', '辛勞'],
+    },
+    upright: {
+      en: 'You are carrying more than your fair share and the weight is beginning to show. Success has come, but at the cost of joy — the load must be redistributed or released. Delegate, prioritise, or set something down before your back breaks.',
+      zh: '你承擔了超出你應有份量的重擔，壓力開始顯現。成功來了，但代價是失去喜悅——負荷必須重新分配或釋放。在你不堪承受之前，委派任務、排定優先順序，或放下某些東西。',
+    },
+    reversed: {
+      en: 'You are beginning to recognise that martyrdom is not a virtue and are learning to put burdens down. Alternatively, you may be shirking responsibilities or collapsing under pressure you refused to address. Honest assessment of what is truly yours to carry is the first step to relief.',
+      zh: '你開始認識到殉道不是美德，正在學習放下重擔。或者，你可能在逃避責任，或因拒絕面對的壓力而崩潰。誠實評估哪些才是你真正該承擔的，是獲得解脫的第一步。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/ten-of-wands.jpg',
+  },
+  {
+    id: 32,
+    name: { en: 'Page of Wands', zh: '權杖侍者' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 11,
+    keywords: {
+      en: ['enthusiasm', 'exploration', 'free spirit', 'curiosity'],
+      zh: ['熱忱', '探索', '自由精神', '好奇心'],
+    },
+    upright: {
+      en: 'A surge of enthusiasm and curiosity is pulling you toward a new adventure or creative pursuit. This youthful energy brings fresh ideas and the courage to explore without needing a guaranteed outcome. Follow your excitement — it is pointing you in the right direction.',
+      zh: '一股熱忱和好奇心的湧動正將你拉向一場新的冒險或創作追尋。這股年輕的能量帶來新鮮的想法和無需保證結果就敢探索的勇氣。追隨你的興奮感——它正指引你走向正確的方向。',
+    },
+    reversed: {
+      en: 'Restless energy without direction is leaving you scattered and uncommitted. Grand ideas fizzle out before they gain traction, or impatience is sabotaging projects that need sustained effort. Channel your fire into one clear intention instead of chasing every passing spark.',
+      zh: '沒有方向的躁動能量讓你分散而無法投入。宏大的想法在獲得動力之前就熄滅了，或者不耐煩正在破壞那些需要持續努力的項目。把你的火焰導向一個明確的意圖，而非追逐每一個稍縱即逝的火花。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/page-of-wands.jpg',
+  },
+  {
+    id: 33,
+    name: { en: 'Knight of Wands', zh: '權杖騎士' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 12,
+    keywords: {
+      en: ['action', 'adventure', 'boldness', 'passion'],
+      zh: ['行動', '冒險', '大膽', '熱情'],
+    },
+    upright: {
+      en: 'Charge forward with passion and fearless energy — this is the time for bold, decisive action. Your charisma and confidence are magnetic, drawing opportunities and allies to your side. Embrace the thrill of the chase, but stay mindful of where the horse is heading.',
+      zh: '帶著熱情和無畏的能量向前衝鋒——這是大膽果斷行動的時刻。你的魅力和自信具有磁性，吸引機會和盟友到你身邊。擁抱追逐的刺激，但留意馬匹奔向的方向。',
+    },
+    reversed: {
+      en: 'Impulsive behaviour and reckless decisions are burning bridges faster than you can build them. Your passion has tipped into aggression or arrogance, alienating the people around you. Slow down long enough to consider whether your fire is creating warmth or destruction.',
+      zh: '衝動的行為和魯莽的決定正在以比你建造更快的速度燒毀橋梁。你的熱情已傾向攻擊性或傲慢，疏遠了你身邊的人。放慢腳步，想想你的火焰是在創造溫暖還是毀滅。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/knight-of-wands.jpg',
+  },
+  {
+    id: 34,
+    name: { en: 'Queen of Wands', zh: '權杖皇后' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 13,
+    keywords: {
+      en: ['confidence', 'warmth', 'determination', 'vitality'],
+      zh: ['自信', '溫暖', '堅定', '生命力'],
+    },
+    upright: {
+      en: 'You radiate a magnetic warmth that draws others in and inspires them to act. Your confidence is grounded in genuine self-knowledge, not performance — and that authenticity is your greatest power. Lead with generosity and fierce determination; the world responds to your fire.',
+      zh: '你散發著一種吸引他人並激勵他們行動的磁性溫暖。你的自信建立在真正的自我認知之上，而非表演——這份真實就是你最大的力量。以慷慨和堅定的決心引領；世界會回應你的火焰。',
+    },
+    reversed: {
+      en: 'Your confidence may have curdled into domineering behaviour, or insecurity is making you withdraw your warmth. Jealousy and territorial instincts are poisoning relationships that once thrived. Reconnect with the generous, fiery core that defines you at your best.',
+      zh: '你的自信可能已變質為專橫的行為，或者不安全感讓你收回了溫暖。嫉妒和領地本能正在毒害曾經蓬勃的關係。重新連結你最好狀態時那個慷慨而充滿火焰的核心。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/queen-of-wands.jpg',
+  },
+  {
+    id: 35,
+    name: { en: 'King of Wands', zh: '權杖國王' },
+    arcana: 'minor',
+    suit: 'wands',
+    number: 14,
+    keywords: {
+      en: ['visionary leadership', 'boldness', 'enterprise', 'honour'],
+      zh: ['遠見領導', '魄力', '事業心', '榮譽'],
+    },
+    upright: {
+      en: 'You embody visionary leadership — bold enough to set the direction and charismatic enough to rally others behind it. Your entrepreneurial spirit turns ideas into empires when paired with integrity. Command your domain with honour; your example sets the standard.',
+      zh: '你體現了遠見卓識的領導力——足夠大膽來指明方向，也足夠有魅力來號召他人跟隨。你的創業精神在與正直結合時，能將想法轉化為事業。以榮譽統領你的領域；你的榜樣就是標準。',
+    },
+    reversed: {
+      en: 'A tyrannical streak or inflated ego is undermining the respect you once commanded. Grand visions without follow-through are eroding trust, or you are using your influence to bully rather than inspire. True authority is earned through service, not fear.',
+      zh: '暴虐的傾向或膨脹的自我正在損害你曾經擁有的尊重。空有宏大願景卻缺乏執行正在侵蝕信任，或者你在用影響力來霸凌而非激勵。真正的權威是通過服務贏得的，而非恐懼。',
+    },
+    element: 'Fire',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/wands/king-of-wands.jpg',
+  },
+]
