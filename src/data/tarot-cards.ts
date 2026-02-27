@@ -1092,3 +1092,318 @@ export const cupsCards: TarotCard[] = [
     image: '/assets/tarot/cups/king-of-cups.jpg',
   },
 ]
+
+// ============================================
+// Minor Arcana — Swords 寶劍 (50–63)
+// ============================================
+
+export const swordsCards: TarotCard[] = [
+  {
+    id: 50,
+    name: { en: 'Ace of Swords', zh: '寶劍王牌' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 1,
+    keywords: {
+      en: ['clarity', 'breakthrough', 'truth', 'new idea'],
+      zh: ['清晰', '突破', '真相', '新觀點'],
+    },
+    upright: {
+      en: 'A powerful moment of mental clarity is cutting through confusion — the truth is now undeniable. This breakthrough brings a new idea or perspective that changes everything. Wield this insight with precision and integrity; the sword of truth cuts both ways.',
+      zh: '一個強大的心智清明時刻正在斬破迷惘——真相已無法否認。這個突破帶來一個改變一切的新想法或觀點。以精準和正直揮舞這份洞見；真相之劍是雙面刃。',
+    },
+    reversed: {
+      en: 'Mental fog or misinformation is preventing you from seeing the situation clearly. A promising idea may lack substance, or you are using intellect to justify a conclusion you reached emotionally. Slow down and verify before you act on what you think you know.',
+      zh: '思緒的迷霧或錯誤的資訊正阻止你清楚看見局勢。一個看似有前景的想法可能缺乏實質，或者你正用理智來為一個情感上已下的結論辯護。在根據你認為知道的事情行動之前，放慢腳步並加以驗證。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/ace-of-swords.jpg',
+  },
+  {
+    id: 51,
+    name: { en: 'Two of Swords', zh: '寶劍二' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 2,
+    keywords: {
+      en: ['indecision', 'stalemate', 'avoidance', 'difficult choice'],
+      zh: ['猶豫不決', '僵局', '迴避', '困難的選擇'],
+    },
+    upright: {
+      en: 'You are caught between two options and deliberately keeping yourself blindfolded to avoid the discomfort of choosing. Neither path feels safe, but remaining frozen is its own decision. Remove the blindfold, face the facts, and trust that an imperfect choice is better than none at all.',
+      zh: '你被困在兩個選項之間，刻意蒙住自己的眼睛以逃避選擇的不適。兩條路都不覺得安全，但保持凍結本身就是一種決定。摘下眼罩，面對事實，相信一個不完美的選擇也好過完全不選。',
+    },
+    reversed: {
+      en: 'The stalemate is finally breaking — information or events are forcing the decision you have been avoiding. Emotional overwhelm may be clouding your logic, or you are making a choice based on anxiety rather than sound reasoning. Seek counsel from someone who can offer a clear-eyed perspective.',
+      zh: '僵局終於在瓦解——資訊或事件正迫使你做出一直在迴避的決定。情緒的淹沒可能正蒙蔽你的邏輯，或者你正基於焦慮而非合理推斷做出選擇。向能提供清晰視角的人尋求建議。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/two-of-swords.jpg',
+  },
+  {
+    id: 52,
+    name: { en: 'Three of Swords', zh: '寶劍三' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 3,
+    keywords: {
+      en: ['heartbreak', 'sorrow', 'painful truth', 'grief'],
+      zh: ['心碎', '悲痛', '痛苦的真相', '哀傷'],
+    },
+    upright: {
+      en: 'A painful truth has pierced your heart, and the sorrow it brings is unavoidable. Betrayal, loss, or a devastating revelation demands that you grieve fully before you can heal. Do not rush past the pain — acknowledging it honestly is the first step toward putting yourself back together.',
+      zh: '一個痛苦的真相刺穿了你的心，它帶來的悲傷無法迴避。背叛、失去或毀滅性的揭露要求你完整地悲傷之後才能療癒。不要急於跳過痛苦——誠實地承認它是重新拼湊自己的第一步。',
+    },
+    reversed: {
+      en: 'You are beginning to process old wounds and release the grief that has been lodged in your heart. The worst of the pain is passing, and perspective is slowly returning. Be gentle with yourself during this recovery — healing is not linear, and setbacks do not erase progress.',
+      zh: '你正開始處理舊傷，釋放積存在心中的悲傷。最劇烈的痛苦正在消退，觀點正慢慢回歸。在恢復過程中溫柔對待自己——療癒不是線性的，倒退不會抹消進步。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/three-of-swords.jpg',
+  },
+  {
+    id: 53,
+    name: { en: 'Four of Swords', zh: '寶劍四' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 4,
+    keywords: {
+      en: ['rest', 'recovery', 'contemplation', 'solitude'],
+      zh: ['休息', '恢復', '沉思', '獨處'],
+    },
+    upright: {
+      en: 'Your mind and body are demanding rest — heed the call before exhaustion forces your hand. This is a sacred pause for recovery, not laziness; the battles ahead require you to be restored. Step back from the noise, meditate, and let stillness replenish what action has depleted.',
+      zh: '你的身心正在要求休息——在疲憊迫使你停下之前聽從這個呼喚。這是一個神聖的恢復暫停，而非懈怠；前方的戰役需要你恢復元氣。從喧囂中退後，冥想，讓靜止補充行動所耗損的。',
+    },
+    reversed: {
+      en: 'Restlessness is cutting your recovery short, or you have been hiding in isolation for too long under the guise of rest. The line between necessary retreat and avoidance has blurred. Assess honestly whether you are healing or simply postponing the moment you must re-engage with life.',
+      zh: '不安正在縮短你的恢復時間，或者你以休息為藉口已在孤立中躲藏太久。必要的退隱和逃避之間的界線已變得模糊。誠實評估你是在療癒，還是只是在拖延必須重新投入生活的那一刻。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/four-of-swords.jpg',
+  },
+  {
+    id: 54,
+    name: { en: 'Five of Swords', zh: '寶劍五' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 5,
+    keywords: {
+      en: ['conflict', 'defeat', 'hollow victory', 'betrayal'],
+      zh: ['衝突', '失敗', '空洞的勝利', '背叛'],
+    },
+    upright: {
+      en: 'A conflict has ended, but the victory feels hollow — winning at the expense of relationships leaves everyone diminished. Pick your battles wisely; not every argument is worth the damage it inflicts. Consider whether your pride is costing you more than the fight itself.',
+      zh: '一場衝突已經結束，但勝利感覺空洞——以犧牲關係為代價的贏只會讓每個人都受損。明智地選擇你的戰役；不是每場爭論都值得它造成的傷害。想想你的驕傲是否比這場戰鬥本身付出更多代價。',
+    },
+    reversed: {
+      en: 'You are ready to lay down your weapons and seek reconciliation after a bitter dispute. The desire to be right is giving way to the desire for peace. Alternatively, lingering resentment from a past defeat is poisoning your present — release it before it defines you.',
+      zh: '在一場激烈的爭執之後，你準備好放下武器尋求和解了。想要證明自己是對的慾望正讓位於對和平的渴望。或者，過去失敗留下的怨恨正在毒害你的當下——在它定義你之前釋放它。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/five-of-swords.jpg',
+  },
+  {
+    id: 55,
+    name: { en: 'Six of Swords', zh: '寶劍六' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 6,
+    keywords: {
+      en: ['transition', 'moving on', 'recovery', 'calmer waters'],
+      zh: ['過渡', '繼續前進', '復原', '平靜的水域'],
+    },
+    upright: {
+      en: 'You are leaving troubled waters behind and moving toward calmer shores. This transition may be bittersweet — what you are leaving still hurts — but the journey forward is necessary. Trust the quiet passage; healing happens in the crossing, not just at the destination.',
+      zh: '你正離開洶湧的水域，駛向更平靜的彼岸。這次轉變可能苦樂參半——你正離開的仍然令人心痛——但向前的旅程是必要的。信任這段安靜的航行；療癒發生在渡過的途中，而不僅在終點。',
+    },
+    reversed: {
+      en: 'You are resisting a necessary departure or finding it impossible to leave the past behind. Emotional baggage is weighing down the boat, making the crossing far harder than it needs to be. Lighten your load — some things must be left on the shore you came from.',
+      zh: '你正在抗拒一次必要的離開，或發現自己無法將過去拋在身後。情感包袱正壓著船，讓渡河變得比本該的困難許多。減輕你的負擔——有些東西必須留在你出發的岸邊。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/six-of-swords.jpg',
+  },
+  {
+    id: 56,
+    name: { en: 'Seven of Swords', zh: '寶劍七' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 7,
+    keywords: {
+      en: ['deception', 'strategy', 'stealth', 'cunning'],
+      zh: ['欺騙', '策略', '隱匿', '狡詐'],
+    },
+    upright: {
+      en: 'Someone may be acting with hidden motives — and that someone could be you. Strategic thinking has its place, but when it crosses into deception or avoidance of accountability, the gains are short-lived. Examine whether cleverness is serving your integrity or undermining it.',
+      zh: '某人可能懷有隱藏的動機行事——而那個人可能就是你。策略性思考有其用處，但當它越界成為欺騙或逃避責任時，所獲甚微。審視你的聰明是在服務你的正直還是在破壞它。',
+    },
+    reversed: {
+      en: 'Hidden truths are coming to light and deceptions are unravelling. You may be experiencing the consequences of past dishonesty or finally confronting someone else\'s betrayal. Use this revelation as an opportunity to rebuild on a foundation of transparency rather than repeating the cycle.',
+      zh: '隱藏的真相正在浮出水面，欺騙正在瓦解。你可能正在承受過去不誠實的後果，或終於面對他人的背叛。以這次揭露為契機，在透明的基礎上重建，而非重蹈覆轍。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/seven-of-swords.jpg',
+  },
+  {
+    id: 57,
+    name: { en: 'Eight of Swords', zh: '寶劍八' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 8,
+    keywords: {
+      en: ['restriction', 'trapped thinking', 'self-imposed limits', 'helplessness'],
+      zh: ['限制', '困頓思維', '自我設限', '無助感'],
+    },
+    upright: {
+      en: 'You feel trapped, but the prison is largely of your own making — the bindings are loose and the blindfold can be removed. Limiting beliefs and fear-based thinking have convinced you that there is no way out. Challenge the narrative; more options exist than your anxious mind allows you to see.',
+      zh: '你感覺被困住了，但這座牢獄很大程度上是你自己打造的——束縛是鬆的，眼罩可以拿掉。限制性信念和基於恐懼的思維讓你相信沒有出路。挑戰這個敘事；比你焦慮的頭腦讓你看見的有更多選擇。',
+    },
+    reversed: {
+      en: 'You are beginning to see through the mental traps that have kept you paralysed. The courage to question your own limiting stories is the first step toward liberation. As the blindfold slips, you realise that the swords surrounding you were never as close as they appeared.',
+      zh: '你開始看穿那些讓你癱瘓的心理陷阱。質疑你自己限制性故事的勇氣是邁向解放的第一步。當眼罩滑落，你意識到圍繞你的劍從來不像看起來那麼近。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/eight-of-swords.jpg',
+  },
+  {
+    id: 58,
+    name: { en: 'Nine of Swords', zh: '寶劍九' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 9,
+    keywords: {
+      en: ['anxiety', 'nightmares', 'worry', 'despair'],
+      zh: ['焦慮', '噩夢', '憂慮', '絕望'],
+    },
+    upright: {
+      en: 'Anxiety and dark thoughts are robbing you of sleep and peace of mind. The fears that torment you in the small hours feel enormous, but many of them are projections rather than realities. Reach out to someone you trust — suffering in silence only amplifies the anguish.',
+      zh: '焦慮和黑暗的思緒正在剝奪你的睡眠與內心平靜。在深夜折磨你的恐懼感覺巨大無比，但其中許多是投射而非現實。向你信任的人伸出手——默默承受只會放大痛苦。',
+    },
+    reversed: {
+      en: 'The worst of the mental anguish is easing as you begin to confront what has been haunting you. Seeking help — whether through therapy, honest conversation, or simply naming your fears — is breaking the cycle of nocturnal torment. Dawn is closer than the darkness suggests.',
+      zh: '當你開始面對一直困擾你的事物時，最嚴重的心理痛苦正在緩解。尋求幫助——無論是通過療癒、坦誠的對話，還是僅僅為你的恐懼命名——正在打破夜間折磨的循環。黎明比黑暗所暗示的更近。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/nine-of-swords.jpg',
+  },
+  {
+    id: 59,
+    name: { en: 'Ten of Swords', zh: '寶劍十' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 10,
+    keywords: {
+      en: ['rock bottom', 'painful ending', 'collapse', 'new dawn'],
+      zh: ['谷底', '痛苦的結束', '崩塌', '新的曙光'],
+    },
+    upright: {
+      en: 'You have hit rock bottom and there is no denying it — this chapter has ended in the most painful way possible. Yet the sunrise on the horizon promises that this is also the moment when things can only get better. Let the old story die completely so the new one can begin.',
+      zh: '你已經觸底了，這無法否認——這一章以最痛苦的方式結束了。然而地平線上的日出承諾著這也是事情只會變得更好的時刻。讓舊的故事徹底死去，新的才能開始。',
+    },
+    reversed: {
+      en: 'You are surviving an ordeal that once felt unsurvivable and slowly beginning to rise again. The temptation to wallow or replay the trauma is strong, but the swords are falling away. Resist the urge to keep the wounds open — recovery requires you to accept the ending and move on.',
+      zh: '你正在度過一場曾經感覺無法倖存的磨難，並慢慢開始重新站起來。沉溺或反覆重播創傷的誘惑很強烈，但劍正在掉落。抵抗讓傷口繼續敞開的衝動——復原要求你接受結局並繼續前行。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/ten-of-swords.jpg',
+  },
+  {
+    id: 60,
+    name: { en: 'Page of Swords', zh: '寶劍侍者' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 11,
+    keywords: {
+      en: ['curiosity', 'vigilance', 'mental agility', 'new information'],
+      zh: ['好奇心', '警覺', '思維敏捷', '新資訊'],
+    },
+    upright: {
+      en: 'A sharp and restless mind is hungry for new information and eager to challenge the status quo. Your intellectual curiosity and quick thinking are assets — use them to investigate, question, and communicate with clarity. Stay alert; the truth you uncover now could prove invaluable.',
+      zh: '一個敏銳而不安的頭腦渴望新資訊，急於挑戰現狀。你的求知欲和敏捷思維是寶貴的資產——用它們來調查、提問並清晰地溝通。保持警覺；你現在揭示的真相可能極為寶貴。',
+    },
+    reversed: {
+      en: 'Scattered thinking or gossipy behaviour is undermining your credibility. You may be all talk and no follow-through, or using sharp words to wound rather than illuminate. Direct your mental energy toward constructive ends instead of petty arguments or idle speculation.',
+      zh: '思維散亂或八卦行為正在損害你的可信度。你可能光說不練，或用尖銳的言語來傷害而非啟發。將你的心智能量導向建設性的方向，而非瑣碎的爭論或無謂的猜測。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/page-of-swords.jpg',
+  },
+  {
+    id: 61,
+    name: { en: 'Knight of Swords', zh: '寶劍騎士' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 12,
+    keywords: {
+      en: ['ambition', 'direct action', 'intellect', 'assertiveness'],
+      zh: ['野心', '直接行動', '智識', '果斷'],
+    },
+    upright: {
+      en: 'You are charging toward your goal with relentless intellectual force and unwavering focus. This is the energy of someone who has made up their mind and will not be deterred. Your assertiveness is admirable, but ensure that speed does not sacrifice accuracy or empathy along the way.',
+      zh: '你正以不懈的智識力量和堅定不移的專注向目標衝鋒。這是一個已下定決心、不會被阻擋之人的能量。你的果斷令人欽佩，但確保速度不會在途中犧牲準確性或同理心。',
+    },
+    reversed: {
+      en: 'Reckless haste and intellectual arrogance are leading to careless mistakes and hurt feelings. You may be bulldozing through situations that require finesse, or your arguments have become weapons rather than tools. Slow the charge before you cause damage that cannot be undone.',
+      zh: '魯莽的急躁和智識上的傲慢正導致粗心的錯誤和受傷的感受。你可能正在橫衝直撞地處理需要細膩的情境，或者你的論點已變成武器而非工具。在造成無法挽回的損害之前放慢衝鋒。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/knight-of-swords.jpg',
+  },
+  {
+    id: 62,
+    name: { en: 'Queen of Swords', zh: '寶劍皇后' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 13,
+    keywords: {
+      en: ['clear judgement', 'independence', 'honest communication', 'perceptiveness'],
+      zh: ['清晰判斷', '獨立', '誠實溝通', '洞察力'],
+    },
+    upright: {
+      en: 'Your ability to see through pretence and communicate with unflinching honesty is a rare gift. Approach your situation with the clear-eyed judgement of someone who values truth over comfort. Your independence and sharp perception cut to the heart of the matter — trust that clarity.',
+      zh: '你看穿偽裝並以毫不退縮的誠實溝通的能力是一份稀有的天賦。以一個重視真相甚於舒適之人的清澈判斷力來面對你的處境。你的獨立和敏銳洞察直入事物核心——信任那份清晰。',
+    },
+    reversed: {
+      en: 'Your sharp tongue may be cutting deeper than intended, or bitterness from past wounds is hardening you into cynicism. Emotional walls built for self-protection are isolating you from genuine connection. Honesty is a virtue, but weaponised truth without compassion is cruelty.',
+      zh: '你尖銳的言辭可能傷得比預期更深，或者過去傷口留下的苦澀正讓你硬化為憤世嫉俗。為自我保護而築起的情感高牆正將你與真正的連結隔絕。誠實是美德，但沒有慈悲的武器化真相是殘酷。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/queen-of-swords.jpg',
+  },
+  {
+    id: 63,
+    name: { en: 'King of Swords', zh: '寶劍國王' },
+    arcana: 'minor',
+    suit: 'swords',
+    number: 14,
+    keywords: {
+      en: ['intellectual authority', 'fairness', 'discipline', 'strategic mind'],
+      zh: ['智識權威', '公正', '紀律', '戰略思維'],
+    },
+    upright: {
+      en: 'Command your situation with the disciplined intellect and impartial judgement of a seasoned strategist. Your ability to separate emotion from logic allows you to make fair decisions that others trust. Lead with ethical clarity; your authority comes from the rigour of your thinking, not the volume of your voice.',
+      zh: '以資深戰略家的嚴謹智識和公正判斷來掌控你的局面。你將情感與邏輯分開的能力讓你做出他人信服的公平決定。以倫理清晰來領導；你的權威來自你思考的嚴謹，而非你嗓門的大小。',
+    },
+    reversed: {
+      en: 'Intellectual dominance is being wielded as a weapon — cold logic without heart creates tyranny disguised as reason. You may be manipulating facts to serve your agenda or suppressing dissent through intimidation. True wisdom integrates compassion; a mind without heart is a blade without a handle.',
+      zh: '智識上的優勢正被當作武器揮舞——沒有心的冰冷邏輯創造的是偽裝成理性的暴政。你可能在操控事實來服務你的議程，或通過恐嚇壓制異議。真正的智慧整合慈悲；沒有心的頭腦是一把沒有劍柄的刀刃。',
+    },
+    element: 'Air',
+    timeframe: 'Days to weeks',
+    image: '/assets/tarot/swords/king-of-swords.jpg',
+  },
+]
