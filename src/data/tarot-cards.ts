@@ -1407,3 +1407,330 @@ export const swordsCards: TarotCard[] = [
     image: '/assets/tarot/swords/king-of-swords.jpg',
   },
 ]
+
+// ============================================
+// Minor Arcana — Pentacles 錢幣 (64–77)
+// ============================================
+
+export const pentaclesCards: TarotCard[] = [
+  {
+    id: 64,
+    name: { en: 'Ace of Pentacles', zh: '錢幣王牌' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 1,
+    keywords: {
+      en: ['new opportunity', 'prosperity', 'manifestation', 'abundance'],
+      zh: ['新機會', '繁榮', '實現', '豐盛'],
+    },
+    upright: {
+      en: 'A golden opportunity for material prosperity is being placed directly in your hands. This is the seed of financial growth, a promising job offer, or a solid investment that could yield lasting abundance. Ground your ambitions in practical action — the universe is providing, but you must plant the seed to reap the harvest.',
+      zh: '一個物質繁榮的黃金機會正被直接放到你手中。這是財務成長的種子、一個有前景的工作機會，或一筆能帶來持久豐盛的穩健投資。將你的雄心建立在實際行動上——宇宙正在給予，但你必須播下種子才能收穫。',
+    },
+    reversed: {
+      en: 'A promising opportunity is slipping through your fingers due to poor planning or lack of follow-through. Financial instability or missed chances may stem from unrealistic expectations or unwillingness to do the groundwork. Re-examine your relationship with material security and ensure your foundations are solid before building higher.',
+      zh: '一個有前景的機會正因規劃不周或缺乏執行力而從你指間溜走。財務不穩或錯失的機會可能源於不切實際的期望或不願打好基礎。重新審視你與物質安全感的關係，確保在更高處建造之前地基是穩固的。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/ace-of-pentacles.jpg',
+  },
+  {
+    id: 65,
+    name: { en: 'Two of Pentacles', zh: '錢幣二' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 2,
+    keywords: {
+      en: ['balance', 'adaptability', 'juggling', 'prioritisation'],
+      zh: ['平衡', '適應力', '兼顧多事', '排定優先順序'],
+    },
+    upright: {
+      en: 'You are juggling multiple responsibilities and managing to keep everything in motion through skilful adaptation. Flexibility is your greatest asset right now — ride the ups and downs with grace rather than rigidity. Just be mindful that perpetual juggling is not sustainable; eventually you will need to set something down.',
+      zh: '你正在兼顧多項責任，並透過靈活的應變能力讓一切保持運轉。靈活性是你現在最大的資產——以優雅而非僵硬的態度去順應起伏。只是要留意，永無止境的兼顧是不可持續的；最終你需要放下某些事。',
+    },
+    reversed: {
+      en: 'The juggling act is becoming unsustainable — balls are starting to drop as you spread yourself too thin. Financial disorganisation or an inability to prioritise is creating unnecessary chaos. Stop trying to do everything at once; pick what matters most and give it your full attention.',
+      zh: '兼顧的把戲正變得難以為繼——當你把自己攤得太薄時，球開始掉落。財務的混亂或無法排定優先順序正製造不必要的混亂。停止試圖同時做所有事；挑出最重要的，給予它全部的注意力。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/two-of-pentacles.jpg',
+  },
+  {
+    id: 66,
+    name: { en: 'Three of Pentacles', zh: '錢幣三' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 3,
+    keywords: {
+      en: ['teamwork', 'craftsmanship', 'collaboration', 'skill building'],
+      zh: ['團隊合作', '工藝', '協作', '技能培養'],
+    },
+    upright: {
+      en: 'Your skills are being recognised within a collaborative effort, and the quality of your craftsmanship is elevating the whole project. This is the power of teamwork — each person\'s expertise contributes to something none could build alone. Stay open to feedback; mastery grows through the exchange of ideas.',
+      zh: '你的技能正在協作的努力中獲得認可，你工藝的品質正在提升整個計畫。這就是團隊合作的力量——每個人的專長共同成就了獨自無法建成的東西。保持對回饋的開放；精通在思想交流中成長。',
+    },
+    reversed: {
+      en: 'Disharmony within a team or a lack of respect for each other\'s contributions is undermining the project. Poor workmanship, ego clashes, or unclear roles are creating friction where synergy should exist. Realign expectations and ensure everyone understands both the vision and their part in achieving it.',
+      zh: '團隊中的不和諧或對彼此貢獻缺乏尊重正在破壞計畫。粗劣的工作品質、自我衝突或不明確的角色正在本該有協同效應的地方製造摩擦。重新對齊期望，確保每個人都理解願景以及自己在實現它中的角色。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/three-of-pentacles.jpg',
+  },
+  {
+    id: 67,
+    name: { en: 'Four of Pentacles', zh: '錢幣四' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 4,
+    keywords: {
+      en: ['security', 'control', 'possessiveness', 'conservation'],
+      zh: ['安全感', '控制', '佔有慾', '保守'],
+    },
+    upright: {
+      en: 'You are holding tightly to what you have — money, status, or control — out of a deep fear of loss. While financial caution has its place, excessive hoarding blocks the natural flow of abundance. Ask yourself whether you are building security or building a prison; there is a fine line between the two.',
+      zh: '你正緊緊抓住你擁有的——金錢、地位或控制——出於對失去的深層恐懼。雖然財務上的謹慎有其道理，但過度的囤積阻塞了豐盛的自然流動。問問自己你是在建立安全感還是在建造一座監獄；兩者之間只有一線之隔。',
+    },
+    reversed: {
+      en: 'You are either loosening your grip and learning to share generously, or your financial stability is crumbling because the fortress you built has isolated you from opportunity. Reckless spending may be the other extreme of the same fear. Find the middle ground between hoarding and squandering.',
+      zh: '你正在放鬆控制、學習慷慨分享，或者你的財務穩定正在崩塌，因為你建造的堡壘把你與機會隔絕了。揮霍無度可能是同一種恐懼的另一個極端。在囤積和揮霍之間找到中庸之道。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/four-of-pentacles.jpg',
+  },
+  {
+    id: 68,
+    name: { en: 'Five of Pentacles', zh: '錢幣五' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 5,
+    keywords: {
+      en: ['hardship', 'financial loss', 'isolation', 'worry'],
+      zh: ['困苦', '財務損失', '孤立', '擔憂'],
+    },
+    upright: {
+      en: 'You are enduring a period of material hardship or feeling left out in the cold — physically, financially, or emotionally. The stained-glass window glowing above suggests that help is closer than you think, but pride or shame may be preventing you from seeking it. You do not have to suffer alone; reach out.',
+      zh: '你正在經歷一段物質困苦的時期，或感覺被排斥在外——無論是身體上、財務上或情感上。上方發光的彩色玻璃窗暗示援助比你想像的更近，但驕傲或羞恥可能正阻止你去尋求。你不必獨自受苦；伸出手求助。',
+    },
+    reversed: {
+      en: 'The worst of the financial or spiritual hardship is beginning to ease. You are finding the courage to accept help or discovering inner resources you did not know you had. Recovery from scarcity is gradual — celebrate small improvements rather than waiting for everything to be fixed at once.',
+      zh: '最艱難的財務或精神困苦正開始緩解。你正找到接受幫助的勇氣，或發現你不知道自己擁有的內在資源。從匱乏中恢復是漸進的——慶祝小小的改善，而非等待一切一次到位。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/five-of-pentacles.jpg',
+  },
+  {
+    id: 69,
+    name: { en: 'Six of Pentacles', zh: '錢幣六' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 6,
+    keywords: {
+      en: ['generosity', 'charity', 'giving and receiving', 'fairness'],
+      zh: ['慷慨', '慈善', '給予與接受', '公平'],
+    },
+    upright: {
+      en: 'Resources are flowing in a healthy cycle of giving and receiving. Whether you are the one offering support or gratefully accepting it, this exchange creates balance and goodwill. Be generous with what you have, but also discerning — true charity empowers rather than creates dependency.',
+      zh: '資源正在給予和接受的健康循環中流動。無論你是提供支持的一方還是感恩地接受的一方，這種交換創造了平衡與善意。對你所擁有的慷慨，但也要有辨別力——真正的慈善是賦予力量而非製造依賴。',
+    },
+    reversed: {
+      en: 'The balance of power in a financial or supportive relationship has become unhealthy. Strings are attached to generosity, debts are being used as leverage, or you are giving beyond your means to feel needed. Examine whether the exchange is truly reciprocal or quietly transactional.',
+      zh: '一段財務或支持關係中的權力平衡已變得不健康。慷慨附帶著條件，債務被用作籌碼，或者你為了感覺被需要而超出能力地付出。審視這場交換是否真正互惠，還是暗地裡是交易性的。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/six-of-pentacles.jpg',
+  },
+  {
+    id: 70,
+    name: { en: 'Seven of Pentacles', zh: '錢幣七' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 7,
+    keywords: {
+      en: ['patience', 'long-term investment', 'evaluation', 'perseverance'],
+      zh: ['耐心', '長期投資', '評估', '堅持不懈'],
+    },
+    upright: {
+      en: 'You have invested significant time and effort, and now you are pausing to assess whether the harvest will justify the labour. Growth is happening, but it requires patience — pulling up the roots to check progress will only set you back. Trust the process and tend your garden faithfully.',
+      zh: '你已投入大量時間和心力，現在你正停下來評估收穫是否能對得起付出。成長正在發生，但它需要耐心——拔起根來檢查進度只會讓你倒退。信任過程，忠實地照料你的花園。',
+    },
+    reversed: {
+      en: 'Impatience or doubt about your investment is tempting you to abandon the effort prematurely. Alternatively, you may be pouring resources into something that genuinely is not yielding returns and need the honesty to pivot. Distinguish between a slow harvest and a barren field before deciding your next move.',
+      zh: '對你投資的不耐煩或懷疑正誘惑你過早放棄努力。或者，你可能正在把資源傾注到一個確實沒有回報的事物中，需要坦誠地轉向。在決定下一步之前，分辨這是緩慢的收穫還是貧瘠的土地。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/seven-of-pentacles.jpg',
+  },
+  {
+    id: 71,
+    name: { en: 'Eight of Pentacles', zh: '錢幣八' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 8,
+    keywords: {
+      en: ['diligence', 'apprenticeship', 'mastery', 'dedication'],
+      zh: ['勤勉', '學徒期', '精通', '專注投入'],
+    },
+    upright: {
+      en: 'Dedicated, repetitive effort is forging genuine mastery. You are deep in the process of honing your craft — each repetition refines your skill and brings you closer to excellence. This is not glamorous work, but it is the most rewarding kind. Stay disciplined; the quality of your output speaks for itself.',
+      zh: '專注而重複的努力正在鍛造真正的精通。你正深入磨練技藝的過程中——每一次重複都在精煉你的技能，帶你更接近卓越。這不是光鮮亮麗的工作，但它是最有回報的那種。保持紀律；你產出的品質會為自己代言。',
+    },
+    reversed: {
+      en: 'You are cutting corners, losing motivation, or stuck in perfectionism that prevents you from finishing. The monotony of practice has drained your enthusiasm, or you are working hard on the wrong thing entirely. Reconnect with the purpose behind your labour or honestly reassess whether this path still serves you.',
+      zh: '你正在偷工減料、失去動力，或陷入阻止你完成的完美主義。練習的單調已耗盡你的熱情，或者你正在完全錯誤的事情上努力。重新連結你勞動背後的目的，或誠實地重新評估這條路是否仍然適合你。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/eight-of-pentacles.jpg',
+  },
+  {
+    id: 72,
+    name: { en: 'Nine of Pentacles', zh: '錢幣九' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 9,
+    keywords: {
+      en: ['self-sufficiency', 'luxury', 'accomplishment', 'independence'],
+      zh: ['自給自足', '奢華', '成就', '獨立'],
+    },
+    upright: {
+      en: 'You have earned the right to enjoy the fruits of your labour in elegant comfort. Financial independence and personal accomplishment surround you — this abundance is the result of discipline, not luck. Savour this moment of self-sufficiency; you built this garden with your own hands.',
+      zh: '你已贏得了在優雅舒適中享受勞動果實的權利。財務獨立和個人成就環繞著你——這份豐盛是紀律的結果，而非運氣。品味這自給自足的時刻；你用自己的雙手建造了這座花園。',
+    },
+    reversed: {
+      en: 'Your sense of worth has become too entangled with material possessions, or financial independence is proving lonelier than expected. Overspending to maintain an image of success or neglecting relationships in pursuit of wealth is hollowing out what should feel fulfilling. Redefine what true abundance means to you.',
+      zh: '你的自我價值感已與物質財產過度纏繞，或者財務獨立被證明比預期更加孤獨。為維持成功的形象而過度消費，或為追求財富而忽視關係，正在掏空本該令人滿足的東西。重新定義真正的豐盛對你而言意味著什麼。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/nine-of-pentacles.jpg',
+  },
+  {
+    id: 73,
+    name: { en: 'Ten of Pentacles', zh: '錢幣十' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 10,
+    keywords: {
+      en: ['legacy', 'inheritance', 'family wealth', 'long-term success'],
+      zh: ['傳承', '遺產', '家族財富', '長期成功'],
+    },
+    upright: {
+      en: 'Lasting wealth and stability extend beyond your own lifetime — this is the card of legacy, inheritance, and generational prosperity. The structures you have built provide security not just for you but for those who follow. Honour the traditions and foundations that brought you here while adding your own chapter to the story.',
+      zh: '持久的財富和穩定超越了你個人的生命——這是傳承、遺產和世代繁榮的牌。你所建立的結構不僅為你提供安全，也為追隨你的人提供安全。尊重帶你走到這裡的傳統和基礎，同時為這個故事增添你自己的篇章。',
+    },
+    reversed: {
+      en: 'Family disputes over money or inheritance are threatening the stability that took generations to build. Alternatively, you may be questioning whether the traditional path to security is truly what you want, or financial setbacks are shaking your long-term plans. Separate what is truly valuable from what is merely inherited.',
+      zh: '家族中關於金錢或遺產的爭執正威脅著歷經幾代人才建立的穩定。或者，你可能在質疑通往安全的傳統路徑是否真是你想要的，或者財務挫折正在動搖你的長期計畫。區分真正有價值的東西和僅僅是繼承下來的東西。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/ten-of-pentacles.jpg',
+  },
+  {
+    id: 74,
+    name: { en: 'Page of Pentacles', zh: '錢幣侍者' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 11,
+    keywords: {
+      en: ['studiousness', 'new venture', 'ambition', 'practicality'],
+      zh: ['勤學', '新事業', '抱負', '務實'],
+    },
+    upright: {
+      en: 'A fresh opportunity for learning or a new practical venture has captured your attention. Approach it with the earnest studiousness of a dedicated apprentice — be willing to start at the beginning and build your knowledge step by step. This seed of ambition, nurtured with patience, has the potential to grow into something substantial.',
+      zh: '一個新的學習機會或新的務實計畫已吸引了你的注意。以一個專注學徒的認真勤學態度來面對它——願意從頭開始，一步步建立你的知識。這顆抱負的種子，以耐心培育，有潛力成長為實質性的成果。',
+    },
+    reversed: {
+      en: 'Lack of focus or unrealistic goals are preventing a promising idea from taking root. You may be all planning and no execution, or the practical demands of a new venture feel overwhelming. Break the task into smaller steps and commit to starting imperfectly rather than waiting for perfect conditions.',
+      zh: '缺乏專注或不切實際的目標正阻止一個有前途的想法生根。你可能全是計畫沒有執行，或者新事業的實際要求令人感到不堪負荷。將任務分解成更小的步驟，承諾不完美地開始，而非等待完美的條件。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/page-of-pentacles.jpg',
+  },
+  {
+    id: 75,
+    name: { en: 'Knight of Pentacles', zh: '錢幣騎士' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 12,
+    keywords: {
+      en: ['reliability', 'hard work', 'routine', 'methodical progress'],
+      zh: ['可靠', '勤奮', '日常紀律', '有條不紊的進展'],
+    },
+    upright: {
+      en: 'Steady, reliable effort is the surest path to your goal right now. There is nothing flashy about this approach — just unwavering commitment to showing up and doing the work day after day. Your methodical progress may feel slow to others, but you know that consistency builds what intensity cannot sustain.',
+      zh: '穩定、可靠的努力是你現在通往目標最確實的道路。這種方式沒有什麼華麗之處——只是堅定不移地日復一日出現和做好工作。你有條不紊的進展在別人看來可能很慢，但你知道持續性能建立強度無法維持的東西。',
+    },
+    reversed: {
+      en: 'Stubbornness is masquerading as persistence, or you have become so attached to routine that you cannot adapt when circumstances change. Alternatively, laziness or procrastination is stalling progress you are perfectly capable of making. Shake off the inertia — efficiency without momentum is just standing still.',
+      zh: '固執正偽裝成堅持，或者你已對日常慣例如此執著，以至於環境變化時無法調適。或者，懶惰或拖延正在拖慢你完全有能力做出的進展。甩掉惰性——沒有動力的效率只是原地踏步。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/knight-of-pentacles.jpg',
+  },
+  {
+    id: 76,
+    name: { en: 'Queen of Pentacles', zh: '錢幣皇后' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 13,
+    keywords: {
+      en: ['nurturing abundance', 'practicality', 'comfort', 'resourcefulness'],
+      zh: ['滋養的豐盛', '務實', '舒適', '足智多謀'],
+    },
+    upright: {
+      en: 'You embody the art of creating warmth and abundance in the material world without losing touch with what truly matters. Your practical wisdom turns a house into a home and a budget into a foundation for generosity. Nurture others from your overflow, not your reserves — sustainable giving begins with caring for yourself first.',
+      zh: '你體現了在物質世界中創造溫暖和豐盛的藝術，同時不失去對真正重要事物的連結。你的務實智慧將房子變成家，將預算變成慷慨的基礎。從你的盈餘而非你的儲備去滋養他人——可持續的給予始於先照顧好自己。',
+    },
+    reversed: {
+      en: 'The balance between nurturing others and nurturing yourself has tipped — either domestic or financial anxiety is consuming your peace, or you have neglected the practical foundations of your life in favour of appearances. Reconnect with the earth beneath your feet; no amount of comfort objects can replace genuine security.',
+      zh: '滋養他人和滋養自己之間的平衡已傾斜——要麼家庭或財務的焦慮正在吞噬你的平靜，要麼你為了表面功夫而忽視了生活的務實基礎。重新連結腳下的大地；再多的物質安慰品也無法取代真正的安全感。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/queen-of-pentacles.jpg',
+  },
+  {
+    id: 77,
+    name: { en: 'King of Pentacles', zh: '錢幣國王' },
+    arcana: 'minor',
+    suit: 'pentacles',
+    number: 14,
+    keywords: {
+      en: ['wealth', 'business acumen', 'stability', 'leadership'],
+      zh: ['財富', '商業頭腦', '穩定', '領導力'],
+    },
+    upright: {
+      en: 'You have achieved material mastery through disciplined effort and sound judgement. Your business acumen and steady leadership create an environment where others can thrive alongside you. Enjoy the security you have built, and use your position of strength to mentor and uplift — true wealth multiplies when shared wisely.',
+      zh: '你透過自律的努力和健全的判斷達成了物質上的精通。你的商業頭腦和穩定的領導力創造了一個讓他人能與你一起蓬勃發展的環境。享受你所建立的安全感，並利用你的優勢地位去指導和提攜——真正的財富在被智慧地分享時倍增。',
+    },
+    reversed: {
+      en: 'Material obsession is corrupting your values — wealth has become an end in itself rather than a means to a meaningful life. Greed, workaholism, or authoritarian control over finances is damaging your relationships and well-being. Remember that the richest person in the graveyard is still in the graveyard.',
+      zh: '對物質的執迷正在腐蝕你的價值觀——財富已成為目的本身，而非通向有意義生活的手段。貪婪、工作成癮或對財務的專制控制正在損害你的關係和身心健康。記住，墓地裡最富有的人仍然在墓地裡。',
+    },
+    element: 'Earth',
+    timeframe: 'Months to a year',
+    image: '/assets/tarot/pentacles/king-of-pentacles.jpg',
+  },
+]
+
+// ============================================
+// All 78 Rider-Waite Tarot Cards
+// ============================================
+
+export const allTarotCards: TarotCard[] = [
+  ...majorArcana,
+  ...wandsCards,
+  ...cupsCards,
+  ...swordsCards,
+  ...pentaclesCards,
+]
