@@ -9,6 +9,24 @@ import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02, HelpCircle, U
 import { getRecords } from '../utils/divinationRecords';
 import { getUserProfile } from '../utils/userProfile';
 
+function ChevronDown({ open }: { open: boolean }) {
+  return (
+    <svg
+      width={14} height={14}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="transition-transform duration-200"
+      style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
 export default function SideMenu() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
@@ -16,6 +34,8 @@ export default function SideMenu() {
   const [open, setOpen] = useState(false);
   const [recordCount, setRecordCount] = useState(0);
   const [hasProfile, setHasProfile] = useState(false);
+  const [oshoOpen, setOshoOpen] = useState(true);
+  const [tarotOpen, setTarotOpen] = useState(true);
 
   useEffect(() => {
     if (open) {
@@ -24,10 +44,33 @@ export default function SideMenu() {
     }
   }, [open]);
 
+  // Auto-expand the section that contains the current route
+  useEffect(() => {
+    if (pathname.startsWith('/tarot')) {
+      setTarotOpen(true);
+    } else if (
+      pathname.startsWith('/reading') ||
+      pathname.startsWith('/cards') ||
+      pathname.startsWith('/spreads') ||
+      pathname.startsWith('/about-osho')
+    ) {
+      setOshoOpen(true);
+    }
+  }, [pathname]);
+
   const toggleLanguage = () => {
     const newLang = i18n.language === 'zh-TW' ? 'en' : 'zh-TW';
     i18n.changeLanguage(newLang);
   };
+
+  const isActive = (href: string) => pathname === href;
+
+  const linkClass = (href: string) =>
+    `flex items-center gap-3 py-2 pl-7 text-sm tracking-wider transition-colors ${
+      isActive(href)
+        ? 'text-zen-gold'
+        : 'text-white/60 hover:text-zen-gold'
+    }`;
 
   return (
     <>
@@ -64,84 +107,161 @@ export default function SideMenu() {
           <XClose width={20} height={20} />
         </button>
 
-        <div className="flex flex-col h-full pt-20 px-6">
+        <div className="flex flex-col h-full pt-16 px-5">
           {/* Scrollable menu area */}
           <div className="flex-1 min-h-0 overflow-y-auto">
-            {/* Reading — always navigate to landing */}
+
+            {/* ===== Osho Zen Tarot Section ===== */}
             <button
-              onClick={() => {
-                setOpen(false);
-                if (pathname === '/reading') {
-                  router.refresh();
-                } else {
-                  router.push('/reading');
-                }
-              }}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors w-full text-left"
+              onClick={() => setOshoOpen(!oshoOpen)}
+              className="flex items-center gap-2.5 w-full text-left py-2.5 mb-1
+                         text-zen-gold/90 hover:text-zen-gold transition-colors"
             >
-              <MagicWand02 width={18} height={18} />
-              <span className="text-sm tracking-wider">{t('menu.reading')}</span>
+              <span className="text-base">🔮</span>
+              <span className="text-[13px] font-medium tracking-wider flex-1">
+                {t('menu.oshoZen')}
+              </span>
+              <ChevronDown open={oshoOpen} />
             </button>
 
+            {oshoOpen && (
+              <div className="mb-3">
+                {/* Reading */}
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    if (pathname === '/reading') {
+                      router.refresh();
+                    } else {
+                      router.push('/reading');
+                    }
+                  }}
+                  className={`${linkClass('/reading')} w-full text-left`}
+                >
+                  <MagicWand02 width={16} height={16} />
+                  <span>{t('menu.oshoReading')}</span>
+                </button>
+
+                {/* Card Meanings */}
+                <Link
+                  href="/cards"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/cards')}
+                >
+                  <BookOpen01 width={16} height={16} />
+                  <span>{t('menu.oshoCards')}</span>
+                </Link>
+
+                {/* Spread Types */}
+                <Link
+                  href="/spreads"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/spreads')}
+                >
+                  <Globe01 width={16} height={16} />
+                  <span>{t('menu.oshoSpreads')}</span>
+                </Link>
+
+                {/* About Osho */}
+                <Link
+                  href="/about-osho"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/about-osho')}
+                >
+                  <HelpCircle width={16} height={16} />
+                  <span>{t('menu.oshoAbout')}</span>
+                </Link>
+              </div>
+            )}
+
+            {/* Divider */}
+            <div className="h-px bg-white/[0.06] my-2" />
+
+            {/* ===== Classic Tarot Section ===== */}
+            <button
+              onClick={() => setTarotOpen(!tarotOpen)}
+              className="flex items-center gap-2.5 w-full text-left py-2.5 mb-1
+                         text-zen-gold/90 hover:text-zen-gold transition-colors"
+            >
+              <span className="text-base">🃏</span>
+              <span className="text-[13px] font-medium tracking-wider flex-1">
+                {t('menu.classicTarot')}
+              </span>
+              <ChevronDown open={tarotOpen} />
+            </button>
+
+            {tarotOpen && (
+              <div className="mb-3">
+                <Link
+                  href="/tarot/single"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/tarot/single')}
+                >
+                  <span>{t('menu.tarotSingle')}</span>
+                </Link>
+
+                <Link
+                  href="/tarot/three-card"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/tarot/three-card')}
+                >
+                  <span>{t('menu.tarotThreeCard')}</span>
+                </Link>
+
+                <Link
+                  href="/tarot/celtic-cross"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/tarot/celtic-cross')}
+                >
+                  <span>{t('menu.tarotCelticCross')}</span>
+                </Link>
+
+                <Link
+                  href="/tarot/relationship"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/tarot/relationship')}
+                >
+                  <span>{t('menu.tarotRelationship')}</span>
+                </Link>
+              </div>
+            )}
+
+            {/* Divider */}
+            <div className="h-px bg-white/[0.06] my-2" />
+
+            {/* ===== Reading History ===== */}
+            <Link
+              href="/records"
+              onClick={() => setOpen(false)}
+              className={`flex items-center gap-2.5 py-2.5 transition-colors ${
+                isActive('/records') ? 'text-zen-gold' : 'text-white/70 hover:text-zen-gold'
+              }`}
+            >
+              <span className="text-base">📖</span>
+              <span className="text-[13px] tracking-wider flex-1">
+                {t('menu.readingHistory')}
+              </span>
+              {recordCount > 0 && (
+                <span className="text-xs text-white/40">{recordCount}</span>
+              )}
+            </Link>
+
+            {/* Divider */}
+            <div className="h-px bg-white/[0.06] my-2" />
+
+            {/* ===== Utility Links ===== */}
             {/* Profile */}
             <Link
               href="/profile"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors"
+              className={`flex items-center gap-3 py-2.5 transition-colors ${
+                isActive('/profile') ? 'text-zen-gold' : 'text-white/70 hover:text-zen-gold'
+              }`}
             >
-              <User01 width={18} height={18} />
+              <User01 width={16} height={16} />
               <span className="text-sm tracking-wider">{t('menu.profile')}</span>
               {hasProfile && (
                 <span className="ml-auto text-xs text-zen-gold/60">✓</span>
-              )}
-            </Link>
-
-            {/* Card Meanings */}
-            <Link
-              href="/cards"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors"
-            >
-              <BookOpen01 width={18} height={18} />
-              <span className="text-sm tracking-wider">{t('menu.cardMeanings')}</span>
-            </Link>
-
-            {/* Spread Types */}
-            <Link
-              href="/spreads"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors"
-            >
-              <Globe01 width={18} height={18} />
-              <span className="text-sm tracking-wider">{t('menu.spreadTypes')}</span>
-            </Link>
-
-            {/* About Osho */}
-            <Link
-              href="/about-osho"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors"
-            >
-              <HelpCircle width={18} height={18} />
-              <span className="text-sm tracking-wider">{t('menu.aboutOsho')}</span>
-            </Link>
-
-            {/* Divination Records */}
-            <Link
-              href="/records"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors"
-            >
-              <BookOpen01 width={18} height={18} />
-              <span className="text-sm tracking-wider">{t('menu.records')}</span>
-              {recordCount > 0 && (
-                <span className="ml-auto text-xs text-white/40">{recordCount}</span>
               )}
             </Link>
 
@@ -149,20 +269,21 @@ export default function SideMenu() {
             <Link
               href="/contact"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors"
+              className={`flex items-center gap-3 py-2.5 transition-colors ${
+                isActive('/contact') ? 'text-zen-gold' : 'text-white/70 hover:text-zen-gold'
+              }`}
             >
-              <Mail01 width={18} height={18} />
+              <Mail01 width={16} height={16} />
               <span className="text-sm tracking-wider">{t('menu.contact')}</span>
             </Link>
 
             {/* Language */}
             <button
               onClick={toggleLanguage}
-              className="flex items-center gap-3 py-3 text-white/70 hover:text-zen-gold
-                         transition-colors text-left"
+              className="flex items-center gap-3 py-2.5 text-white/70 hover:text-zen-gold
+                         transition-colors text-left w-full"
             >
-              <Globe01 width={18} height={18} />
+              <Globe01 width={16} height={16} />
               <span className="text-sm tracking-wider">{t('menu.language')}</span>
               <span className="ml-auto text-xs text-white/40">
                 {i18n.language === 'zh-TW' ? 'EN' : '中文'}

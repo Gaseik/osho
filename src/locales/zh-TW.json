@@ -11,7 +11,18 @@
     "aboutOsho": "什麼是奧修",
     "profile": "個人資料",
     "cardMeanings": "牌義總覽",
-    "spreadTypes": "牌陣介紹"
+    "spreadTypes": "牌陣介紹",
+    "oshoZen": "奧修禪卡",
+    "classicTarot": "傳統塔羅",
+    "readingHistory": "占卜紀錄",
+    "oshoReading": "抽牌",
+    "oshoCards": "牌義總覽",
+    "oshoSpreads": "牌陣介紹",
+    "oshoAbout": "什麼是奧修",
+    "tarotSingle": "單牌",
+    "tarotThreeCard": "三牌陣",
+    "tarotCelticCross": "凱爾特十字",
+    "tarotRelationship": "關係牌陣"
   },
   "profile": {
     "title": "個人資料",
@@ -529,5 +540,37 @@
     "76": "慢下來",
     "77": "開花",
     "78": "豐盛"
+  },
+  "home": {
+    "title": "禪意靈卡",
+    "subtitle": "透過塔羅牌探索你的內在智慧",
+    "chooseTitle": "選擇你的牌組",
+    "oshoTitle": "奧修禪卡",
+    "oshoDesc": "79 張牌探索禪的智慧、靜心與靈性覺醒。",
+    "classicTitle": "傳統塔羅",
+    "classicDesc": "78 張傳統韋特塔羅牌，提供指引、洞見與自我反思。",
+    "oshoBtn": "進入奧修禪卡",
+    "classicBtn": "進入傳統塔羅",
+    "quietMoment": "靜心片刻，感受你的直覺"
+  },
+  "tarot": {
+    "single": {
+      "title": "單牌",
+      "desc": "抽一張牌，為你目前的處境或問題獲得清晰、聚焦的訊息。"
+    },
+    "threeCard": {
+      "title": "三牌陣",
+      "desc": "過去、現在、未來——三張牌的解讀，呈現你旅程的時間軸。"
+    },
+    "celticCross": {
+      "title": "凱爾特十字",
+      "desc": "最經典的十牌陣，深入洞察你的處境、挑戰與結果。"
+    },
+    "relationship": {
+      "title": "關係牌陣",
+      "desc": "探索兩人之間的動態——你的能量、對方的能量，以及你們之間的連結。"
+    },
+    "comingSoon": "開發中",
+    "underDevelopment": "此牌陣正在開發中，敬請期待！"
   }
 }

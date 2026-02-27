@@ -11,7 +11,18 @@
     "aboutOsho": "What is Osho",
     "profile": "Profile",
     "cardMeanings": "Card Meanings",
-    "spreadTypes": "Spread Types"
+    "spreadTypes": "Spread Types",
+    "oshoZen": "Osho Zen Tarot",
+    "classicTarot": "Classic Tarot",
+    "readingHistory": "Reading History",
+    "oshoReading": "Reading",
+    "oshoCards": "Card Meanings",
+    "oshoSpreads": "Spread Types",
+    "oshoAbout": "What is Osho",
+    "tarotSingle": "Single Card",
+    "tarotThreeCard": "Three Card Spread",
+    "tarotCelticCross": "Celtic Cross",
+    "tarotRelationship": "Relationship Spread"
   },
   "profile": {
     "title": "Profile",
@@ -529,5 +540,37 @@
     "76": "Slowing Down",
     "77": "Flowering",
     "78": "Abundance"
+  },
+  "home": {
+    "title": "Zen Insight Cards",
+    "subtitle": "Explore your inner wisdom through tarot",
+    "chooseTitle": "Choose Your Deck",
+    "oshoTitle": "Osho Zen Tarot",
+    "oshoDesc": "79 cards exploring Zen wisdom, meditation, and spiritual awakening.",
+    "classicTitle": "Classic Tarot",
+    "classicDesc": "78 traditional Rider-Waite cards for guidance, insight, and self-reflection.",
+    "oshoBtn": "Enter Osho Zen",
+    "classicBtn": "Enter Classic Tarot",
+    "quietMoment": "Take a quiet moment, feel your intuition"
+  },
+  "tarot": {
+    "single": {
+      "title": "Single Card",
+      "desc": "Draw one card for a clear, focused message about your current situation or question."
+    },
+    "threeCard": {
+      "title": "Three Card Spread",
+      "desc": "Past, present, and future — a three-card reading offering a timeline of your journey."
+    },
+    "celticCross": {
+      "title": "Celtic Cross",
+      "desc": "The most classic 10-card spread, offering deep insight into your situation, challenges, and outcome."
+    },
+    "relationship": {
+      "title": "Relationship Spread",
+      "desc": "Explore the dynamics between two people — your energy, their energy, and the connection between you."
+    },
+    "comingSoon": "Coming Soon",
+    "underDevelopment": "This spread is under development. Stay tuned!"
   }
 }
