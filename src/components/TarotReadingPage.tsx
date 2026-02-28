@@ -83,23 +83,25 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
           {/* Spread result */}
           <TarotSpreadResult drawnCards={drawnCards} spreadId={spreadId} />
 
-          {/* AI reading placeholder */}
-          <div className="mt-10 mb-6 w-full max-w-lg">
-            <div className="p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-center">
-              <div className="text-sm text-white/50 tracking-wider mb-1">
-                {t("tarot.aiReadingTitle")}
-              </div>
-              <div className="text-xs text-white/30 flex items-center justify-center gap-1.5">
-                <span>🚧</span>
-                <span>{t("tarot.aiReadingComingSoon")}</span>
-              </div>
-            </div>
+          {/* Start Reading — disabled */}
+          <div className="mt-10 flex flex-col items-center gap-2">
+            <button
+              disabled
+              className="px-10 py-3.5 rounded-full border border-white/10
+                         bg-white/[0.03] text-white/30 text-sm tracking-[2px]
+                         cursor-not-allowed"
+            >
+              ☯︎ {t("tarot.startReading")}
+            </button>
+            <span className="text-[11px] text-white/25 tracking-wider flex items-center gap-1">
+              🚧 {t("tarot.readingUnderDev")}
+            </span>
           </div>
 
           {/* Draw again */}
           <button
             onClick={handleDrawAgain}
-            className="mt-2 mb-8 px-8 py-3 rounded-full border border-zen-gold/30
+            className="mt-6 mb-8 px-8 py-3 rounded-full border border-zen-gold/30
                        bg-gradient-to-r from-zen-gold/[0.06] to-zen-gold/[0.02]
                        text-zen-gold/80 text-sm tracking-[2px]
                        hover:border-zen-gold/50 hover:scale-[1.02]

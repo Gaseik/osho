@@ -20,7 +20,7 @@ export default function TarotSpreadResult({ drawnCards, spreadId }: TarotSpreadR
       </div>
       <div
         className={`text-[10px] tracking-wider mt-0.5 ${
-          dc.isReversed ? "text-red-400/70" : "text-zen-gold/70"
+          dc.isReversed ? "text-purple-400/70" : "text-zen-gold/70"
         }`}
       >
         {dc.isReversed ? `${t("tarot.reversed")} ▼` : `${t("tarot.upright")} ▲`}
@@ -63,59 +63,74 @@ export default function TarotSpreadResult({ drawnCards, spreadId }: TarotSpreadR
   }
 
   if (spreadId === "celtic-cross") {
+    const dc0 = drawnCards[0];
     const dc1 = drawnCards[1];
     return (
-      <div className="py-4">
-        <div className="flex flex-col sm:flex-row items-center sm:items-start justify-center gap-6 sm:gap-10">
-          {/* Cross section */}
-          <div className="flex flex-col items-center gap-3">
-            {/* Top: card 5 */}
-            <div className="flex justify-center">{renderCard(4)}</div>
-            {/* Middle row: card 4, center (1+2), card 6 */}
-            <div className="flex items-center justify-center gap-3 sm:gap-5">
-              {renderCard(3)}
-              {/* Center: card 1 with card 2 rotated on top */}
-              <div className="flex flex-col items-center">
-                <div className="relative" style={{ width: 140, height: 210 }}>
-                  <TarotFlipCard
-                    card={drawnCards[0].card}
-                    delay={0}
-                    revealed
-                    reversed={drawnCards[0].isReversed}
-                  />
-                  {dc1 && (
-                    <div
-                      className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
-                      style={{ transform: "rotate(90deg)" }}
-                    >
-                      <TarotFlipCard
-                        card={dc1.card}
-                        delay={200}
-                        revealed
-                        reversed={dc1.isReversed}
-                      />
+      <div className="py-4 w-full overflow-x-auto">
+        {/* Scale down on mobile to fit the wide layout */}
+        <div className="celtic-cross-wrapper">
+          <div className="flex flex-row items-start justify-center gap-8">
+            {/* Cross section */}
+            <div className="flex flex-col items-center gap-3">
+              {/* Top: card 5 */}
+              <div className="flex justify-center">{renderCard(4)}</div>
+              {/* Middle row: card 4, center (1+2), card 6 */}
+              <div className="flex items-center justify-center gap-4">
+                {renderCard(3)}
+                {/* Center: card 1 with card 2 rotated on top */}
+                <div className="flex flex-col items-center">
+                  <div className="relative" style={{ width: 140, height: 210 }}>
+                    <TarotFlipCard
+                      card={dc0.card}
+                      delay={0}
+                      revealed
+                      reversed={dc0.isReversed}
+                    />
+                    {dc1 && (
+                      <div
+                        className="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
+                        style={{ transform: "rotate(90deg)" }}
+                      >
+                        <TarotFlipCard
+                          card={dc1.card}
+                          delay={200}
+                          revealed
+                          reversed={dc1.isReversed}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {/* Labels for center cards */}
+                  <div className="text-center mt-1.5">
+                    <div className="text-[10px] text-white/45 tracking-wider">
+                      {dc0.positionName[lang]}
+                      <span className={`ml-1 ${dc0.isReversed ? "text-purple-400/60" : "text-zen-gold/60"}`}>
+                        {dc0.isReversed ? "▼" : "▲"}
+                      </span>
                     </div>
-                  )}
-                </div>
-                {/* Labels for both center cards */}
-                <div className="text-center mt-1.5">
-                  <div className="text-[10px] text-white/40 tracking-wider">
-                    {drawnCards[0].positionName[lang]} / {dc1?.positionName[lang]}
+                    {dc1 && (
+                      <div className="text-[10px] text-white/45 tracking-wider">
+                        {dc1.positionName[lang]}
+                        <span className={`ml-1 ${dc1.isReversed ? "text-purple-400/60" : "text-zen-gold/60"}`}>
+                          {dc1.isReversed ? "▼" : "▲"}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
+                {renderCard(5)}
               </div>
-              {renderCard(5)}
+              {/* Bottom: card 3 */}
+              <div className="flex justify-center">{renderCard(2)}</div>
             </div>
-            {/* Bottom: card 3 */}
-            <div className="flex justify-center">{renderCard(2)}</div>
-          </div>
 
-          {/* Staff section: cards 7–10 (bottom to top) */}
-          <div className="flex flex-col-reverse items-center gap-3">
-            {renderCard(6)}
-            {renderCard(7)}
-            {renderCard(8)}
-            {renderCard(9)}
+            {/* Staff section: cards 7–10 (bottom to top) */}
+            <div className="flex flex-col-reverse items-center gap-3">
+              {renderCard(6)}
+              {renderCard(7)}
+              {renderCard(8)}
+              {renderCard(9)}
+            </div>
           </div>
         </div>
       </div>

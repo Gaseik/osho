@@ -484,6 +484,27 @@ body {
   transform-origin: top center;
 }
 
+/* ========== Celtic Cross Responsive ========== */
+
+.celtic-cross-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .celtic-cross-wrapper {
+    transform: scale(0.7);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 400px) {
+  .celtic-cross-wrapper {
+    transform: scale(0.55);
+    transform-origin: top center;
+  }
+}
+
 /* ========== Responsive ========== */
 
 @media (max-width: 767px) {
