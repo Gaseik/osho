@@ -22,7 +22,10 @@
     "tarotSingle": "Single Card",
     "tarotThreeCard": "Three Card Spread",
     "tarotCelticCross": "Celtic Cross",
-    "tarotRelationship": "Relationship Spread"
+    "tarotRelationship": "Relationship Spread",
+    "tarotSpreads": "Spreads",
+    "tarotCards": "Card Meanings",
+    "tarotSpreadGuide": "Spread Guide"
   },
   "profile": {
     "title": "Profile",

@@ -1734,3 +1734,54 @@ export const allTarotCards: TarotCard[] = [
   ...swordsCards,
   ...pentaclesCards,
 ]
+
+// ============================================
+// Helpers
+// ============================================
+
+export function getTarotCardSlug(card: TarotCard): string {
+  return card.name.en.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+export function getTarotCardBySlug(slug: string): TarotCard | undefined {
+  return allTarotCards.find((c) => getTarotCardSlug(c) === slug);
+}
+
+const SUIT_LABELS: Record<string, { en: string; zh: string }> = {
+  major: { en: 'Major Arcana', zh: '大阿爾克那' },
+  wands: { en: 'Wands', zh: '權杖' },
+  cups: { en: 'Cups', zh: '聖杯' },
+  swords: { en: 'Swords', zh: '寶劍' },
+  pentacles: { en: 'Pentacles', zh: '錢幣' },
+};
+
+export function getTarotSuitLabel(suit: string, lang: 'en' | 'zh'): string {
+  return SUIT_LABELS[suit]?.[lang] ?? suit;
+}
+
+const SUIT_DESCS: Record<string, { en: string; zh: string }> = {
+  major: {
+    en: 'The 22 Major Arcana represent major life themes, spiritual lessons, and karmic influences.',
+    zh: '22 張大阿爾克那代表人生重大主題、靈性課題與業力影響。',
+  },
+  wands: {
+    en: 'The suit of Wands represents fire energy — passion, creativity, ambition, and action.',
+    zh: '權杖牌組代表火元素——熱情、創造力、野心與行動力。',
+  },
+  cups: {
+    en: 'The suit of Cups represents water energy — emotions, relationships, intuition, and dreams.',
+    zh: '聖杯牌組代表水元素——情感、關係、直覺與夢想。',
+  },
+  swords: {
+    en: 'The suit of Swords represents air energy — intellect, communication, conflict, and truth.',
+    zh: '寶劍牌組代表風元素——智識、溝通、衝突與真相。',
+  },
+  pentacles: {
+    en: 'The suit of Pentacles represents earth energy — material world, finances, health, and work.',
+    zh: '錢幣牌組代表土元素——物質世界、財務、健康與工作。',
+  },
+};
+
+export function getTarotSuitDesc(suit: string, lang: 'en' | 'zh'): string {
+  return SUIT_DESCS[suit]?.[lang] ?? '';
+}

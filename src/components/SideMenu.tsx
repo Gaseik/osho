@@ -192,6 +192,11 @@ export default function SideMenu() {
 
             {tarotOpen && (
               <div className="mb-3">
+                {/* Spreads sub-label */}
+                <div className="text-[11px] text-white/30 tracking-wider pl-7 pt-1.5 pb-0.5">
+                  {t('menu.tarotSpreads')}
+                </div>
+
                 <Link
                   href="/tarot/single"
                   onClick={() => setOpen(false)}
@@ -222,6 +227,29 @@ export default function SideMenu() {
                   className={linkClass('/tarot/relationship')}
                 >
                   <span>{t('menu.tarotRelationship')}</span>
+                </Link>
+
+                {/* Divider within tarot section */}
+                <div className="h-px bg-white/[0.04] my-1.5 ml-7 mr-2" />
+
+                {/* Card Meanings */}
+                <Link
+                  href="/tarot/cards"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/tarot/cards')}
+                >
+                  <BookOpen01 width={16} height={16} />
+                  <span>{t('menu.tarotCards')}</span>
+                </Link>
+
+                {/* Spread Guide */}
+                <Link
+                  href="/tarot/spreads"
+                  onClick={() => setOpen(false)}
+                  className={linkClass('/tarot/spreads')}
+                >
+                  <Globe01 width={16} height={16} />
+                  <span>{t('menu.tarotSpreadGuide')}</span>
                 </Link>
               </div>
             )}

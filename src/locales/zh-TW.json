@@ -22,7 +22,10 @@
     "tarotSingle": "單牌",
     "tarotThreeCard": "三牌陣",
     "tarotCelticCross": "凱爾特十字",
-    "tarotRelationship": "關係牌陣"
+    "tarotRelationship": "關係牌陣",
+    "tarotSpreads": "牌陣",
+    "tarotCards": "牌意百科",
+    "tarotSpreadGuide": "牌陣介紹"
   },
   "profile": {
     "title": "個人資料",
