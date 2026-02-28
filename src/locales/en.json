@@ -571,6 +571,28 @@
       "desc": "Explore the dynamics between two people — your energy, their energy, and the connection between you."
     },
     "comingSoon": "Coming Soon",
-    "underDevelopment": "This spread is under development. Stay tuned!"
+    "underDevelopment": "This spread is under development. Stay tuned!",
+    "questionPlaceholder": "e.g. Does he still have feelings for me? Is next month good to change jobs?",
+    "questionLabel": "Enter your question (optional)",
+    "orChooseTemplate": "— or choose a common question —",
+    "startDrawing": "Draw Cards",
+    "drawAgain": "Draw Again",
+    "upright": "Upright",
+    "reversed": "Reversed",
+    "aiReadingTitle": "AI Reading",
+    "aiReadingComingSoon": "AI reading feature coming soon",
+    "categoryLove": "Love & Relationships",
+    "categoryCareer": "Career & Work",
+    "categoryFinance": "Finance & Decisions",
+    "lovQ1": "How does he/she see me?",
+    "lovQ2": "Will we get back together?",
+    "lovQ3": "What's the future of this relationship?",
+    "lovQ4": "When will I meet the right person?",
+    "carQ1": "Should I change jobs?",
+    "carQ2": "When will new opportunities come?",
+    "carQ3": "Should I choose A or B?",
+    "carQ4": "What's my career direction?",
+    "finQ1": "How's my financial luck?",
+    "finQ2": "Should I make this investment?"
   }
 }

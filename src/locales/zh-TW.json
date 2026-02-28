@@ -571,6 +571,28 @@
       "desc": "探索兩人之間的動態——你的能量、對方的能量，以及你們之間的連結。"
     },
     "comingSoon": "開發中",
-    "underDevelopment": "此牌陣正在開發中，敬請期待！"
+    "underDevelopment": "此牌陣正在開發中，敬請期待！",
+    "questionPlaceholder": "例如：我和他還有機會嗎？下個月適合換工作嗎？",
+    "questionLabel": "輸入你想問的問題（選填）",
+    "orChooseTemplate": "── 或選擇常見問題 ──",
+    "startDrawing": "開始抽牌",
+    "drawAgain": "重新抽牌",
+    "upright": "正位",
+    "reversed": "逆位",
+    "aiReadingTitle": "AI 解讀",
+    "aiReadingComingSoon": "AI 解讀功能即將上線",
+    "categoryLove": "感情關係",
+    "categoryCareer": "工作事業",
+    "categoryFinance": "財務決策",
+    "lovQ1": "他/她心裡怎麼看我？",
+    "lovQ2": "我們會不會復合？",
+    "lovQ3": "這段感情的未來發展？",
+    "lovQ4": "我什麼時候會遇到對的人？",
+    "carQ1": "我換工作有機會嗎？",
+    "carQ2": "什麼時候會有新機會？",
+    "carQ3": "該選 A 還是 B？",
+    "carQ4": "我的職業發展方向？",
+    "finQ1": "最近財運如何？",
+    "finQ2": "這個投資該不該做？"
   }
 }
