@@ -595,6 +595,15 @@
     "carQ3": "Should I choose A or B?",
     "carQ4": "What's my career direction?",
     "finQ1": "How's my financial luck?",
-    "finQ2": "Should I make this investment?"
+    "finQ2": "Should I make this investment?",
+    "readingLoading": "Reading the cards...",
+    "readingError": "Something went wrong with the reading. Please try again.",
+    "rateLimitError": "You've reached today's free limit. Please come back tomorrow.",
+    "saveSuccess": "Reading saved",
+    "saveReading": "Save Reading",
+    "drawClarifier": "Draw Clarifier",
+    "clarifier": "Clarifier",
+    "clarifierLoading": "Interpreting...",
+    "noQuestion": "No specific question — please provide general guidance"
   }
 }

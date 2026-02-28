@@ -3,13 +3,31 @@
 import { useTranslation } from "react-i18next";
 import { DrawnCard } from "../data/tarot-spreads";
 import TarotFlipCard from "./TarotFlipCard";
+import TarotCardFace from "./TarotCardFace";
+import { TarotCard } from "../data/tarot-cards";
+
+export interface ClarifierData {
+  card: TarotCard;
+  isReversed: boolean;
+  reading: string;
+  loading: boolean;
+}
 
 interface TarotSpreadResultProps {
   drawnCards: DrawnCard[];
   spreadId: string;
+  clarifiers?: Record<number, ClarifierData>;
+  onDrawClarifier?: (positionIdx: number) => void;
+  showClarifierButtons?: boolean;
 }
 
-export default function TarotSpreadResult({ drawnCards, spreadId }: TarotSpreadResultProps) {
+export default function TarotSpreadResult({
+  drawnCards,
+  spreadId,
+  clarifiers = {},
+  onDrawClarifier,
+  showClarifierButtons,
+}: TarotSpreadResultProps) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language === "zh-TW" ? "zh" : "en";
 
@@ -28,18 +46,66 @@ export default function TarotSpreadResult({ drawnCards, spreadId }: TarotSpreadR
     </div>
   );
 
-  const renderCard = (idx: number, overrideDelay?: number) => {
+  const renderClarifier = (idx: number) => {
+    const cl = clarifiers[idx];
+    if (!cl) {
+      if (!showClarifierButtons || !onDrawClarifier) return null;
+      return (
+        <button
+          onClick={() => onDrawClarifier(idx)}
+          className="mt-2 text-[10px] text-white/30 hover:text-zen-gold/60
+                     transition-colors flex items-center gap-1"
+        >
+          <span>🔍</span>
+          <span>{t("tarot.drawClarifier")}</span>
+        </button>
+      );
+    }
+
+    return (
+      <div className="mt-2 flex flex-col items-center">
+        <div className="text-[9px] text-white/30 tracking-wider mb-1">
+          {t("tarot.clarifier")}
+        </div>
+        <div style={{ transform: "scale(0.75)", transformOrigin: "top center" }}>
+          <TarotCardFace card={cl.card} reversed={cl.isReversed} small />
+        </div>
+        <div className="text-[9px] text-white/40 mt-0.5">
+          {cl.card.name[lang]}
+        </div>
+        <div
+          className={`text-[9px] tracking-wider ${
+            cl.isReversed ? "text-purple-400/60" : "text-zen-gold/60"
+          }`}
+        >
+          {cl.isReversed ? `${t("tarot.reversed")} ▼` : `${t("tarot.upright")} ▲`}
+        </div>
+        {cl.loading ? (
+          <div className="mt-1 text-[10px] text-white/25 animate-pulse">
+            {t("tarot.clarifierLoading")}
+          </div>
+        ) : cl.reading ? (
+          <p className="mt-1.5 text-[11px] text-white/45 leading-relaxed max-w-[160px] text-center">
+            {cl.reading}
+          </p>
+        ) : null}
+      </div>
+    );
+  };
+
+  const renderCard = (idx: number) => {
     const dc = drawnCards[idx];
     if (!dc) return null;
     return (
       <div key={idx} className="flex flex-col items-center">
         <TarotFlipCard
           card={dc.card}
-          delay={overrideDelay ?? idx * 200}
+          delay={idx * 200}
           revealed
           reversed={dc.isReversed}
         />
         {cardLabel(dc)}
+        {renderClarifier(idx)}
       </div>
     );
   };
@@ -67,17 +133,13 @@ export default function TarotSpreadResult({ drawnCards, spreadId }: TarotSpreadR
     const dc1 = drawnCards[1];
     return (
       <div className="py-4 w-full overflow-x-auto">
-        {/* Scale down on mobile to fit the wide layout */}
         <div className="celtic-cross-wrapper">
           <div className="flex flex-row items-start justify-center gap-8">
             {/* Cross section */}
             <div className="flex flex-col items-center gap-3">
-              {/* Top: card 5 */}
               <div className="flex justify-center">{renderCard(4)}</div>
-              {/* Middle row: card 4, center (1+2), card 6 */}
               <div className="flex items-center justify-center gap-4">
                 {renderCard(3)}
-                {/* Center: card 1 with card 2 rotated on top */}
                 <div className="flex flex-col items-center">
                   <div className="relative" style={{ width: 140, height: 210 }}>
                     <TarotFlipCard
@@ -100,7 +162,6 @@ export default function TarotSpreadResult({ drawnCards, spreadId }: TarotSpreadR
                       </div>
                     )}
                   </div>
-                  {/* Labels for center cards */}
                   <div className="text-center mt-1.5">
                     <div className="text-[10px] text-white/45 tracking-wider">
                       {dc0.positionName[lang]}
@@ -117,14 +178,15 @@ export default function TarotSpreadResult({ drawnCards, spreadId }: TarotSpreadR
                       </div>
                     )}
                   </div>
+                  {renderClarifier(0)}
+                  {renderClarifier(1)}
                 </div>
                 {renderCard(5)}
               </div>
-              {/* Bottom: card 3 */}
               <div className="flex justify-center">{renderCard(2)}</div>
             </div>
 
-            {/* Staff section: cards 7–10 (bottom to top) */}
+            {/* Staff section */}
             <div className="flex flex-col-reverse items-center gap-3">
               {renderCard(6)}
               {renderCard(7)}
@@ -140,20 +202,16 @@ export default function TarotSpreadResult({ drawnCards, spreadId }: TarotSpreadR
   if (spreadId === "relationship") {
     return (
       <div className="flex flex-col items-center gap-4 py-4">
-        {/* Row 1: You / Foundation / Other */}
         <div className="flex justify-center gap-3 sm:gap-6">
           {renderCard(0)}
           {renderCard(2)}
           {renderCard(1)}
         </div>
-        {/* Row 2: Past / Challenge */}
         <div className="flex justify-center gap-3 sm:gap-6">
           {renderCard(3)}
           {renderCard(4)}
         </div>
-        {/* Row 3: Advice */}
         <div className="flex justify-center">{renderCard(5)}</div>
-        {/* Row 4: Outcome */}
         <div className="flex justify-center">{renderCard(6)}</div>
       </div>
     );

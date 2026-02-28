@@ -595,6 +595,15 @@
     "carQ3": "該選 A 還是 B？",
     "carQ4": "我的職業發展方向？",
     "finQ1": "最近財運如何？",
-    "finQ2": "這個投資該不該做？"
+    "finQ2": "這個投資該不該做？",
+    "readingLoading": "正在解讀牌面...",
+    "readingError": "解讀時發生錯誤，請再試一次。",
+    "rateLimitError": "今日免費次數已用完，請明天再來 🙏",
+    "saveSuccess": "解讀已儲存",
+    "saveReading": "儲存紀錄",
+    "drawClarifier": "抽確認牌",
+    "clarifier": "確認牌",
+    "clarifierLoading": "解讀中...",
+    "noQuestion": "無特定問題，請給予整體指引"
   }
 }

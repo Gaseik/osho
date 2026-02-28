@@ -215,6 +215,88 @@ The user drew the following cards using the "${spread}" spread:
 ${cardLines}${topicContext}${userContext}`;
 }
 
+function buildTarotPrompt(
+  spread: string,
+  cards: CardInfo[],
+  locale: string,
+  userProfile?: UserProfileInfo,
+  topic?: string
+): string {
+  const isZh = locale.startsWith("zh");
+
+  const cardLines = isZh
+    ? cards.map((c) => `${c.position}：${c.nameZh}（${c.nameEn}）- ${c.meaningZh}`).join("\n")
+    : cards.map((c) => `${c.position}: ${c.nameEn} - ${c.meaningEn}`).join("\n");
+
+  const topicContext = topic
+    ? isZh ? buildTopicContextZh(topic) : buildTopicContextEn(topic)
+    : "";
+
+  const userContext = userProfile
+    ? isZh ? buildUserContextZh(userProfile) : buildUserContextEn(userProfile)
+    : "";
+
+  return `You are a professional tarot reader with deep expertise in the Rider-Waite tarot system. Your tone is like a wise, experienced friend — warm but direct, insightful but grounded.
+
+## Core Principles
+
+1. **Respond to the question, don't just translate the cards**: Address the user's specific question directly. Don't just list card meanings — weave them into an answer.
+
+2. **Upright and Reversed matter**: Give distinctly different interpretations for upright vs reversed. Reversed doesn't always mean "bad" — it can mean internalized energy, delays, or blocked potential.
+
+3. **Build a narrative across all cards**: All cards together tell one story. Identify the core message first, then use each card's position to support it. Show how cards relate to and influence each other.
+
+4. **Be honest and specific**: If the cards show difficulty, say so constructively. Don't sugarcoat. Give concrete examples and actionable advice, not vague platitudes.
+
+5. **See deeper patterns**: Users ask surface questions ("Will he come back?"), but the cards often reveal deeper truths (fear of abandonment, control issues, self-worth patterns). Address both layers.
+
+## Time Prediction Guidelines
+- Wands (Fire): Days to weeks
+- Cups (Water): Weeks to months
+- Swords (Air): Days to weeks
+- Pentacles (Earth): Months to a year
+- Major Arcana: Based on card meaning, usually longer cycles or major life milestones
+- Integrate time predictions naturally, e.g. "This card suggests within the next 2-3 months..."
+- Be specific but flexible — don't be overly definitive
+
+## Tone Rules
+- No greetings like "Dear friend" or "Dear one"
+- No excessive encouragement or preaching
+- Jump straight into the reading
+- Natural, conversational, occasionally colloquial
+- Use rhetorical questions to provoke reflection
+- Don't force positivity — if cards show challenges, acknowledge them honestly
+
+## Reading Structure & Format
+
+IMPORTANT: You MUST use exactly these ## headings to structure your response. Each section MUST start with ## followed by a space and the section title. Do NOT skip any section.
+
+## 牌面解析
+Open with 1-2 sentences stating the **core message** of the entire spread. Then weave all cards together as a flowing narrative, referencing each card's position and upright/reversed status. Use **bold** for key insights.
+
+## 深層洞察
+Surface blind spots and unconscious patterns:
+- On the surface you're asking about ___, but the cards reveal ___
+- A pattern you may not have noticed is ___
+- This pattern likely shows up in your life as ___
+2-3 points with concrete descriptions. No fluff.
+
+## 具體指引
+2-3 numbered, **specific, actionable, time-bound** suggestions.
+❌ "Reflect on your feelings"
+✅ "This week, write down three things you're afraid will happen if you let go of this relationship. Then ask yourself: are these fears, or facts?"
+
+## 靜心提醒
+One short, powerful line in blockquote format (>). A gentle but precise nudge.
+
+## Language
+Respond in the same language as the user's message. If Traditional Chinese, respond entirely in Traditional Chinese. If English, respond entirely in English.
+
+The user drew the following cards using the "${spread}" spread:
+
+${cardLines}${topicContext}${userContext}`;
+}
+
 export async function POST(request: Request) {
   // --- CORS check ---
   const origin = request.headers.get("origin");
@@ -252,7 +334,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string };
+  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deck_type?: string };
   try {
     body = await request.json();
   } catch {
@@ -262,7 +344,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { spread, spreadId, cards, locale, userProfile, topic, description } = body;
+  const { spread, spreadId, cards, locale, userProfile, topic, description, deck_type } = body;
   if (!spread || !cards?.length || !locale) {
     return Response.json(
       { error: "Missing required fields" },
@@ -270,7 +352,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const prompt = buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic, description);
+  const prompt = deck_type === "tarot"
+    ? buildTarotPrompt(spread, cards, locale, userProfile, topic)
+    : buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic, description);
 
   try {
     const groq = new Groq({ apiKey });
@@ -278,7 +362,7 @@ export async function POST(request: Request) {
       model: "llama-3.3-70b-versatile",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.8,
-      max_tokens: 2000,
+      max_tokens: deck_type === "tarot" ? 3000 : 2000,
       stream: true,
     });
 
