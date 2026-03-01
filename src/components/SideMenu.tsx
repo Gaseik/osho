@@ -192,45 +192,21 @@ export default function SideMenu() {
 
             {tarotOpen && (
               <div className="mb-3">
-                {/* Spreads sub-label */}
-                <div className="text-[11px] text-white/30 tracking-wider pl-7 pt-1.5 pb-0.5">
-                  {t('menu.tarotSpreads')}
-                </div>
-
-                <Link
-                  href="/tarot/single"
-                  onClick={() => setOpen(false)}
-                  className={linkClass('/tarot/single')}
+                {/* Reading */}
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    if (pathname === '/tarot/single') {
+                      router.refresh();
+                    } else {
+                      router.push('/tarot/single');
+                    }
+                  }}
+                  className={`${linkClass('/tarot/single')} w-full text-left`}
                 >
-                  <span>{t('menu.tarotSingle')}</span>
-                </Link>
-
-                <Link
-                  href="/tarot/three-card"
-                  onClick={() => setOpen(false)}
-                  className={linkClass('/tarot/three-card')}
-                >
-                  <span>{t('menu.tarotThreeCard')}</span>
-                </Link>
-
-                <Link
-                  href="/tarot/celtic-cross"
-                  onClick={() => setOpen(false)}
-                  className={linkClass('/tarot/celtic-cross')}
-                >
-                  <span>{t('menu.tarotCelticCross')}</span>
-                </Link>
-
-                <Link
-                  href="/tarot/relationship"
-                  onClick={() => setOpen(false)}
-                  className={linkClass('/tarot/relationship')}
-                >
-                  <span>{t('menu.tarotRelationship')}</span>
-                </Link>
-
-                {/* Divider within tarot section */}
-                <div className="h-px bg-white/[0.04] my-1.5 ml-7 mr-2" />
+                  <MagicWand02 width={16} height={16} />
+                  <span>{t('menu.oshoReading')}</span>
+                </button>
 
                 {/* Card Meanings */}
                 <Link
