@@ -3,17 +3,20 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { sendGAEvent } from '@next/third-parties/google';
 import { useTranslation } from 'react-i18next';
-import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS } from "../data/spreads";
 import CardBack from "./CardBack";
 import { Pointer } from "lucide-react";
 
 interface DrawPhaseProps {
-  spread: Spread;
-  deck: Card[];
-  drawn: Card[];
+  spread: Spread | { id: string; count: number };
+  deck: Array<{ id: number }>;
+  drawn: Array<{ id: number }>;
   onDrawCard: (index: number) => void;
   onComplete?: () => void;
+  /** Override POSITION_LABELS lookup (for tarot or custom spreads) */
+  positionLabels?: string[];
+  /** Override i18n spread name display */
+  spreadDisplayName?: string;
 }
 
 type Stage = 'idle' | 'shuffling' | 'stacked' | 'fanned' | 'exiting';
@@ -30,7 +33,7 @@ function useWindowWidth() {
   return width;
 }
 
-export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete }: DrawPhaseProps) {
+export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete, positionLabels, spreadDisplayName }: DrawPhaseProps) {
   const { t, i18n } = useTranslation();
   const [stage, setStage] = useState<Stage>('idle');
   const [selectedIndex, setSelectedIndex] = useState(40);
@@ -227,7 +230,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       {/* Info text */}
       <div className="animate-fadeUp text-center w-full mb-4">
         <p className="text-white/60 text-sm mb-2">
-          {t(`spread.${spread.id}`)} — {t('draw.title', { count: spread.count })}
+          {spreadDisplayName ?? t(`spread.${spread.id}`)} — {t('draw.title', { count: spread.count })}
         </p>
         <p className="text-zen-gold/50 text-[13px]">
           {t('draw.selected', { current: drawn.length, total: spread.count })}
@@ -240,9 +243,11 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
           }}
         >
           {drawn.length < spread.count && t('draw.nextPosition', {
-            label: i18n.language === 'zh-TW'
-              ? POSITION_LABELS[spread.id]?.[drawn.length]
-              : t(`spread.${spread.id}Labels.${drawn.length}`)
+            label: positionLabels
+              ? positionLabels[drawn.length]
+              : i18n.language === 'zh-TW'
+                ? POSITION_LABELS[spread.id]?.[drawn.length]
+                : t(`spread.${spread.id}Labels.${drawn.length}`)
           })}
         </p>
       </div>
@@ -252,9 +257,11 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         {drawn.length > 0 && stage !== 'idle' && (
           <div className="flex">
             {drawn.map((card, i) => {
-              const posLabel = i18n.language === 'zh-TW'
-                ? POSITION_LABELS[spread.id]?.[i]
-                : t(`spread.${spread.id}Labels.${i}`);
+              const posLabel = positionLabels
+                ? positionLabels[i]
+                : i18n.language === 'zh-TW'
+                  ? POSITION_LABELS[spread.id]?.[i]
+                  : t(`spread.${spread.id}Labels.${i}`);
               return (
                 <div
                   key={card.id}

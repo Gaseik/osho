@@ -196,13 +196,13 @@ export default function SideMenu() {
                 <button
                   onClick={() => {
                     setOpen(false);
-                    if (pathname === '/tarot/single') {
+                    if (pathname === '/tarot') {
                       router.refresh();
                     } else {
-                      router.push('/tarot/single');
+                      router.push('/tarot');
                     }
                   }}
-                  className={`${linkClass('/tarot/single')} w-full text-left`}
+                  className={`${linkClass('/tarot')} w-full text-left`}
                 >
                   <MagicWand02 width={16} height={16} />
                   <span>{t('menu.oshoReading')}</span>

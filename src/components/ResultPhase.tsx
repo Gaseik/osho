@@ -20,7 +20,7 @@ import { getUserProfile } from "../utils/userProfile";
 type AiState = "idle" | "loading" | "done" | "error";
 
 interface ResultPhaseProps {
-  spread: Spread;
+  spread: Spread | { id: string; count: number; name?: string; nameEn?: string };
   drawn: Card[];
   flippedCount: number;
   copied: boolean;
@@ -29,6 +29,16 @@ interface ResultPhaseProps {
   onFlipped: () => void;
   onCopyPrompt: () => void;
   onReset: () => void;
+  /** Override position label lookup */
+  positionLabels?: string[];
+  /** Override default card rendering (for tarot reversed cards etc.) */
+  customRenderCard?: (cardIdx: number, opts: { revealed: boolean; onFlipped: () => void; onRequestReveal: () => void }) => React.ReactNode;
+  /** Override API request body builder (for tarot deck_type etc.) */
+  buildApiBody?: () => Record<string, unknown>;
+  /** Custom card names (overrides i18n lookup) */
+  customCardNames?: string[];
+  /** Custom spread layout (overrides SPREAD_LAYOUTS lookup) */
+  customLayout?: import("../data/spreads").SpreadLayout;
 }
 
 export default function ResultPhase({
@@ -41,11 +51,16 @@ export default function ResultPhase({
   onFlipped,
   onCopyPrompt,
   onReset,
+  positionLabels: positionLabelsProp,
+  customRenderCard,
+  buildApiBody,
+  customCardNames,
+  customLayout,
 }: ResultPhaseProps) {
   const { t, i18n } = useTranslation();
   const resultRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
-  const layout = SPREAD_LAYOUTS[spread.id];
+  const layout = customLayout ?? SPREAD_LAYOUTS[spread.id];
   const [revealed, setRevealed] = useState(false);
   const [question, setQuestion] = useState("");
   const [saved, setSaved] = useState(false);
@@ -77,6 +92,7 @@ export default function ResultPhase({
   }, [aiState]);
 
   const getSpreadLabels = (spreadId: string): string[] => {
+    if (positionLabelsProp) return positionLabelsProp;
     if (i18n.language === 'zh-TW') {
       return POSITION_LABELS[spreadId];
     }
@@ -105,33 +121,37 @@ export default function ResultPhase({
     setShowPrompt(false);
     setShowPromptLink(false);
 
-    const labels = getSpreadLabels(spread.id);
-    const spreadName = i18n.language === 'zh-TW' ? spread.name : t(`spread.${spread.id}`);
-
-    const cards = drawn.map((c, i) => ({
-      position: labels[i],
-      nameZh: c.nameZh,
-      nameEn: c.name,
-      meaningZh: c.keywordsZh.join("、"),
-      meaningEn: c.keywords.join(", "),
-    }));
-
-    // Get user profile from localStorage
-    const userProfile = getUserProfile();
+    // Use custom body builder if provided (for tarot)
+    let apiBody: Record<string, unknown>;
+    if (buildApiBody) {
+      apiBody = buildApiBody();
+    } else {
+      const labels = getSpreadLabels(spread.id);
+      const spreadName = i18n.language === 'zh-TW' ? (spread as Spread).name : t(`spread.${spread.id}`);
+      const cards = drawn.map((c, i) => ({
+        position: labels[i],
+        nameZh: c.nameZh,
+        nameEn: c.name,
+        meaningZh: c.keywordsZh.join("、"),
+        meaningEn: c.keywords.join(", "),
+      }));
+      const userProfile = getUserProfile();
+      apiBody = {
+        spread: spreadName,
+        spreadId: spread.id,
+        cards,
+        locale: i18n.language,
+        ...(userProfile && { userProfile }),
+        ...(topic && { topic }),
+        ...(description && { description }),
+      };
+    }
 
     try {
       const response = await fetch("/api/reading", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          spread: spreadName,
-          spreadId: spread.id,
-          cards,
-          locale: i18n.language,
-          ...(userProfile && { userProfile }),
-          ...(topic && { topic }),
-          ...(description && { description }),
-        }),
+        body: JSON.stringify(apiBody),
       });
 
       if (!response.ok) {
@@ -207,8 +227,8 @@ export default function ResultPhase({
     saveRecord({
       id: generateId(),
       spreadId: spread.id,
-      spreadName: spread.name,
-      spreadNameEn: spread.nameEn,
+      spreadName: (spread as { name?: string }).name ?? spread.id,
+      spreadNameEn: (spread as { nameEn?: string }).nameEn ?? spread.id,
       cards: recordCards,
       question,
       aiReading: aiText,
@@ -223,7 +243,11 @@ export default function ResultPhase({
   const labels = getSpreadLabels(spread.id);
 
   const renderCard = (cardIdx: number) => {
-    const cardName = t(`cards.${drawn[cardIdx].id}`);
+    // Use custom renderer if provided (for tarot cards with reversed etc.)
+    if (customRenderCard) {
+      return customRenderCard(cardIdx, { revealed, onFlipped, onRequestReveal: handleRequestReveal });
+    }
+    const cardName = customCardNames ? customCardNames[cardIdx] : t(`cards.${drawn[cardIdx].id}`);
     return (
       <div className="flex flex-col items-center gap-2">
         <div className="text-[11px] text-zen-gold-dim tracking-widest">

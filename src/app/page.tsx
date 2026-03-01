@@ -61,7 +61,7 @@ export default function HomePage() {
 
         {/* Classic Tarot */}
         <Link
-          href="/tarot/single"
+          href="/tarot"
           className="group p-6 rounded-xl bg-white/[0.03] border border-zen-gold/30
                      transition-all duration-300 hover:bg-zen-gold/[0.07] hover:border-zen-gold/55
                      hover:shadow-[0_0_24px_rgba(255,215,0,0.08)]
