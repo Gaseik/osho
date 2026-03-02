@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
 import SideMenu from "./SideMenu";
-import TarotQuestionInput from "./TarotQuestionInput";
 import DrawPhase from "./DrawPhase";
 import ResultPhase from "./ResultPhase";
 import FlipCard from "./FlipCard";
@@ -17,7 +16,37 @@ import { shuffle, type Card } from "../data/cards";
 import type { SpreadLayout } from "../data/spreads";
 import { getUserProfile } from "../utils/userProfile";
 
-type Step = "question" | "validation" | "spreadSelect" | "draw" | "result";
+type Step = "category" | "describe" | "validation" | "spreadSelect" | "draw" | "result";
+
+type CategoryId = "daily" | "relationship" | "career" | "decision" | "self" | "spiritual" | "custom";
+
+const CATEGORIES: { id: Exclude<CategoryId, "custom">; labelKey: string; descKey: string }[] = [
+  { id: "daily", labelKey: "guide.categoryDaily", descKey: "guide.categoryDailyDesc" },
+  { id: "relationship", labelKey: "guide.categoryRelationship", descKey: "guide.categoryRelationshipDesc" },
+  { id: "career", labelKey: "guide.categoryCareer", descKey: "guide.categoryCareerDesc" },
+  { id: "decision", labelKey: "guide.categoryDecision", descKey: "guide.categoryDecisionDesc" },
+  { id: "self", labelKey: "guide.categorySelf", descKey: "guide.categorySelfDesc" },
+  { id: "spiritual", labelKey: "guide.categorySpiritual", descKey: "guide.categorySpiritualDesc" },
+];
+
+const CATEGORY_ICONS: Record<CategoryId, string> = {
+  daily: "☀",
+  relationship: "♡",
+  career: "✦",
+  decision: "⚖",
+  self: "◎",
+  spiritual: "❋",
+  custom: "✎",
+};
+
+const DESCRIBE_PLACEHOLDER_KEYS: Record<Exclude<CategoryId, "custom">, string> = {
+  daily: "guide.describePlaceholderDaily",
+  relationship: "guide.describePlaceholderRelationship",
+  career: "guide.describePlaceholderCareer",
+  decision: "guide.describePlaceholderDecision",
+  self: "guide.describePlaceholderSelf",
+  spiritual: "guide.describePlaceholderSpiritual",
+};
 
 /** Dummy Card adapter — ResultPhase needs Card[] but we only use customRenderCard */
 function toOshoCard(tc: TarotCard): Card {
@@ -73,8 +102,12 @@ export default function TarotFlowPage() {
   const lang = i18n.language === "zh-TW" ? "zh" : "en";
 
   // ─── Step state ───
-  const [step, setStep] = useState<Step>("question");
+  const [step, setStep] = useState<Step>("category");
   const [question, setQuestion] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null);
+  const [showCustom, setShowCustom] = useState(false);
+  const [customTopic, setCustomTopic] = useState("");
+  const [situationDesc, setSituationDesc] = useState("");
 
   // ─── Validation ───
   const [validationCards, setValidationCards] = useState<
@@ -102,17 +135,44 @@ export default function TarotFlowPage() {
   const spread = selectedSpreadId ? TAROT_SPREADS[selectedSpreadId] : null;
 
   // ═══════════════════════════════════════════
-  //  Step 1: Question → next step
+  //  Step 1: Category → Describe → Validation
   // ═══════════════════════════════════════════
-  const handleQuestionSubmit = useCallback(() => {
-    setStep("validation");
-    drawValidationCards();
+  const handleCategorySelect = useCallback((catId: Exclude<CategoryId, "custom">) => {
+    setSelectedCategory(catId);
+    setSituationDesc("");
+    setStep("describe");
   }, []);
+
+  const handleCustomTopicSubmit = useCallback(() => {
+    if (!customTopic.trim()) return;
+    const q = customTopic.trim();
+    setSelectedCategory("custom");
+    setQuestion(q);
+    setStep("validation");
+    drawValidationCards(q);
+  }, [customTopic]);
+
+  const handleDescribeNext = useCallback(() => {
+    const cat = CATEGORIES.find((c) => c.id === selectedCategory);
+    const label = cat ? t(cat.labelKey) : "";
+    const q = situationDesc.trim() ? `${label} — ${situationDesc.trim()}` : label;
+    setQuestion(q);
+    setStep("validation");
+    drawValidationCards(q);
+  }, [selectedCategory, situationDesc, t]);
+
+  const handleDescribeSkip = useCallback(() => {
+    const cat = CATEGORIES.find((c) => c.id === selectedCategory);
+    const label = cat ? t(cat.labelKey) : "";
+    setQuestion(label);
+    setStep("validation");
+    drawValidationCards(label);
+  }, [selectedCategory, t]);
 
   // ═══════════════════════════════════════════
   //  Step 2: Validation cards
   // ═══════════════════════════════════════════
-  const drawValidationCards = useCallback(() => {
+  const drawValidationCards = useCallback((questionText: string) => {
     const shuffled = shuffle(allTarotCards);
     const cards = shuffled.slice(0, 3).map((card) => ({
       card,
@@ -126,13 +186,14 @@ export default function TarotFlowPage() {
     setValidationAttempt((prev) => prev + 1);
 
     // Call AI for validation reading
-    fetchValidationReading(cards);
+    fetchValidationReading(cards, questionText);
   }, []);
 
   const abortValidation = useRef<AbortController | null>(null);
 
   const fetchValidationReading = async (
-    cards: { card: TarotCard; isReversed: boolean }[]
+    cards: { card: TarotCard; isReversed: boolean }[],
+    questionText: string
   ) => {
     abortValidation.current?.abort();
     const controller = new AbortController();
@@ -147,8 +208,8 @@ export default function TarotFlowPage() {
       .join("\n");
 
     const validationPrompt = isZh
-      ? `使用者的問題：${question || "無特定問題"}\n驗證牌：\n${cardList}\n\n請用 3-4 句話簡短描述這 3 張牌反映出的使用者目前狀態和心境。不需要標題或格式，直接用自然的語氣描述。目的是讓使用者確認是否符合他們目前的真實感受。用繁體中文回答。`
-      : `User's question: ${question || "No specific question"}\nValidation cards:\n${cardList}\n\nIn 3-4 sentences, briefly describe the user's current state and mindset as reflected by these 3 cards. No titles or formatting needed — describe naturally. The purpose is to let the user confirm whether this matches their actual feelings. Respond in English.`;
+      ? `使用者的問題：${questionText || "無特定問題"}\n驗證牌：\n${cardList}\n\n請用 3-4 句話簡短描述這 3 張牌反映出的使用者目前狀態和心境。不需要標題或格式，直接用自然的語氣描述。目的是讓使用者確認是否符合他們目前的真實感受。用繁體中文回答。`
+      : `User's question: ${questionText || "No specific question"}\nValidation cards:\n${cardList}\n\nIn 3-4 sentences, briefly describe the user's current state and mindset as reflected by these 3 cards. No titles or formatting needed — describe naturally. The purpose is to let the user confirm whether this matches their actual feelings. Respond in English.`;
 
     try {
       const resp = await fetch("/api/reading", {
@@ -205,8 +266,8 @@ export default function TarotFlowPage() {
   }, [validationAttempt]);
 
   const handleValidationRetry = useCallback(() => {
-    drawValidationCards();
-  }, [drawValidationCards]);
+    drawValidationCards(question);
+  }, [drawValidationCards, question]);
 
   // ═══════════════════════════════════════════
   //  Step 3: Spread selection
@@ -356,8 +417,12 @@ export default function TarotFlowPage() {
   }, [spread, drawn, reversedStates, lang, question, getPositionLabels]);
 
   const handleReset = useCallback(() => {
-    setStep("question");
+    setStep("category");
     setQuestion("");
+    setSelectedCategory(null);
+    setShowCustom(false);
+    setCustomTopic("");
+    setSituationDesc("");
     setSelectedSpreadId(null);
     setDeck([]);
     setDrawn([]);
@@ -396,15 +461,129 @@ export default function TarotFlowPage() {
         />
       </div>
 
-      {/* ═══ Step 1: Question ═══ */}
-      {step === "question" && (
-        <div className="animate-fadeUp w-full max-w-lg">
-          <TarotQuestionInput
-            question={question}
-            onQuestionChange={setQuestion}
-            onSubmit={handleQuestionSubmit}
-            buttonLabel={lang === "zh" ? "下一步 →" : "Next →"}
-          />
+      {/* ═══ Step 1a: Category ═══ */}
+      {step === "category" && (
+        <div className="animate-fadeUp max-w-[500px] w-full">
+          <div className="flex flex-col gap-3">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => handleCategorySelect(cat.id)}
+                className="p-4 px-5 rounded-xl bg-white/[0.03] border border-zen-gold/15
+                         transition-all duration-300 hover:bg-zen-gold/[0.08] hover:border-zen-gold/40
+                         text-left flex items-center gap-4"
+              >
+                <span className="text-2xl w-8 text-center opacity-70">
+                  {CATEGORY_ICONS[cat.id]}
+                </span>
+                <div>
+                  <div className="text-[15px] text-white/90">{t(cat.labelKey)}</div>
+                  <div className="text-xs text-white/45 mt-0.5">{t(cat.descKey)}</div>
+                </div>
+              </button>
+            ))}
+
+            {/* Custom Topic */}
+            {!showCustom ? (
+              <button
+                onClick={() => setShowCustom(true)}
+                className="p-4 px-5 rounded-xl bg-white/[0.03] border border-dashed border-white/20
+                         transition-all duration-300 hover:bg-zen-gold/[0.08] hover:border-zen-gold/30
+                         text-left flex items-center gap-4"
+              >
+                <span className="text-2xl w-8 text-center opacity-70">
+                  {CATEGORY_ICONS.custom}
+                </span>
+                <div>
+                  <div className="text-[15px] text-white/90">{t("guide.categoryCustom")}</div>
+                  <div className="text-xs text-white/45 mt-0.5">{t("guide.categoryCustomDesc")}</div>
+                </div>
+              </button>
+            ) : (
+              <div className="animate-fadeUp p-4 px-5 rounded-xl bg-white/[0.03] border border-zen-gold/30">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg opacity-70">{CATEGORY_ICONS.custom}</span>
+                  <span className="text-[15px] text-white/90">{t("guide.categoryCustom")}</span>
+                </div>
+                <textarea
+                  value={customTopic}
+                  onChange={(e) => setCustomTopic(e.target.value)}
+                  placeholder={t("guide.customTopicPlaceholder")}
+                  className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2.5
+                           text-sm text-white/70 placeholder-white/30 resize-none
+                           focus:outline-none focus:border-zen-gold/30 transition-colors"
+                  rows={2}
+                  autoFocus
+                />
+                <button
+                  onClick={handleCustomTopicSubmit}
+                  disabled={!customTopic.trim()}
+                  className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
+                           bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
+                           hover:bg-zen-gold/[0.15] transition-all duration-300
+                           disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  {t("guide.customTopicSubmit")}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ Step 1b: Describe ═══ */}
+      {step === "describe" && (
+        <div className="animate-fadeUp max-w-[500px] w-full">
+          <button
+            onClick={() => { setStep("category"); setSelectedCategory(null); }}
+            className="mb-5 text-white/40 text-xs tracking-wider hover:text-white/60
+                       transition-colors duration-200"
+          >
+            ← {t("guide.backToLanding")}
+          </button>
+
+          <div className="bg-white/[0.03] rounded-xl border border-zen-gold/15 p-5">
+            <div className="text-[15px] text-white/90 mb-1">
+              {t("guide.describeTitle")}
+            </div>
+            <div className="text-xs text-white/40 mb-4">
+              {t("guide.describeSubtitle")}
+            </div>
+            <textarea
+              value={situationDesc}
+              onChange={(e) => {
+                if (e.target.value.length <= 100) setSituationDesc(e.target.value);
+              }}
+              placeholder={t(
+                selectedCategory && selectedCategory !== "custom"
+                  ? DESCRIBE_PLACEHOLDER_KEYS[selectedCategory]
+                  : "guide.describePlaceholderDaily"
+              )}
+              className="w-full bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2.5
+                       text-sm text-white/70 placeholder-white/30 resize-none
+                       focus:outline-none focus:border-zen-gold/30 transition-colors"
+              rows={3}
+              autoFocus
+            />
+            <div className="text-right text-[10px] text-white/25 mt-1">
+              {situationDesc.length}/100
+            </div>
+            <button
+              onClick={handleDescribeNext}
+              className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30
+                       bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
+                       hover:bg-zen-gold/[0.15] transition-all duration-300"
+            >
+              {t("guide.describeNext")}
+            </button>
+            <button
+              onClick={handleDescribeSkip}
+              className="mt-2 w-full text-white/35 text-xs tracking-wider
+                       hover:text-white/55 transition-colors duration-200"
+            >
+              {t("guide.describeSkip")}
+            </button>
+          </div>
         </div>
       )}
 
