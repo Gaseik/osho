@@ -334,7 +334,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deck_type?: string };
+  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deck_type?: string; validation?: boolean };
   try {
     body = await request.json();
   } catch {
@@ -344,7 +344,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { spread, spreadId, cards, locale, userProfile, topic, description, deck_type } = body;
+  const { spread, spreadId, cards, locale, userProfile, topic, description, deck_type, validation } = body;
   if (!spread || !cards?.length || !locale) {
     return Response.json(
       { error: "Missing required fields" },
@@ -352,17 +352,45 @@ export async function POST(request: Request) {
     );
   }
 
-  const prompt = deck_type === "tarot"
-    ? buildTarotPrompt(spread, cards, locale, userProfile, topic)
-    : buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic, description);
+  // Build messages — validation uses a dedicated simple system+user prompt
+  let messages: { role: "system" | "user"; content: string }[];
+  let maxTokens: number;
+
+  if (validation) {
+    const validationSystemPrompt = `You are a perceptive tarot reader doing a quick validation check. Your ONLY job is to describe the user's current state in 3-4 sentences. Nothing more.
+
+Rules:
+- ONLY describe their current situation and inner state. Do NOT give advice, guidance, deeper insight, or action steps.
+- Connect the 3 cards to their specific question topic
+- If about love: describe the relationship dynamic and their emotional state
+- If about career: describe their work situation and mindset
+- If about finances: describe their financial situation and attitudes
+- Mention both inner world (emotions, fears, thoughts) and outer world (what's happening in reality)
+- Synthesize all 3 cards into ONE cohesive description, do not explain cards individually
+- No titles, no headers, no markdown formatting, no bullet points
+- Just 3-4 natural sentences, like a friend telling you what they see
+- Keep it under 100 words`;
+
+    messages = [
+      { role: "system", content: validationSystemPrompt },
+      { role: "user", content: topic || "" },
+    ];
+    maxTokens = 300;
+  } else {
+    const prompt = deck_type === "tarot"
+      ? buildTarotPrompt(spread, cards, locale, userProfile, topic)
+      : buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic, description);
+    messages = [{ role: "user", content: prompt }];
+    maxTokens = deck_type === "tarot" ? 3000 : 2000;
+  }
 
   try {
     const groq = new Groq({ apiKey });
     const response = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
-      messages: [{ role: "user", content: prompt }],
+      messages,
       temperature: 0.8,
-      max_tokens: deck_type === "tarot" ? 3000 : 2000,
+      max_tokens: maxTokens,
       stream: true,
     });
 

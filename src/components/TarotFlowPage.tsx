@@ -8,7 +8,6 @@ import DrawPhase from "./DrawPhase";
 import ResultPhase from "./ResultPhase";
 import FlipCard from "./FlipCard";
 import TarotCardFace from "./TarotCardFace";
-import StructuredReading from "./StructuredReading";
 import { allTarotCards, type TarotCard } from "../data/tarot-cards";
 import { TAROT_SPREADS, type TarotSpread } from "../data/tarot-spreads";
 import { TAROT_SPREAD_DETAILS } from "../data/tarot-spread-details";
@@ -207,45 +206,9 @@ export default function TarotFlowPage() {
       )
       .join("\n");
 
-    const validationPrompt = isZh
-      ? `你是一位敏銳的塔羅讀牌師，正在進行正式解讀前的驗證確認。
-
-使用者的問題：${questionText || "無特定問題"}
-
-驗證牌：
-${cardList}
-
-根據這 3 張牌和使用者的問題，用 3-4 句話描述他們目前的內在狀態與現實處境。
-
-規則：
-- 將牌義直接連結到使用者的問題主題（如感情問題→描述情感狀態與關係互動；如事業問題→描述工作處境與內心矛盾）
-- 要具體且個人化，不要泛泛而談，要讓使用者感覺「哇，這就是我的狀況」
-- 同時提及內在世界（情緒、恐懼、潛意識模式）和外在世界（實際發生的事）
-- 不要逐張解釋牌義，將 3 張牌綜合成一段連貫的狀態描述
-- 保持自然對話感，不需要標題或格式
-- 如果問題關於感情，描述兩人之間的互動動態
-- 如果問題關於事業，描述當前工作環境與內心掙扎
-
-用繁體中文回答。`
-      : `You are a perceptive tarot reader doing a quick validation check before a full reading.
-
-The user's question: ${questionText || "No specific question"}
-
-Validation cards drawn:
-${cardList}
-
-Based on these 3 cards AND the user's question, describe their current inner state and real-world situation in 3-4 sentences.
-
-Rules:
-- Connect the cards directly to their specific question topic (if about love → describe their emotional state and relationship dynamics; if about career → describe their work situation and mindset)
-- Be specific and personal, not generic. Say things that make the user feel "wow, that's exactly my situation"
-- Mention both the inner world (emotions, fears, hidden thoughts, subconscious patterns) AND the outer world (what's actually happening in their relationships/career/life)
-- Don't explain individual card meanings. Synthesize all 3 cards into one cohesive description of their current state
-- Keep it natural and conversational, no titles or formatting
-- If the question is about a relationship, describe the dynamic between the two people
-- If the question is about career, describe their current work environment and internal conflict
-
-Respond in English.`;
+    const userMessage = isZh
+      ? `使用者的問題：${questionText || "無特定問題"}\n\n驗證牌：\n${cardList}\n\n請只描述使用者目前的狀態，3-4 句話就好。不要給建議、不要給指引、不要用任何標題或格式。用繁體中文回答。`
+      : `User's question: ${questionText || "No specific question"}\n\nValidation cards:\n${cardList}\n\nDescribe only the user's current state in 3-4 sentences. No advice, no guidance, no titles or formatting. Respond in English.`;
 
     try {
       const resp = await fetch("/api/reading", {
@@ -253,6 +216,7 @@ Respond in English.`;
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           deck_type: "tarot",
+          validation: true,
           spread: isZh ? "驗證牌" : "Validation",
           cards: cards.map((c, i) => ({
             position: `${i + 1}`,
@@ -262,7 +226,7 @@ Respond in English.`;
             meaningEn: c.isReversed ? c.card.reversed.en : c.card.upright.en,
           })),
           locale: i18n.language,
-          topic: validationPrompt,
+          topic: userMessage,
         }),
         signal: controller.signal,
       });
