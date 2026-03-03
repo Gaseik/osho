@@ -208,8 +208,44 @@ export default function TarotFlowPage() {
       .join("\n");
 
     const validationPrompt = isZh
-      ? `使用者的問題：${questionText || "無特定問題"}\n驗證牌：\n${cardList}\n\n請用 3-4 句話簡短描述這 3 張牌反映出的使用者目前狀態和心境。不需要標題或格式，直接用自然的語氣描述。目的是讓使用者確認是否符合他們目前的真實感受。用繁體中文回答。`
-      : `User's question: ${questionText || "No specific question"}\nValidation cards:\n${cardList}\n\nIn 3-4 sentences, briefly describe the user's current state and mindset as reflected by these 3 cards. No titles or formatting needed — describe naturally. The purpose is to let the user confirm whether this matches their actual feelings. Respond in English.`;
+      ? `你是一位敏銳的塔羅讀牌師，正在進行正式解讀前的驗證確認。
+
+使用者的問題：${questionText || "無特定問題"}
+
+驗證牌：
+${cardList}
+
+根據這 3 張牌和使用者的問題，用 3-4 句話描述他們目前的內在狀態與現實處境。
+
+規則：
+- 將牌義直接連結到使用者的問題主題（如感情問題→描述情感狀態與關係互動；如事業問題→描述工作處境與內心矛盾）
+- 要具體且個人化，不要泛泛而談，要讓使用者感覺「哇，這就是我的狀況」
+- 同時提及內在世界（情緒、恐懼、潛意識模式）和外在世界（實際發生的事）
+- 不要逐張解釋牌義，將 3 張牌綜合成一段連貫的狀態描述
+- 保持自然對話感，不需要標題或格式
+- 如果問題關於感情，描述兩人之間的互動動態
+- 如果問題關於事業，描述當前工作環境與內心掙扎
+
+用繁體中文回答。`
+      : `You are a perceptive tarot reader doing a quick validation check before a full reading.
+
+The user's question: ${questionText || "No specific question"}
+
+Validation cards drawn:
+${cardList}
+
+Based on these 3 cards AND the user's question, describe their current inner state and real-world situation in 3-4 sentences.
+
+Rules:
+- Connect the cards directly to their specific question topic (if about love → describe their emotional state and relationship dynamics; if about career → describe their work situation and mindset)
+- Be specific and personal, not generic. Say things that make the user feel "wow, that's exactly my situation"
+- Mention both the inner world (emotions, fears, hidden thoughts, subconscious patterns) AND the outer world (what's actually happening in their relationships/career/life)
+- Don't explain individual card meanings. Synthesize all 3 cards into one cohesive description of their current state
+- Keep it natural and conversational, no titles or formatting
+- If the question is about a relationship, describe the dynamic between the two people
+- If the question is about career, describe their current work environment and internal conflict
+
+Respond in English.`;
 
     try {
       const resp = await fetch("/api/reading", {
@@ -641,25 +677,44 @@ export default function TarotFlowPage() {
           {/* AI validation text */}
           {validationLoading && !validationText && (
             <div className="w-full max-w-md">
-              <div className="text-center text-white/40 text-sm tracking-wider mb-3 animate-pulse">
-                {lang === "zh" ? "解讀中..." : "Reading..."}
-              </div>
-              <div className="space-y-2">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="h-3.5 bg-white/[0.06] rounded animate-pulse"
-                    style={{ width: `${70 + i * 10}%` }}
-                  />
-                ))}
+              <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
+                <div className="flex items-center gap-2.5 mb-4">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zen-gold/70">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <span className="text-zen-gold/85 text-sm font-semibold tracking-wide animate-pulse">
+                    {lang === "zh" ? "感應中…" : "Sensing…"}
+                  </span>
+                </div>
+                <div className="space-y-2.5">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="h-3.5 bg-white/[0.06] rounded animate-pulse"
+                      style={{ width: `${70 + i * 10}%` }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           )}
 
           {validationText && (
-            <div className="w-full max-w-md mb-6">
-              <div className="bg-white/[0.03] rounded-xl border border-zen-gold/20 p-5 text-left">
-                <div className="text-sm text-white/70 leading-relaxed whitespace-pre-line">
+            <div className="w-full max-w-md mb-6 animate-fadeUp">
+              <div className="rounded-xl border border-zen-gold/25 bg-gradient-to-b from-zen-gold/[0.04] to-transparent p-5 md:p-6">
+                <div className="flex items-center gap-2.5 mb-4">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zen-gold/70">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  <span className="text-zen-gold/85 text-sm font-semibold tracking-wide">
+                    {lang === "zh" ? "你目前的狀態" : "Your Current State"}
+                  </span>
+                </div>
+                <div className="text-white/80 text-sm leading-[1.9] whitespace-pre-line">
                   {validationText}
                 </div>
               </div>
