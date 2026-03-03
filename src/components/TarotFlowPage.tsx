@@ -385,6 +385,26 @@ export default function TarotFlowPage() {
     if (!spread) return {};
     const labels = getPositionLabels();
     const profile = getUserProfile();
+    const isZh = i18n.language.startsWith("zh");
+
+    // Build validation context if available
+    let valCtx: string | undefined;
+    if (validationCards.length > 0 && validationText) {
+      const valCardList = validationCards
+        .map((vc) => {
+          const name = vc.card.name[lang];
+          const dir = vc.isReversed
+            ? (isZh ? "逆位" : "Reversed")
+            : (isZh ? "正位" : "Upright");
+          return `${name}（${dir}）`;
+        })
+        .join("、");
+
+      valCtx = isZh
+        ? `【使用者當前狀態（由驗證牌確認）】\n驗證牌：${valCardList}\nAI 驗證描述：${validationText}\n使用者已確認此描述符合其當前狀態。\n\n請根據使用者已確認的當前狀態，結合正式牌陣的每張牌，給出完整的解讀。\n解讀要建立在驗證牌所揭示的狀態基礎上，讓正式解讀更加個人化和精準。\n請在解讀中包含時間預測的分析。`
+        : `[User's Current State (confirmed by validation cards)]\nValidation cards: ${valCardList}\nAI validation description: ${validationText}\nThe user has confirmed this description matches their current state.\n\nPlease base the full reading on the user's confirmed current state, combining it with the formal spread cards for a more personalized and precise interpretation.\nInclude time prediction analysis in the reading.`;
+    }
+
     return {
       deck_type: "tarot",
       spread: spread.name[lang],
@@ -399,8 +419,9 @@ export default function TarotFlowPage() {
       locale: i18n.language,
       ...(profile && { userProfile: profile }),
       topic: question || t("tarot.noQuestion"),
+      ...(valCtx && { validationContext: valCtx }),
     };
-  }, [spread, drawn, reversedStates, lang, selectedSpreadId, i18n.language, question, t, getPositionLabels]);
+  }, [spread, drawn, reversedStates, lang, selectedSpreadId, i18n.language, question, t, getPositionLabels, validationCards, validationText]);
 
   const handleCopyPrompt = useCallback(() => {
     if (!spread) return;

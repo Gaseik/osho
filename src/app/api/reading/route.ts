@@ -220,7 +220,8 @@ function buildTarotPrompt(
   cards: CardInfo[],
   locale: string,
   userProfile?: UserProfileInfo,
-  topic?: string
+  topic?: string,
+  validationContext?: string
 ): string {
   const isZh = locale.startsWith("zh");
 
@@ -292,7 +293,7 @@ One short, powerful line in blockquote format (>). A gentle but precise nudge.
 ## Language
 Respond in the same language as the user's message. If Traditional Chinese, respond entirely in Traditional Chinese. If English, respond entirely in English.
 
-The user drew the following cards using the "${spread}" spread:
+${validationContext ? `${validationContext}\n\n` : ""}The user drew the following cards using the "${spread}" spread:
 
 ${cardLines}${topicContext}${userContext}`;
 }
@@ -334,7 +335,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deck_type?: string; validation?: boolean };
+  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deck_type?: string; validation?: boolean; validationContext?: string };
   try {
     body = await request.json();
   } catch {
@@ -344,7 +345,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { spread, spreadId, cards, locale, userProfile, topic, description, deck_type, validation } = body;
+  const { spread, spreadId, cards, locale, userProfile, topic, description, deck_type, validation, validationContext } = body;
   if (!spread || !cards?.length || !locale) {
     return Response.json(
       { error: "Missing required fields" },
@@ -378,7 +379,7 @@ Rules:
     maxTokens = 300;
   } else {
     const prompt = deck_type === "tarot"
-      ? buildTarotPrompt(spread, cards, locale, userProfile, topic)
+      ? buildTarotPrompt(spread, cards, locale, userProfile, topic, validationContext)
       : buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic, description);
     messages = [{ role: "user", content: prompt }];
     maxTokens = deck_type === "tarot" ? 3000 : 2000;
