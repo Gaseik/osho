@@ -20,9 +20,11 @@ interface FlipCardProps {
   customFace?: React.ReactNode;
   /** Custom name for zoom overlay — overrides i18n lookup */
   customName?: string;
+  /** Custom card back image path */
+  cardBackSrc?: string;
 }
 
-export default function FlipCard({ card, label, delay, revealed, onFlipped, onRequestReveal, reversed, customFace, customName }: FlipCardProps) {
+export default function FlipCard({ card, label, delay, revealed, onFlipped, onRequestReveal, reversed, customFace, customName, cardBackSrc }: FlipCardProps) {
   const { t } = useTranslation();
   const [flipped, setFlipped] = useState(false);
   const [zoomed, setZoomed] = useState(false);
@@ -76,6 +78,7 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
             <CardBack
               style={{ width: "100%", height: "100%" }}
               ready={!flipped}
+              src={cardBackSrc}
             />
           </div>
           <div style={{

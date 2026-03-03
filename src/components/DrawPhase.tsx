@@ -17,6 +17,8 @@ interface DrawPhaseProps {
   positionLabels?: string[];
   /** Override i18n spread name display */
   spreadDisplayName?: string;
+  /** Custom card back image path */
+  cardBackSrc?: string;
 }
 
 type Stage = 'idle' | 'shuffling' | 'stacked' | 'fanned' | 'exiting';
@@ -33,7 +35,7 @@ function useWindowWidth() {
   return width;
 }
 
-export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete, positionLabels, spreadDisplayName }: DrawPhaseProps) {
+export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete, positionLabels, spreadDisplayName, cardBackSrc }: DrawPhaseProps) {
   const { t, i18n } = useTranslation();
   const [stage, setStage] = useState<Stage>('idle');
   const [selectedIndex, setSelectedIndex] = useState(40);
@@ -279,7 +281,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete,
                   }}
                 >
                   <img
-                    src="/assets/cardback.jpeg"
+                    src={cardBackSrc || "/assets/cardback.jpeg"}
                     alt=""
                     width={60}
                     height={90}
@@ -375,6 +377,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete,
                         fontSize: params.cardW < 50 ? 14 : 22,
                         cursor: isSelected && canDraw ? 'pointer' : 'grab',
                       }}
+                      src={cardBackSrc}
                     />
                   </div>
                 );

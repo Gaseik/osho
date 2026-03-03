@@ -47,6 +47,8 @@ const DESCRIBE_PLACEHOLDER_KEYS: Record<Exclude<CategoryId, "custom">, string> =
   spiritual: "guide.describePlaceholderSpiritual",
 };
 
+const TAROT_CARD_BACK = "/assets/tarotCardBack.jpeg";
+
 /** Dummy Card adapter — ResultPhase needs Card[] but we only use customRenderCard */
 function toOshoCard(tc: TarotCard): Card {
   return {
@@ -354,6 +356,7 @@ export default function TarotFlowPage() {
             reversed={isReversed}
             customFace={<TarotCardFace card={card} reversed={isReversed} />}
             customName={`${cardName}${isReversed ? (lang === "zh" ? "（逆位）" : " (Reversed)") : ""}`}
+            cardBackSrc={TAROT_CARD_BACK}
           />
           <div
             className="text-xs text-white/70 mt-1 transition-opacity duration-300"
@@ -639,6 +642,7 @@ export default function TarotFlowPage() {
                   reversed={vc.isReversed}
                   customFace={<TarotCardFace card={vc.card} reversed={vc.isReversed} />}
                   customName={vc.card.name[lang]}
+                  cardBackSrc={TAROT_CARD_BACK}
                 />
                 <div
                   className="text-center mt-1.5 transition-opacity duration-300"
@@ -796,6 +800,7 @@ export default function TarotFlowPage() {
           onComplete={handleDrawComplete}
           positionLabels={getPositionLabels()}
           spreadDisplayName={spread.name[lang]}
+          cardBackSrc={TAROT_CARD_BACK}
         />
       )}
 
