@@ -190,6 +190,36 @@ function CardIcon() {
   );
 }
 
+/* ── Answer Section (tarot direct answer) ── */
+function AnswerSection({ section }: { section: ReadingSection }) {
+  return (
+    <AnimatedSection>
+      <div className="rounded-xl border border-zen-gold/30 bg-gradient-to-b from-zen-gold/[0.06] to-transparent p-5 md:p-6">
+        <div className="flex items-center gap-2.5 mb-4">
+          <span className="text-lg leading-none">🎯</span>
+          <h2 className="text-zen-gold/90 text-base md:text-lg font-semibold tracking-wide">
+            {section.title}
+          </h2>
+        </div>
+        <div className="text-white/85 text-[15px] leading-[1.9] reading-body">
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => (
+                <p className="mb-2 last:mb-0">{children}</p>
+              ),
+              strong: ({ children }) => (
+                <strong className="reading-highlight font-semibold">{children}</strong>
+              ),
+            }}
+          >
+            {section.body}
+          </ReactMarkdown>
+        </div>
+      </div>
+    </AnimatedSection>
+  );
+}
+
 /* ── 0. Card Meanings Section — compact layout ── */
 function CardMeaningsSection({ section }: { section: ReadingSection }) {
   const entries = parseCardMeanings(section.body);
@@ -496,6 +526,8 @@ function GenericSection({ section }: { section: ReadingSection }) {
 /* ── Section renderer by id ── */
 function renderSection(section: ReadingSection) {
   switch (section.id) {
+    case "answer":
+      return <AnswerSection section={section} />;
     case "card-meanings":
       return <CardMeaningsSection section={section} />;
     case "card-reading":
