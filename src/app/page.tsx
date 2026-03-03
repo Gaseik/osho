@@ -17,7 +17,7 @@ export default function HomePage() {
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
           ☯︎ ZEN INSIGHT ☯︎
         </div>
-        <h1 className="text-4xl font-light tracking-[0.1875rem] text-white/90 m-0 mb-4">
+        <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0 mb-4">
           {t("home.title")}
         </h1>
         <div className="w-[60px] h-px bg-gradient-to-r from-transparent via-zen-gold/50 to-transparent
