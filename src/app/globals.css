@@ -450,6 +450,36 @@ body {
   }
 }
 
+/* ================================================
+   Validation Stage Intro
+   ================================================ */
+
+.validation-title-in {
+  animation: validationTitleIn 1s ease-out both;
+}
+
+@keyframes validationTitleIn {
+  from {
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0.35em;
+  }
+}
+
+@keyframes validationCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Respect reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
   .donation-prompt {
@@ -472,6 +502,9 @@ body {
     transform: none;
   }
   .zen-reminder-section.reading-section--visible .zen-reminder-text {
+    animation: none;
+  }
+  .validation-title-in {
     animation: none;
   }
 }

@@ -119,6 +119,8 @@ export default function TarotFlowPage() {
   const [validationAttempt, setValidationAttempt] = useState(0);
   const [validationRevealed, setValidationRevealed] = useState(false);
   const [validationFlipped, setValidationFlipped] = useState(0);
+  const [validationIntro, setValidationIntro] = useState<'done' | 'intro' | 'fadeOut'>('done');
+  const [validationError, setValidationError] = useState(false);
 
   // ─── Spread selection ───
   const [selectedSpreadId, setSelectedSpreadId] = useState<string | null>(null);
@@ -173,7 +175,7 @@ export default function TarotFlowPage() {
   // ═══════════════════════════════════════════
   //  Step 2: Validation cards
   // ═══════════════════════════════════════════
-  const drawValidationCards = useCallback((questionText: string) => {
+  const drawValidationCards = useCallback((questionText: string, showIntro = true) => {
     const shuffled = shuffle(allTarotCards);
     const cards = shuffled.slice(0, 3).map((card) => ({
       card,
@@ -182,13 +184,36 @@ export default function TarotFlowPage() {
     setValidationCards(cards);
     setValidationText("");
     setValidationLoading(true);
-    setValidationRevealed(true);
+    setValidationError(false);
     setValidationFlipped(0);
     setValidationAttempt((prev) => prev + 1);
+
+    if (showIntro) {
+      setValidationRevealed(false);
+      setValidationIntro('intro');
+    } else {
+      setValidationRevealed(true);
+      setValidationIntro('done');
+    }
 
     // Call AI for validation reading
     fetchValidationReading(cards, questionText);
   }, []);
+
+  // Intro → fadeOut → done timing
+  useEffect(() => {
+    if (validationIntro === 'intro') {
+      const timer = setTimeout(() => setValidationIntro('fadeOut'), 2200);
+      return () => clearTimeout(timer);
+    }
+    if (validationIntro === 'fadeOut') {
+      const timer = setTimeout(() => {
+        setValidationIntro('done');
+        setValidationRevealed(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [validationIntro]);
 
   const abortValidation = useRef<AbortController | null>(null);
 
@@ -199,6 +224,9 @@ export default function TarotFlowPage() {
     abortValidation.current?.abort();
     const controller = new AbortController();
     abortValidation.current = controller;
+
+    // 30s timeout
+    const timeout = setTimeout(() => controller.abort(), 30_000);
 
     const isZh = i18n.language.startsWith("zh");
     const cardList = cards
@@ -233,14 +261,18 @@ export default function TarotFlowPage() {
         signal: controller.signal,
       });
 
+      clearTimeout(timeout);
+
       if (!resp.ok) {
         setValidationLoading(false);
+        setValidationError(true);
         return;
       }
 
       const reader = resp.body?.getReader();
       if (!reader) {
         setValidationLoading(false);
+        setValidationError(true);
         return;
       }
 
@@ -254,8 +286,17 @@ export default function TarotFlowPage() {
       }
       setValidationLoading(false);
     } catch (err: unknown) {
-      if (err instanceof DOMException && err.name === "AbortError") return;
+      clearTimeout(timeout);
+      if (err instanceof DOMException && err.name === "AbortError") {
+        // If aborted by timeout (not by a new call replacing this one)
+        if (abortValidation.current === controller) {
+          setValidationLoading(false);
+          setValidationError(true);
+        }
+        return;
+      }
       setValidationLoading(false);
+      setValidationError(true);
     }
   };
 
@@ -268,7 +309,7 @@ export default function TarotFlowPage() {
   }, [validationAttempt]);
 
   const handleValidationRetry = useCallback(() => {
-    drawValidationCards(question);
+    drawValidationCards(question, false);
   }, [drawValidationCards, question]);
 
   // ═══════════════════════════════════════════
@@ -457,6 +498,8 @@ export default function TarotFlowPage() {
     setValidationCards([]);
     setValidationText("");
     setValidationAttempt(0);
+    setValidationIntro('done');
+    setValidationError(false);
   }, []);
 
   // ═══════════════════════════════════════════
@@ -539,6 +582,11 @@ export default function TarotFlowPage() {
                   rows={2}
                   autoFocus
                 />
+                <p className="text-[11px] text-white/30 italic mt-1.5">
+                  {lang === "zh"
+                    ? "✦ 問題越詳細，解讀會更精準"
+                    : "✦ The more detailed, the more precise"}
+                </p>
                 <button
                   onClick={handleCustomTopicSubmit}
                   disabled={!customTopic.trim()}
@@ -589,8 +637,15 @@ export default function TarotFlowPage() {
               rows={3}
               autoFocus
             />
-            <div className="text-right text-[10px] text-white/25 mt-1">
-              {situationDesc.length}/100
+            <div className="flex justify-between items-center mt-1">
+              <p className="text-[11px] text-white/30 italic">
+                {lang === "zh"
+                  ? "✦ 問題越詳細，解讀會更精準"
+                  : "✦ The more detailed, the more precise"}
+              </p>
+              <span className="text-[10px] text-white/25">
+                {situationDesc.length}/100
+              </span>
             </div>
             <button
               onClick={handleDescribeNext}
@@ -614,26 +669,58 @@ export default function TarotFlowPage() {
       {/* ═══ Step 2: Validation ═══ */}
       {step === "validation" && (
         <div className="animate-fadeUp w-full max-w-xl flex flex-col items-center">
-          {/* Question display */}
-          {question && (
-            <div className="mb-4 text-center">
-              <p className="text-white/35 text-xs tracking-wider mb-1">Q</p>
-              <p className="text-white/60 text-sm italic max-w-md">
-                &ldquo;{question}&rdquo;
+
+          {/* ── Intro title (shown first, then fades out) ── */}
+          {validationIntro !== 'done' && (
+            <div
+              className={`flex flex-col items-center mb-6 transition-all duration-700 ease-out ${
+                validationIntro === 'fadeOut' ? 'opacity-0 -translate-y-4' : 'opacity-100 translate-y-0'
+              }`}
+            >
+              <h2 className="text-2xl md:text-3xl font-light tracking-[0.35em] text-zen-gold/90 validation-title-in">
+                {lang === "zh" ? "驗 證 階 段" : "VERIFICATION"}
+              </h2>
+              <div
+                className="w-16 h-px bg-gradient-to-r from-transparent via-zen-gold/50 to-transparent
+                            mt-4 mb-3"
+              />
+              <p className="text-white/40 text-xs tracking-[0.15em]">
+                {lang === "zh" ? "確認你目前的狀態" : "Confirm your current state"}
               </p>
             </div>
           )}
 
-          <p className="text-white/50 text-xs tracking-wider mb-4">
-            {lang === "zh"
-              ? "── 讓我們先確認你目前的狀態 ──"
-              : "── Let's first confirm your current state ──"}
-          </p>
+          {/* ── Main phase header (after intro) ── */}
+          {validationIntro === 'done' && (
+            <div className="animate-fadeUp text-center">
+              {question && (
+                <div className="mb-4">
+                  <p className="text-white/35 text-xs tracking-wider mb-1">Q</p>
+                  <p className="text-white/60 text-sm italic max-w-md">
+                    &ldquo;{question}&rdquo;
+                  </p>
+                </div>
+              )}
+              <p className="text-white/50 text-xs tracking-wider mb-4">
+                {lang === "zh"
+                  ? "── 讓我們先確認你目前的狀態 ──"
+                  : "── Let's first confirm your current state ──"}
+              </p>
+            </div>
+          )}
 
-          {/* 3 validation cards */}
+          {/* 3 validation cards (always visible) */}
           <div className="flex justify-center gap-4 sm:gap-6 mb-6">
             {validationCards.map((vc, idx) => (
-              <div key={`${vc.card.id}-${validationAttempt}`} className="flex flex-col items-center">
+              <div
+                key={`${vc.card.id}-${validationAttempt}`}
+                className="flex flex-col items-center"
+                style={
+                  validationIntro !== 'done'
+                    ? { animation: `validationCardIn 0.6s ease-out ${idx * 150}ms both` }
+                    : undefined
+                }
+              >
                 <FlipCard
                   card={toOshoCard(vc.card)}
                   delay={idx * 300}
@@ -663,76 +750,104 @@ export default function TarotFlowPage() {
             ))}
           </div>
 
-          {/* AI validation text */}
-          {validationLoading && !validationText && (
-            <div className="w-full max-w-md">
-              <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
-                <div className="flex items-center gap-2.5 mb-4">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zen-gold/70">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                  <span className="text-zen-gold/85 text-sm font-semibold tracking-wide animate-pulse">
-                    {lang === "zh" ? "感應中…" : "Sensing…"}
-                  </span>
+          {/* AI + Buttons (only after intro) */}
+          {validationIntro === 'done' && (
+            <>
+              {/* AI loading skeleton */}
+              {validationLoading && !validationText && (
+                <div className="w-full max-w-md">
+                  <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
+                    <div className="flex items-center gap-2.5 mb-4">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zen-gold/70">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                      <span className="text-zen-gold/85 text-sm font-semibold tracking-wide animate-pulse">
+                        {lang === "zh" ? "感應中…" : "Sensing…"}
+                      </span>
+                    </div>
+                    <div className="space-y-2.5">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="h-3.5 bg-white/[0.06] rounded animate-pulse"
+                          style={{ width: `${70 + i * 10}%` }}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-2.5">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="h-3.5 bg-white/[0.06] rounded animate-pulse"
-                      style={{ width: `${70 + i * 10}%` }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+              )}
 
-          {validationText && (
-            <div className="w-full max-w-md mb-6 animate-fadeUp">
-              <div className="rounded-xl border border-zen-gold/25 bg-gradient-to-b from-zen-gold/[0.04] to-transparent p-5 md:p-6">
-                <div className="flex items-center gap-2.5 mb-4">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zen-gold/70">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                  <span className="text-zen-gold/85 text-sm font-semibold tracking-wide">
-                    {lang === "zh" ? "你目前的狀態" : "Your Current State"}
-                  </span>
+              {/* Error state */}
+              {validationError && !validationText && (
+                <div className="w-full max-w-md mb-6 animate-fadeUp">
+                  <div className="rounded-xl border border-red-500/20 bg-red-500/[0.04] p-5 md:p-6 text-center">
+                    <p className="text-white/70 text-sm mb-4">
+                      {lang === "zh"
+                        ? "感應中斷了，可能是網路不穩，請再試一次"
+                        : "Connection interrupted. Please try again."}
+                    </p>
+                    <button
+                      onClick={handleValidationRetry}
+                      className="px-6 py-2.5 rounded-full border border-zen-gold/30
+                                 bg-zen-gold/[0.08] text-zen-gold/90 text-sm tracking-wider
+                                 hover:bg-zen-gold/[0.15] hover:border-zen-gold/50
+                                 transition-all duration-300"
+                    >
+                      {lang === "zh" ? "重新感應 🔄" : "Try again 🔄"}
+                    </button>
+                  </div>
                 </div>
-                <div className="text-white/80 text-sm leading-[1.9] whitespace-pre-line">
-                  {validationText}
-                </div>
-              </div>
-            </div>
-          )}
+              )}
 
-          {/* Action buttons */}
-          {validationText && !validationLoading && (
-            <div className="flex flex-col sm:flex-row gap-3 items-center">
-              <button
-                onClick={handleValidationMatch}
-                className="px-7 py-3 rounded-full border border-zen-gold/35
-                           bg-gradient-to-r from-zen-gold/[0.08] to-zen-gold/[0.02]
-                           text-zen-gold/90 text-sm tracking-[1px]
-                           hover:border-zen-gold/60 hover:scale-[1.02]
-                           transition-all duration-300"
-              >
-                {lang === "zh" ? "符合我的狀態，繼續 ✅" : "This matches, continue ✅"}
-              </button>
-              <button
-                onClick={handleValidationRetry}
-                className="px-7 py-3 rounded-full border border-white/15
-                           bg-white/[0.03] text-white/60 text-sm tracking-[1px]
-                           hover:bg-white/[0.08] hover:text-white/80
-                           transition-all duration-300"
-              >
-                {lang === "zh" ? "不太符合，重新抽 🔄" : "Doesn't match, try again 🔄"}
-              </button>
-            </div>
+              {/* AI validation text */}
+              {validationText && (
+                <div className="w-full max-w-md mb-6 animate-fadeUp">
+                  <div className="rounded-xl border border-zen-gold/25 bg-gradient-to-b from-zen-gold/[0.04] to-transparent p-5 md:p-6">
+                    <div className="flex items-center gap-2.5 mb-4">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zen-gold/70">
+                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                      <span className="text-zen-gold/85 text-sm font-semibold tracking-wide">
+                        {lang === "zh" ? "你目前的狀態" : "Your Current State"}
+                      </span>
+                    </div>
+                    <div className="text-white/80 text-sm leading-[1.9] whitespace-pre-line">
+                      {validationText}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Action buttons */}
+              {validationText && !validationLoading && (
+                <div className="flex flex-col sm:flex-row gap-3 items-center">
+                  <button
+                    onClick={handleValidationMatch}
+                    className="px-7 py-3 rounded-full border border-zen-gold/35
+                               bg-gradient-to-r from-zen-gold/[0.08] to-zen-gold/[0.02]
+                               text-zen-gold/90 text-sm tracking-[1px]
+                               hover:border-zen-gold/60 hover:scale-[1.02]
+                               transition-all duration-300"
+                  >
+                    {lang === "zh" ? "符合我的狀態，繼續 ✅" : "This matches, continue ✅"}
+                  </button>
+                  <button
+                    onClick={handleValidationRetry}
+                    className="px-7 py-3 rounded-full border border-white/15
+                               bg-white/[0.03] text-white/60 text-sm tracking-[1px]
+                               hover:bg-white/[0.08] hover:text-white/80
+                               transition-all duration-300"
+                  >
+                    {lang === "zh" ? "不太符合，重新抽 🔄" : "Doesn't match, try again 🔄"}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
