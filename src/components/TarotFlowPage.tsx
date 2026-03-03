@@ -120,6 +120,7 @@ export default function TarotFlowPage() {
   const [validationRevealed, setValidationRevealed] = useState(false);
   const [validationFlipped, setValidationFlipped] = useState(0);
   const [validationIntro, setValidationIntro] = useState<'done' | 'intro' | 'fadeOut'>('done');
+  const [validationError, setValidationError] = useState(false);
 
   // ─── Spread selection ───
   const [selectedSpreadId, setSelectedSpreadId] = useState<string | null>(null);
@@ -183,6 +184,7 @@ export default function TarotFlowPage() {
     setValidationCards(cards);
     setValidationText("");
     setValidationLoading(true);
+    setValidationError(false);
     setValidationFlipped(0);
     setValidationAttempt((prev) => prev + 1);
 
@@ -223,6 +225,9 @@ export default function TarotFlowPage() {
     const controller = new AbortController();
     abortValidation.current = controller;
 
+    // 30s timeout
+    const timeout = setTimeout(() => controller.abort(), 30_000);
+
     const isZh = i18n.language.startsWith("zh");
     const cardList = cards
       .map(
@@ -256,14 +261,18 @@ export default function TarotFlowPage() {
         signal: controller.signal,
       });
 
+      clearTimeout(timeout);
+
       if (!resp.ok) {
         setValidationLoading(false);
+        setValidationError(true);
         return;
       }
 
       const reader = resp.body?.getReader();
       if (!reader) {
         setValidationLoading(false);
+        setValidationError(true);
         return;
       }
 
@@ -277,8 +286,17 @@ export default function TarotFlowPage() {
       }
       setValidationLoading(false);
     } catch (err: unknown) {
-      if (err instanceof DOMException && err.name === "AbortError") return;
+      clearTimeout(timeout);
+      if (err instanceof DOMException && err.name === "AbortError") {
+        // If aborted by timeout (not by a new call replacing this one)
+        if (abortValidation.current === controller) {
+          setValidationLoading(false);
+          setValidationError(true);
+        }
+        return;
+      }
       setValidationLoading(false);
+      setValidationError(true);
     }
   };
 
@@ -481,6 +499,7 @@ export default function TarotFlowPage() {
     setValidationText("");
     setValidationAttempt(0);
     setValidationIntro('done');
+    setValidationError(false);
   }, []);
 
   // ═══════════════════════════════════════════
@@ -757,6 +776,28 @@ export default function TarotFlowPage() {
                         />
                       ))}
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Error state */}
+              {validationError && !validationText && (
+                <div className="w-full max-w-md mb-6 animate-fadeUp">
+                  <div className="rounded-xl border border-red-500/20 bg-red-500/[0.04] p-5 md:p-6 text-center">
+                    <p className="text-white/70 text-sm mb-4">
+                      {lang === "zh"
+                        ? "感應中斷了，可能是網路不穩，請再試一次"
+                        : "Connection interrupted. Please try again."}
+                    </p>
+                    <button
+                      onClick={handleValidationRetry}
+                      className="px-6 py-2.5 rounded-full border border-zen-gold/30
+                                 bg-zen-gold/[0.08] text-zen-gold/90 text-sm tracking-wider
+                                 hover:bg-zen-gold/[0.15] hover:border-zen-gold/50
+                                 transition-all duration-300"
+                    >
+                      {lang === "zh" ? "重新感應 🔄" : "Try again 🔄"}
+                    </button>
                   </div>
                 </div>
               )}
