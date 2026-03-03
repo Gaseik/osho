@@ -1,26 +1,33 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { sendGAEvent } from '@next/third-parties/google';
 import { useTranslation } from 'react-i18next';
-import { Card } from "../data/cards";
 import { Spread, POSITION_LABELS } from "../data/spreads";
 import CardBack from "./CardBack";
+import { Pointer } from "lucide-react";
 
 interface DrawPhaseProps {
-  spread: Spread;
-  deck: Card[];
-  drawn: Card[];
+  spread: Spread | { id: string; count: number };
+  deck: Array<{ id: number }>;
+  drawn: Array<{ id: number }>;
   onDrawCard: (index: number) => void;
   onComplete?: () => void;
+  /** Override POSITION_LABELS lookup (for tarot or custom spreads) */
+  positionLabels?: string[];
+  /** Override i18n spread name display */
+  spreadDisplayName?: string;
+  /** Custom card back image path */
+  cardBackSrc?: string;
 }
 
 type Stage = 'idle' | 'shuffling' | 'stacked' | 'fanned' | 'exiting';
 
 function useWindowWidth() {
-  const [width, setWidth] = useState(
-    typeof window !== 'undefined' ? window.innerWidth : 1024
-  );
+  // Use consistent initial value for SSR/client to prevent hydration mismatch CLS
+  const [width, setWidth] = useState(1024);
   useEffect(() => {
+    setWidth(window.innerWidth);
     const onResize = () => setWidth(window.innerWidth);
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
@@ -28,12 +35,13 @@ function useWindowWidth() {
   return width;
 }
 
-export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete }: DrawPhaseProps) {
+export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete, positionLabels, spreadDisplayName, cardBackSrc }: DrawPhaseProps) {
   const { t, i18n } = useTranslation();
   const [stage, setStage] = useState<Stage>('idle');
   const [selectedIndex, setSelectedIndex] = useState(40);
   const [isDragging, setIsDragging] = useState(false);
   const [hasEverDragged, setHasEverDragged] = useState(false);
+  const [hintDismissed, setHintDismissed] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startIndex: number; moved: boolean } | null>(null);
 
@@ -61,7 +69,8 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
   const handleShuffle = useCallback(() => {
     setStage('shuffling');
     setTimeout(() => setStage('stacked'), 1200);
-  }, []);
+    sendGAEvent("event", "start_shuffle", { spread_type: spread.id });
+  }, [spread.id]);
 
   useEffect(() => {
     if (stage === 'stacked') {
@@ -223,30 +232,38 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
       {/* Info text */}
       <div className="animate-fadeUp text-center w-full mb-4">
         <p className="text-white/60 text-sm mb-2">
-          {t(`spread.${spread.id}`)} — {t('draw.title', { count: spread.count })}
+          {spreadDisplayName ?? t(`spread.${spread.id}`)} — {t('draw.title', { count: spread.count })}
         </p>
         <p className="text-zen-gold/50 text-[13px]">
           {t('draw.selected', { current: drawn.length, total: spread.count })}
         </p>
-        {drawn.length < spread.count && (
-          <p className="text-zen-gold/80 text-sm mt-2 tracking-wider">
-            {t('draw.nextPosition', {
-              label: i18n.language === 'zh-TW'
+        <p
+          className="text-zen-gold/80 text-sm mt-2 tracking-wider transition-opacity duration-300"
+          style={{
+            opacity: drawn.length < spread.count ? 1 : 0,
+            minHeight: '1.5rem',
+          }}
+        >
+          {drawn.length < spread.count && t('draw.nextPosition', {
+            label: positionLabels
+              ? positionLabels[drawn.length]
+              : i18n.language === 'zh-TW'
                 ? POSITION_LABELS[spread.id]?.[drawn.length]
                 : t(`spread.${spread.id}Labels.${drawn.length}`)
-            })}
-          </p>
-        )}
+          })}
+        </p>
       </div>
 
-      {/* Drawn cards stack */}
-      {drawn.length > 0 && stage !== 'idle' && (
-        <div className="flex justify-center mt-4">
+      {/* Drawn cards stack — fixed height placeholder prevents CLS */}
+      <div style={{ minHeight: stage !== 'idle' ? 106 : 0 }} className="flex justify-center mt-4">
+        {drawn.length > 0 && stage !== 'idle' && (
           <div className="flex">
             {drawn.map((card, i) => {
-              const posLabel = i18n.language === 'zh-TW'
-                ? POSITION_LABELS[spread.id]?.[i]
-                : t(`spread.${spread.id}Labels.${i}`);
+              const posLabel = positionLabels
+                ? positionLabels[i]
+                : i18n.language === 'zh-TW'
+                  ? POSITION_LABELS[spread.id]?.[i]
+                  : t(`spread.${spread.id}Labels.${i}`);
               return (
                 <div
                   key={card.id}
@@ -264,8 +281,10 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
                   }}
                 >
                   <img
-                    src="/assets/cardback.jpeg"
+                    src={cardBackSrc || "/assets/cardback.jpeg"}
                     alt=""
+                    width={60}
+                    height={90}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                   <div
@@ -294,19 +313,25 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
               );
             })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Shuffle button */}
-      {stage === 'idle' && (
-        <div className="animate-fadeUp flex flex-col items-center mt-16">
-          <button onClick={handleShuffle} className="shuffle-btn">
-            <span className="shuffle-btn-icon">☯︎</span>
-            <span>{t('draw.shuffle')}</span>
-          </button>
-          <p className="text-white/30 text-xs mt-4">{t('draw.shuffleHint')}</p>
-        </div>
-      )}
+      {/* Shuffle button — use opacity transition instead of conditional render to prevent CLS */}
+      <div
+        className="flex flex-col items-center mt-16 transition-opacity duration-300"
+        style={{
+          opacity: stage === 'idle' ? 1 : 0,
+          pointerEvents: stage === 'idle' ? 'auto' : 'none',
+          position: stage === 'idle' ? 'relative' : 'absolute',
+          visibility: stage === 'idle' ? 'visible' : 'hidden',
+        }}
+      >
+        <button onClick={handleShuffle} className="shuffle-btn">
+          <span className="shuffle-btn-icon">☯︎</span>
+          <span>{t('draw.shuffle')}</span>
+        </button>
+        <p className="text-white/30 text-xs mt-4">{t('draw.shuffleHint')}</p>
+      </div>
 
       {/* Fan scene */}
       {stage !== 'idle' && (
@@ -352,6 +377,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
                         fontSize: params.cardW < 50 ? 14 : 22,
                         cursor: isSelected && canDraw ? 'pointer' : 'grab',
                       }}
+                      src={cardBackSrc}
                     />
                   </div>
                 );
@@ -361,10 +387,32 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete 
         </div>
       )}
 
-      {/* Drag hint — fixed to viewport bottom, outside fan-scene */}
-      {stage === 'fanned' && !hasEverDragged && (
-        <div className="fan-hint">
-          {t('draw.dragHint')}
+      {/* Instruction overlay — centered, tap anywhere to dismiss */}
+      {stage === 'fanned' && !hintDismissed && (
+        <div
+          className="draw-hint-overlay"
+          onClick={() => setHintDismissed(true)}
+        >
+          <div className="draw-hint-content">
+            {/* Swipe gesture animation — Lucide pointer icon */}
+            <div className="draw-hint-anim">
+              <Pointer
+                size={48}
+                strokeWidth={1.5}
+                className="draw-hint-hand"
+                color="rgba(255,255,255,0.7)"
+              />
+              {/* Arrows */}
+              <div className="draw-hint-arrows">
+                <span className="draw-hint-arrow draw-hint-arrow--left">‹</span>
+                <span className="draw-hint-arrow draw-hint-arrow--right">›</span>
+              </div>
+            </div>
+
+            <p className="draw-hint-line1">{t('draw.dragHint')}</p>
+            <p className="draw-hint-line2">{t('draw.dragHint2')}</p>
+            <p className="draw-hint-dismiss">{t('draw.dragHintDismiss')}</p>
+          </div>
         </div>
       )}
     </>

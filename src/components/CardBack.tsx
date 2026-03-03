@@ -9,6 +9,7 @@ interface CardBackProps {
   className?: string;
   animStyle?: CSSProperties;
   ready?: boolean;
+  src?: string;
 }
 
 export default function CardBack({
@@ -17,6 +18,7 @@ export default function CardBack({
   className = "",
   animStyle = {},
   ready = false,
+  src = "/assets/cardback.jpeg",
 }: CardBackProps) {
   return (
     <div
@@ -37,7 +39,7 @@ export default function CardBack({
       }}
     >
       <Image
-        src="/assets/cardback.jpeg"
+        src={src}
         alt="Card Back"
         fill
         style={{

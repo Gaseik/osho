@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
@@ -53,6 +54,7 @@ export default function RecordDetailPage() {
     if (found) {
       setRecord(found);
       setReview(found.review);
+      sendGAEvent("event", "view_record_detail", { spread_type: found.spreadId });
     }
     setMounted(true);
   }, [params.id]);
@@ -88,6 +90,7 @@ export default function RecordDetailPage() {
     updateRecord(record.id, { review, reviewedAt });
     setRecord({ ...record, review, reviewedAt });
     setEditing(false);
+    sendGAEvent("event", "save_review", { spread_type: record.spreadId });
   };
 
   const handleDelete = () => {
@@ -96,6 +99,7 @@ export default function RecordDetailPage() {
       return;
     }
     deleteRecord(record.id);
+    sendGAEvent("event", "delete_record", { spread_type: record.spreadId });
     router.push("/records");
   };
 

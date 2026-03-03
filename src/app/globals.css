@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ================================================
+   Font fallback: prevent CLS from font swap
+   ================================================ */
+@font-face {
+  font-family: 'Georgia';
+  src: local('Georgia');
+  font-display: swap;
+  size-adjust: 100%;
+  ascent-override: normal;
+  descent-override: normal;
+  line-gap-override: normal;
+}
+
 body {
   margin: 0;
   font-family: 'Georgia', serif;
@@ -170,25 +183,105 @@ body {
     drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
 }
 
-/* Drag hint — fixed to viewport bottom with breathing animation */
-.fan-hint {
+/* ── Draw instruction overlay ── */
+.draw-hint-overlay {
   position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
-  letter-spacing: 1.5px;
-  white-space: nowrap;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  cursor: pointer;
+  animation: hintOverlayIn 0.4s ease-out;
+}
+@keyframes hintOverlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.draw-hint-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+}
+
+/* Gesture animation area */
+.draw-hint-anim {
+  position: relative;
+  width: 120px;
+  height: 60px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.draw-hint-hand {
+  animation: hintSwipe 2s ease-in-out infinite;
+}
+
+@keyframes hintSwipe {
+  0%, 100% { transform: translateX(-14px); }
+  50%      { transform: translateX(14px); }
+}
+
+.draw-hint-arrows {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   pointer-events: none;
-  z-index: 20;
+}
+
+.draw-hint-arrow {
+  font-size: 28px;
+  color: rgba(255, 215, 0, 0.5);
+  animation: hintArrowPulse 2s ease-in-out infinite;
+}
+.draw-hint-arrow--left  { animation-delay: 0s; }
+.draw-hint-arrow--right { animation-delay: 1s; }
+
+@keyframes hintArrowPulse {
+  0%, 100% { opacity: 0.3; transform: translateX(0); }
+  50%      { opacity: 0.8; transform: translateX(var(--arrow-dx, 0px)); }
+}
+.draw-hint-arrow--left  { --arrow-dx: -4px; }
+.draw-hint-arrow--right { --arrow-dx: 4px; }
+
+/* Text lines */
+.draw-hint-line1 {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 0 16px rgba(255, 215, 0, 0.3);
+}
+
+.draw-hint-line2 {
+  color: rgba(255, 215, 0, 0.8);
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  text-align: center;
+}
+
+.draw-hint-dismiss {
+  margin-top: 16px;
+  color: rgba(255, 215, 0, 0.45);
+  font-size: 12px;
+  letter-spacing: 1px;
   animation: breathe 3s ease-in-out infinite;
-  text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
 }
 
 @keyframes breathe {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 0.85; }
 }
 
 /* ================================================
@@ -250,11 +343,136 @@ body {
 @keyframes stackSlideIn {
   from {
     opacity: 0;
-    transform: translateY(30px) scale(0.6);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+  }
+}
+
+/* ================================================
+   Donation Prompt — scroll-triggered animation
+   ================================================ */
+
+.donation-prompt {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.donation-prompt--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.donation-kofi-pulse a {
+  display: inline-block;
+  animation: kofiPulse 2.5s ease-in-out 0.8s infinite;
+}
+
+@keyframes kofiPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ================================================
+   Donation Toast — pop up from bottom + floating
+   ================================================ */
+
+.donation-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  z-index: 90;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  padding: 0.625rem 1rem;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 170, 110, 0.2);
+  border-radius: 0.75rem;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.donation-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  animation: donationFloat 3s ease-in-out 0.8s infinite;
+}
+
+@keyframes donationFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* ================================================
+   Structured Reading — section animations
+   ================================================ */
+
+/* Each reading section fades in + slides up on scroll */
+.reading-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.reading-section--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gold highlight for **bold** keywords in reading body */
+.reading-highlight {
+  color: rgba(255, 215, 0, 0.9);
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+}
+
+/* Step number circle glow */
+.step-circle {
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.08);
+}
+
+/* Zen reminder — text reveal animation */
+.zen-reminder-section.reading-section--visible .zen-reminder-text {
+  animation: zenTextReveal 1.2s ease-out 0.3s both;
+}
+
+@keyframes zenTextReveal {
+  from {
+    opacity: 0;
+    letter-spacing: 0.15em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: normal;
+  }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .donation-prompt {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .donation-kofi-pulse a {
+    animation: none;
+  }
+  .donation-toast {
+    transition: none;
+  }
+  .donation-toast--visible {
+    animation: none;
+  }
+  .reading-section {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .zen-reminder-section.reading-section--visible .zen-reminder-text {
+    animation: none;
   }
 }
 
@@ -264,6 +482,27 @@ body {
 
 .spread-grid {
   transform-origin: top center;
+}
+
+/* ========== Celtic Cross Responsive ========== */
+
+.celtic-cross-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .celtic-cross-wrapper {
+    transform: scale(0.7);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 400px) {
+  .celtic-cross-wrapper {
+    transform: scale(0.55);
+    transform-origin: top center;
+  }
 }
 
 /* ========== Responsive ========== */
@@ -302,9 +541,11 @@ body {
     font-size: 15px;
     letter-spacing: 2px;
   }
-  .fan-hint {
-    font-size: 11px;
-    bottom: 8px;
+  .draw-hint-line1 {
+    font-size: 16px;
+  }
+  .draw-hint-line2 {
+    font-size: 13px;
   }
   .spread-grid {
     zoom: 0.65;

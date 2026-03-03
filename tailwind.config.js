@@ -27,16 +27,16 @@ export default {
           '50%': { boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)' },
         },
         fadeUp: {
-          from: { opacity: '0', transform: 'translateY(20px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
+          from: { opacity: '0' },
+          to: { opacity: '1' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-6px)' },
         },
         slideIn: {
-          from: { opacity: '0', transform: 'translateY(30px) scale(0.95)' },
-          to: { opacity: '1', transform: 'translateY(0) scale(1)' },
+          from: { opacity: '0' },
+          to: { opacity: '1' },
         },
       },
     },

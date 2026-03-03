@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import LanguageSwitcher from "../../components/LanguageSwitcher";
@@ -122,11 +123,13 @@ export default function RecordsPage() {
   useEffect(() => {
     setRecords(getRecords());
     setMounted(true);
+    sendGAEvent("event", "view_records");
   }, []);
 
   const handleDelete = (id: string) => {
     deleteRecord(id);
     setRecords(getRecords());
+    sendGAEvent("event", "delete_record");
   };
 
   if (!mounted) return null;

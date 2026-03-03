@@ -2,18 +2,20 @@
 
 import { ReactNode, forwardRef } from "react";
 import { useTranslation } from "react-i18next";
-import { SPREAD_LAYOUTS } from "../data/spreads";
+import { SPREAD_LAYOUTS, type SpreadLayout } from "../data/spreads";
 
 interface CardSpreadLayoutProps {
   spreadId: string;
   cardCount: number;
   renderCard: (cardIdx: number) => ReactNode;
+  /** Override SPREAD_LAYOUTS lookup with a custom layout */
+  customLayout?: SpreadLayout;
 }
 
 const CardSpreadLayout = forwardRef<HTMLDivElement, CardSpreadLayoutProps>(
-  function CardSpreadLayout({ spreadId, cardCount, renderCard }, ref) {
+  function CardSpreadLayout({ spreadId, cardCount, renderCard, customLayout }, ref) {
     const { t } = useTranslation();
-    const layout = SPREAD_LAYOUTS[spreadId];
+    const layout = customLayout ?? SPREAD_LAYOUTS[spreadId];
 
     if (layout) {
       return (
