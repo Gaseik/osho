@@ -272,13 +272,6 @@ function buildTarotPrompt(
 
 IMPORTANT: You MUST use exactly these ## headings to structure your response. Each section MUST start with ## followed by a space and the section title. Do NOT skip any section.
 
-## 解答
-Directly answer the user's question in 2-4 sentences. Include:
-- A clear yes/no/likely/unlikely assessment with estimated probability (e.g. "70% likely")
-- Time prediction: when this might happen or resolve, based on the cards' suits and energy
-- Key conditions: what needs to happen (or not happen) for this outcome
-Be bold and direct — this is the answer they came for. No hedging with "it depends" unless the cards genuinely show ambiguity.
-
 ## 牌面解析
 Open with 1-2 sentences stating the **core message** of the entire spread. Then weave all cards together as a flowing narrative, referencing each card's position and upright/reversed status. Use **bold** for key insights.
 
@@ -288,6 +281,13 @@ Surface blind spots and unconscious patterns:
 - A pattern you may not have noticed is ___
 - This pattern likely shows up in your life as ___
 2-3 points with concrete descriptions. No fluff.
+
+## 解答
+Directly answer the user's question in 2-4 sentences. Include:
+- A clear yes/no/likely/unlikely assessment with estimated probability (e.g. "70% likely")
+- Time prediction: when this might happen or resolve, based on the cards' suits and energy
+- Key conditions: what needs to happen (or not happen) for this outcome
+Be bold and direct — this is the answer they came for. No hedging with "it depends" unless the cards genuinely show ambiguity.
 
 ## 具體指引
 2-3 numbered, **specific, actionable, time-bound** suggestions.
