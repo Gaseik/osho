@@ -28,3 +28,4 @@ tsconfig.tsbuildinfo
 *.sw?
 
 claude.md
+.claude/
