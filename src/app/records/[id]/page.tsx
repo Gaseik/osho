@@ -141,7 +141,7 @@ export default function RecordDetailPage() {
       )}
 
       {/* Cards display */}
-      <div className={`animate-fadeUp text-center w-full ${layout ? "max-w-[900px]" : "max-w-[700px]"}`}>
+      <div className={`animate-fadeUp text-center w-full ${layout ? "max-w-[1100px]" : "max-w-[800px]"}`}>
         <CardSpreadLayout
           spreadId={record.spreadId}
           cardCount={record.cards.length}
