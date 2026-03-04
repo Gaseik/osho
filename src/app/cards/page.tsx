@@ -5,7 +5,7 @@ import LanguageSwitcher from "../../components/LanguageSwitcher";
 import { CARD_DETAILS, getCardImagePath, getSuitLabel } from "../../data/cardDetails";
 
 export const metadata: Metadata = {
-  title: "79 張禪卡牌義解讀 | 禪意靈卡",
+  title: "79 張禪卡牌義解讀 | 洞見",
   description:
     "完整 79 張奧修禪卡牌義解讀，包含大阿爾克納、火、水、雲、彩虹牌組。中英雙語。",
   keywords: [
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "禪卡總覽",
   ],
   openGraph: {
-    title: "79 張禪卡牌義解讀 | 禪意靈卡",
+    title: "79 張禪卡牌義解讀 | 洞見",
     description: "完整 79 張奧修禪卡牌義解讀，包含大阿爾克納、火、水、雲、彩虹牌組。中英雙語。",
   },
 };

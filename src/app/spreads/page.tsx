@@ -4,7 +4,7 @@ import LanguageSwitcher from "../../components/LanguageSwitcher";
 import { SPREAD_DETAILS } from "../../data/spreadDetails";
 
 export const metadata: Metadata = {
-  title: "9 種禪卡牌陣介紹 | 禪意靈卡",
+  title: "9 種禪卡牌陣介紹 | 洞見",
   description:
     "單牌、時間之流、兩人關聯、二擇一、鑽石、鑰匙、鏡子等 9 種牌陣詳細介紹與使用建議。",
   keywords: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "塔羅牌陣",
   ],
   openGraph: {
-    title: "9 種禪卡牌陣介紹 | 禪意靈卡",
+    title: "9 種禪卡牌陣介紹 | 洞見",
     description: "單牌、時間之流、兩人關聯、二擇一、鑽石、鑰匙、鏡子等 9 種牌陣詳細介紹與使用建議。",
   },
 };

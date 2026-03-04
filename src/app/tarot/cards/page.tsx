@@ -15,7 +15,7 @@ import {
 import TarotCardFace from "../../../components/TarotCardFace";
 
 export const metadata: Metadata = {
-  title: "78 張塔羅牌義解讀 | 禪意靈卡",
+  title: "78 張塔羅牌義解讀 | 洞見",
   description:
     "完整 78 張韋特塔羅牌義解讀，包含大阿爾克那、權杖、聖杯、寶劍、錢幣牌組。中英雙語。",
   keywords: [
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     "minor arcana",
   ],
   openGraph: {
-    title: "78 張塔羅牌義解讀 | 禪意靈卡",
+    title: "78 張塔羅牌義解讀 | 洞見",
     description:
       "完整 78 張韋特塔羅牌義解讀，包含大阿爾克那、權杖、聖杯、寶劍、錢幣牌組。中英雙語。",
   },

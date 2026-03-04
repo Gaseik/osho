@@ -8,12 +8,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://osho-wk7j.vercel.app"),
-  title: "禪意靈卡 | 免費線上禪卡抽牌・AI 解讀 | Zen Tarot Reading",
+  title: "洞見 | 線上塔羅牌/奧修卡 | 面對你真實的聲音",
   description:
-    "免費線上奧修禪卡抽牌，79 張牌、9 種牌陣，AI 即時解讀你的牌面。分析心理、人際、工作多層面，給你具體建議。Free online Zen tarot card reading with AI interpretation.",
+    "免費線上塔羅牌與奧修禪卡抽牌，AI 即時解讀你的牌面。面對你真實的聲音，探索內在智慧。Free online Tarot & Osho Zen card reading with AI interpretation.",
   keywords: [
-    "禪卡",
+    "塔羅牌",
     "奧修禪卡",
+    "線上塔羅",
     "線上抽卡",
     "AI塔羅",
     "AI解讀",
@@ -21,18 +22,18 @@ export const metadata: Metadata = {
     "osho zen tarot",
     "free tarot reading",
     "AI tarot reading",
-    "zen tarot card",
+    "洞見",
   ],
   openGraph: {
-    title: "禪意靈卡 | 免費線上禪卡抽牌・AI 解讀",
-    description: "79 張牌、9 種牌陣、AI 即時解讀。免費、不用註冊。",
+    title: "洞見 | 線上塔羅牌/奧修卡 | 面對你真實的聲音",
+    description: "免費線上塔羅牌與奧修禪卡抽牌，AI 即時解讀。面對你真實的聲音。",
     url: "https://osho-wk7j.vercel.app",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "禪意靈卡 | 免費線上禪卡抽牌・AI 解讀",
-    description: "79 張牌、9 種牌陣、AI 即時解讀。免費、不用註冊。",
+    title: "洞見 | 線上塔羅牌/奧修卡 | 面對你真實的聲音",
+    description: "免費線上塔羅牌與奧修禪卡抽牌，AI 即時解讀。面對你真實的聲音。",
   },
   verification: {
     google: "dWOy49FQqp-sBNcMAVRLis1WKr0Yp9nQsw8dyF0DXSQ",

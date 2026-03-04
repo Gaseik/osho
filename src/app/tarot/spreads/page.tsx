@@ -4,7 +4,7 @@ import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import { TAROT_SPREAD_DETAILS } from "../../../data/tarot-spread-details";
 
 export const metadata: Metadata = {
-  title: "4 種塔羅牌陣介紹 | 禪意靈卡",
+  title: "4 種塔羅牌陣介紹 | 洞見",
   description:
     "單牌、三牌陣、凱爾特十字、關係牌陣 — 4 種經典塔羅牌陣詳細介紹與使用建議。中英雙語。",
   keywords: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "韋特塔羅牌陣",
   ],
   openGraph: {
-    title: "4 種塔羅牌陣介紹 | 禪意靈卡",
+    title: "4 種塔羅牌陣介紹 | 洞見",
     description: "單牌、三牌陣、凱爾特十字、關係牌陣 — 4 種經典塔羅牌陣詳細介紹。",
   },
 };

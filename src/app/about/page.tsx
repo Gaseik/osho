@@ -5,7 +5,7 @@ import LanguageSwitcher from "../../components/LanguageSwitcher";
 export const metadata: Metadata = {
   title: "關於洞見 | About OSHO Zen Card Read",
   description:
-    "禪意靈卡是一個免費的線上禪卡抽牌平台，靈感來自奧修禪卡。About Zen Insight Cards - a free online Zen tarot card reading platform inspired by Osho Zen Tarot.",
+    "洞見是一個免費的線上禪卡抽牌平台，靈感來自奧修禪卡。About Zen Insight Cards - a free online Zen tarot card reading platform inspired by Osho Zen Tarot.",
 };
 
 export default function AboutPage() {
@@ -21,7 +21,7 @@ export default function AboutPage() {
           ☯︎ ZEN INSIGHT ☯︎
         </div>
         <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
-          關於禪意靈卡
+          關於洞見
         </h1>
         <div
           className="w-[60px] h-px bg-gradient-to-r from-transparent via-zen-gold/50 to-transparent
@@ -31,7 +31,7 @@ export default function AboutPage() {
 
       <div className="max-w-lg animate-fadeUp text-center">
         <p className="text-white/60 text-sm leading-relaxed mb-6">
-          禪意靈卡是一個免費的線上禪卡抽牌平台，提供多種牌陣選擇，讓你在靜心中探索內在智慧與直覺指引。
+          洞見是一個免費的線上禪卡抽牌平台，提供多種牌陣選擇，讓你在靜心中探索內在智慧與直覺指引。
         </p>
         <p className="text-white/60 text-sm leading-relaxed mb-6">
           Zen Insight Cards is a free online Zen tarot card reading platform. It

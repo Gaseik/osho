@@ -22,7 +22,7 @@ export async function generateMetadata({
   if (!spread) return {};
 
   return {
-    title: `${spread.name.zh}（${spread.name.en}）| 禪意靈卡 塔羅牌陣`,
+    title: `${spread.name.zh}（${spread.name.en}）| 洞見 塔羅牌陣`,
     description: `${spread.name.zh}（${spread.name.en}）牌陣介紹。${spread.count} 張牌，${spread.desc.zh}`,
     keywords: [
       spread.name.zh,
@@ -32,7 +32,7 @@ export async function generateMetadata({
       "韋特塔羅",
     ],
     openGraph: {
-      title: `${spread.name.zh}（${spread.name.en}）| 禪意靈卡`,
+      title: `${spread.name.zh}（${spread.name.en}）| 洞見`,
       description: `${spread.name.zh}牌陣介紹與使用指南`,
     },
   };
