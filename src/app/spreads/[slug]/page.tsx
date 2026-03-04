@@ -18,7 +18,7 @@ export async function generateMetadata({
   if (!spread) return {};
 
   return {
-    title: `${spread.name}（${spread.nameEn}）| 禪意靈卡 牌陣介紹`,
+    title: `${spread.name}（${spread.nameEn}）| 洞見 牌陣介紹`,
     description: `${spread.name}（${spread.nameEn}）牌陣介紹。${spread.count} 張牌，${spread.desc}。免費線上奧修禪卡抽牌。`,
     keywords: [
       spread.name,
@@ -28,7 +28,7 @@ export async function generateMetadata({
       "osho zen tarot spread",
     ],
     openGraph: {
-      title: `${spread.name}（${spread.nameEn}）| 禪意靈卡`,
+      title: `${spread.name}（${spread.nameEn}）| 洞見`,
       description: `${spread.name}牌陣介紹與使用指南`,
     },
   };

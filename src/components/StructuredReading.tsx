@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, Fragment } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   parseReading,
@@ -24,8 +24,7 @@ function InlineText({ text }: { text: string }) {
           return (
             <strong
               key={i}
-              className="text-zen-gold/90 font-semibold"
-              style={{ textShadow: "0 0 12px rgba(255,215,0,0.15)" }}
+              className="reading-highlight font-bold"
             >
               {inner}
             </strong>
@@ -35,6 +34,31 @@ function InlineText({ text }: { text: string }) {
       })}
     </>
   );
+}
+
+/**
+ * Robust paragraph renderer for ReactMarkdown.
+ * If ReactMarkdown fails to parse **bold** (e.g. with CJK text),
+ * this component falls back to InlineText for manual ** processing.
+ */
+function RichParagraph({ children, className = "mb-3 last:mb-0" }: { children: React.ReactNode; className?: string }) {
+  // Check if any child is a raw string containing literal ** markers
+  const hasUnparsedBold = React.Children.toArray(children).some(
+    (child) => typeof child === "string" && /\*\*[^*]+\*\*/.test(child)
+  );
+
+  if (hasUnparsedBold) {
+    // Rebuild children, replacing raw strings with InlineText
+    const processed = React.Children.map(children, (child) => {
+      if (typeof child === "string" && /\*\*[^*]+\*\*/.test(child)) {
+        return <InlineText text={child} />;
+      }
+      return child;
+    });
+    return <p className={className}>{processed}</p>;
+  }
+
+  return <p className={className}>{children}</p>;
 }
 
 /* ── Section wrapper with Intersection Observer fade-in ── */
@@ -190,6 +214,36 @@ function CardIcon() {
   );
 }
 
+/* ── Answer Section (tarot direct answer) ── */
+function AnswerSection({ section }: { section: ReadingSection }) {
+  return (
+    <AnimatedSection>
+      <div className="rounded-xl border border-zen-gold/30 bg-gradient-to-b from-zen-gold/[0.06] to-transparent p-5 md:p-6">
+        <div className="flex items-center gap-2.5 mb-4">
+          <span className="text-lg leading-none">🎯</span>
+          <h2 className="text-zen-gold/90 text-base md:text-lg font-semibold tracking-wide">
+            {section.title}
+          </h2>
+        </div>
+        <div className="text-white/85 text-[15px] leading-[1.9] reading-body">
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => (
+                <RichParagraph className="mb-2 last:mb-0">{children}</RichParagraph>
+              ),
+              strong: ({ children }) => (
+                <strong className="reading-highlight font-bold">{children}</strong>
+              ),
+            }}
+          >
+            {section.body}
+          </ReactMarkdown>
+        </div>
+      </div>
+    </AnimatedSection>
+  );
+}
+
 /* ── 0. Card Meanings Section — compact layout ── */
 function CardMeaningsSection({ section }: { section: ReadingSection }) {
   const entries = parseCardMeanings(section.body);
@@ -216,10 +270,10 @@ function CardMeaningsSection({ section }: { section: ReadingSection }) {
                   <ReactMarkdown
                     components={{
                       p: ({ children }) => (
-                        <p className="mb-1 last:mb-0">{children}</p>
+                        <RichParagraph className="mb-1 last:mb-0">{children}</RichParagraph>
                       ),
                       strong: ({ children }) => (
-                        <strong className="reading-highlight font-semibold">
+                        <strong className="reading-highlight font-bold">
                           {children}
                         </strong>
                       ),
@@ -237,7 +291,7 @@ function CardMeaningsSection({ section }: { section: ReadingSection }) {
               components={{
                 p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
                 strong: ({ children }) => (
-                  <strong className="reading-highlight font-semibold">{children}</strong>
+                  <strong className="reading-highlight font-bold">{children}</strong>
                 ),
                 h3: ({ children }) => (
                   <h3 className="text-zen-gold/70 text-[0.95rem] font-medium mt-3 mb-1">{children}</h3>
@@ -268,14 +322,10 @@ function CardReadingSection({ section }: { section: ReadingSection }) {
           <ReactMarkdown
             components={{
               p: ({ children }) => (
-                <p className="mb-3 last:mb-0">{children}</p>
+                <RichParagraph className="mb-3 last:mb-0">{children}</RichParagraph>
               ),
               strong: ({ children }) => (
-                <strong
-                  className="reading-highlight font-semibold"
-                >
-                  {children}
-                </strong>
+                <strong className="reading-highlight font-bold">{children}</strong>
               ),
               h3: ({ children }) => (
                 <h3 className="text-zen-gold/70 text-[0.95rem] font-medium mt-4 mb-2">
@@ -347,9 +397,9 @@ function DeeperInsightSection({ section }: { section: ReadingSection }) {
           <div className="text-white/80 text-sm leading-[1.8]">
             <ReactMarkdown
               components={{
-                p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                p: ({ children }) => <RichParagraph className="mb-3 last:mb-0">{children}</RichParagraph>,
                 strong: ({ children }) => (
-                  <strong className="reading-highlight font-semibold">{children}</strong>
+                  <strong className="reading-highlight font-bold">{children}</strong>
                 ),
                 ul: ({ children }) => <ul className="pl-5 mb-3">{children}</ul>,
                 li: ({ children }) => <li className="text-white/75 leading-[1.8] mb-1">{children}</li>,
@@ -413,9 +463,9 @@ function PracticalGuidanceSection({ section }: { section: ReadingSection }) {
           <div className="text-white/80 text-sm leading-[1.8]">
             <ReactMarkdown
               components={{
-                p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+                p: ({ children }) => <RichParagraph className="mb-3 last:mb-0">{children}</RichParagraph>,
                 strong: ({ children }) => (
-                  <strong className="reading-highlight font-semibold">{children}</strong>
+                  <strong className="reading-highlight font-bold">{children}</strong>
                 ),
                 ol: ({ children }) => <ol className="pl-5 mb-3 list-decimal">{children}</ol>,
                 li: ({ children }) => <li className="text-white/75 leading-[1.8] mb-1">{children}</li>,
@@ -470,9 +520,9 @@ function GenericSection({ section }: { section: ReadingSection }) {
         <div className="text-white/80 text-sm leading-[1.9]">
           <ReactMarkdown
             components={{
-              p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>,
+              p: ({ children }) => <RichParagraph className="mb-3 last:mb-0">{children}</RichParagraph>,
               strong: ({ children }) => (
-                <strong className="reading-highlight font-semibold">{children}</strong>
+                <strong className="reading-highlight font-bold">{children}</strong>
               ),
               h3: ({ children }) => (
                 <h3 className="text-zen-gold/70 text-[0.95rem] font-medium mt-4 mb-2">{children}</h3>
@@ -496,6 +546,8 @@ function GenericSection({ section }: { section: ReadingSection }) {
 /* ── Section renderer by id ── */
 function renderSection(section: ReadingSection) {
   switch (section.id) {
+    case "answer":
+      return <AnswerSection section={section} />;
     case "card-meanings":
       return <CardMeaningsSection section={section} />;
     case "card-reading":

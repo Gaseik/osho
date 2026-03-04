@@ -425,8 +425,9 @@ body {
 
 /* Gold highlight for **bold** keywords in reading body */
 .reading-highlight {
-  color: rgba(255, 215, 0, 0.9);
-  text-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+  color: rgba(255, 215, 0, 0.95);
+  font-weight: 700;
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.2);
 }
 
 /* Step number circle glow */
@@ -447,6 +448,36 @@ body {
   to {
     opacity: 1;
     letter-spacing: normal;
+  }
+}
+
+/* ================================================
+   Validation Stage Intro
+   ================================================ */
+
+.validation-title-in {
+  animation: validationTitleIn 1s ease-out both;
+}
+
+@keyframes validationTitleIn {
+  from {
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0.35em;
+  }
+}
+
+@keyframes validationCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -474,6 +505,9 @@ body {
   .zen-reminder-section.reading-section--visible .zen-reminder-text {
     animation: none;
   }
+  .validation-title-in {
+    animation: none;
+  }
 }
 
 /* ================================================
@@ -482,6 +516,27 @@ body {
 
 .spread-grid {
   transform-origin: top center;
+}
+
+/* ========== Celtic Cross Responsive ========== */
+
+.celtic-cross-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .celtic-cross-wrapper {
+    transform: scale(0.7);
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 400px) {
+  .celtic-cross-wrapper {
+    transform: scale(0.55);
+    transform-origin: top center;
+  }
 }
 
 /* ========== Responsive ========== */

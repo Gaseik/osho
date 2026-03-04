@@ -22,7 +22,7 @@ export async function generateMetadata({
     zhTW.cardKeywords[String(card.id) as keyof typeof zhTW.cardKeywords] ?? "";
 
   return {
-    title: `${card.nameZh}（${card.name}）| 禪意靈卡 牌義解讀`,
+    title: `${card.nameZh}（${card.name}）| 洞見 牌義解讀`,
     description: `${card.nameZh}（${card.name}）的牌義解讀與啟示。${keywordsZh}。免費線上奧修禪卡抽牌。`,
     keywords: [
       card.nameZh,
@@ -33,7 +33,7 @@ export async function generateMetadata({
       ...card.keywords,
     ],
     openGraph: {
-      title: `${card.nameZh}（${card.name}）| 禪意靈卡`,
+      title: `${card.nameZh}（${card.name}）| 洞見`,
       description: `${card.nameZh}的牌義解讀與生活啟示`,
     },
   };

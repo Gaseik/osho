@@ -14,16 +14,26 @@ interface FlipCardProps {
   revealed?: boolean;
   onFlipped?: () => void;
   onRequestReveal?: () => void;
+  /** If true, render the card face upside-down (tarot reversed) */
+  reversed?: boolean;
+  /** Custom face element — overrides default CardFace (for tarot cards etc.) */
+  customFace?: React.ReactNode;
+  /** Custom name for zoom overlay — overrides i18n lookup */
+  customName?: string;
+  /** Custom card back image path */
+  cardBackSrc?: string;
+  /** Smaller card size (100×150) */
+  small?: boolean;
 }
 
-export default function FlipCard({ card, label, delay, revealed, onFlipped, onRequestReveal }: FlipCardProps) {
+export default function FlipCard({ card, label, delay, revealed, onFlipped, onRequestReveal, reversed, customFace, customName, cardBackSrc, small }: FlipCardProps) {
   const { t } = useTranslation();
   const [flipped, setFlipped] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const hasStartedFlip = useRef(false);
   const onFlippedRef = useRef(onFlipped);
   onFlippedRef.current = onFlipped;
-  const cardName = t(`cards.${card.id}`);
+  const cardName = customName ?? t(`cards.${card.id}`);
 
   // When revealed becomes true, flip after stagger delay
   // Use ref for onFlipped to avoid cleanup race condition
@@ -46,9 +56,12 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
     }
   };
 
+  const w = small ? 110 : 140;
+  const h = small ? 176 : 210;
+
   return (
     <>
-      <div style={{ perspective: 800, width: 140, height: 210 }}>
+      <div style={{ perspective: 800, width: w, height: h }}>
         <div
           onClick={handleClick}
           style={{
@@ -70,6 +83,7 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
             <CardBack
               style={{ width: "100%", height: "100%" }}
               ready={!flipped}
+              src={cardBackSrc}
             />
           </div>
           <div style={{
@@ -79,7 +93,7 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)"
           }}>
-            <CardFace card={card} label={label} />
+            {customFace ?? <CardFace card={card} label={label} />}
           </div>
         </div>
       </div>
@@ -92,7 +106,7 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
           <div className="card-zoom-content">
             <div className="card-zoom-name">{cardName}</div>
             <div className="card-zoom-card">
-              <CardFace card={card} label={label} />
+              {customFace ?? <CardFace card={card} label={label} />}
             </div>
           </div>
         </div>,
