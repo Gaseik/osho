@@ -33,8 +33,8 @@ const ARCANA_GRADIENTS = {
 export default function TarotCardFace({ card, label, small, reversed }: TarotCardFaceProps) {
   const [imageError, setImageError] = useState(false);
 
-  const width = small ? 100 : 140;
-  const height = small ? 168 : 210;
+  const width = small ? 110 : 140;
+  const height = small ? 176 : 210;
   const romanNumeral = card.arcana === 'major' ? ROMAN_NUMERALS[card.number] : undefined;
   const suitSymbol = card.suit ? SUIT_SYMBOLS[card.suit] : undefined;
   const gradientKey = card.suit ?? (card.arcana === 'major' ? 'major' : 'major');
@@ -63,7 +63,7 @@ export default function TarotCardFace({ card, label, small, reversed }: TarotCar
           style={{
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
           }}
         />
       </div>
