@@ -314,7 +314,7 @@ export default function ResultPhase({
   );
 
   return (
-    <div className={`animate-fadeUp text-center w-full ${layout ? 'max-w-[900px]' : 'max-w-[700px]'}`}>
+    <div className={`animate-fadeUp text-center w-full ${layout ? 'max-w-[1100px]' : 'max-w-[800px]'}`}>
       {/* Title — collapses once cards start flipping */}
       <div
         className="transition-all duration-500 ease-out overflow-hidden"

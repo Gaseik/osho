@@ -22,9 +22,11 @@ interface FlipCardProps {
   customName?: string;
   /** Custom card back image path */
   cardBackSrc?: string;
+  /** Smaller card size (100×150) */
+  small?: boolean;
 }
 
-export default function FlipCard({ card, label, delay, revealed, onFlipped, onRequestReveal, reversed, customFace, customName, cardBackSrc }: FlipCardProps) {
+export default function FlipCard({ card, label, delay, revealed, onFlipped, onRequestReveal, reversed, customFace, customName, cardBackSrc, small }: FlipCardProps) {
   const { t } = useTranslation();
   const [flipped, setFlipped] = useState(false);
   const [zoomed, setZoomed] = useState(false);
@@ -54,9 +56,12 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
     }
   };
 
+  const w = small ? 110 : 140;
+  const h = small ? 176 : 210;
+
   return (
     <>
-      <div style={{ perspective: 800, width: 140, height: 210 }}>
+      <div style={{ perspective: 800, width: w, height: h }}>
         <div
           onClick={handleClick}
           style={{

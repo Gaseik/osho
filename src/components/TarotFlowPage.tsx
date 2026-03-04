@@ -709,8 +709,8 @@ export default function TarotFlowPage() {
             </div>
           )}
 
-          {/* 3 validation cards (always visible) */}
-          <div className="flex justify-center gap-4 sm:gap-6 mb-6">
+          {/* 3 validation cards (smaller size to fit on mobile) */}
+          <div className="flex justify-center gap-3 sm:gap-5 mb-6">
             {validationCards.map((vc, idx) => (
               <div
                 key={`${vc.card.id}-${validationAttempt}`}
@@ -727,17 +727,18 @@ export default function TarotFlowPage() {
                   revealed={validationRevealed}
                   onFlipped={() => setValidationFlipped((p) => p + 1)}
                   reversed={vc.isReversed}
-                  customFace={<TarotCardFace card={vc.card} reversed={vc.isReversed} />}
+                  customFace={<TarotCardFace card={vc.card} reversed={vc.isReversed} small />}
                   customName={vc.card.name[lang]}
                   cardBackSrc={TAROT_CARD_BACK}
+                  small
                 />
                 <div
                   className="text-center mt-1.5 transition-opacity duration-300"
                   style={{ opacity: validationFlipped > idx ? 1 : 0 }}
                 >
-                  <div className="text-xs text-white/70">{vc.card.name[lang]}</div>
+                  <div className="text-[11px] text-white/70">{vc.card.name[lang]}</div>
                   <div
-                    className={`text-[10px] tracking-wider mt-0.5 ${
+                    className={`text-[9px] tracking-wider mt-0.5 ${
                       vc.isReversed ? "text-purple-400/70" : "text-zen-gold/70"
                     }`}
                   >
@@ -750,12 +751,21 @@ export default function TarotFlowPage() {
             ))}
           </div>
 
+          {/* Early loading hint (visible while cards are still flipping) */}
+          {validationIntro !== 'done' && validationLoading && !validationError && (
+            <div className="flex items-center gap-2 mt-2 animate-pulse">
+              <div className="w-1.5 h-1.5 rounded-full bg-zen-gold/40" />
+              <div className="w-1.5 h-1.5 rounded-full bg-zen-gold/30" style={{ animationDelay: "200ms" }} />
+              <div className="w-1.5 h-1.5 rounded-full bg-zen-gold/20" style={{ animationDelay: "400ms" }} />
+            </div>
+          )}
+
           {/* AI + Buttons (only after intro) */}
           {validationIntro === 'done' && (
             <>
               {/* AI loading skeleton */}
-              {validationLoading && !validationText && (
-                <div className="w-full max-w-md">
+              {validationLoading && !validationText && !validationError && (
+                <div className="w-full max-w-md animate-fadeUp">
                   <div className="rounded-xl border border-zen-gold/15 bg-white/[0.02] p-5 md:p-6">
                     <div className="flex items-center gap-2.5 mb-4">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -767,15 +777,20 @@ export default function TarotFlowPage() {
                         {lang === "zh" ? "感應中…" : "Sensing…"}
                       </span>
                     </div>
-                    <div className="space-y-2.5">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="h-3.5 bg-white/[0.06] rounded animate-pulse"
-                          style={{ width: `${70 + i * 10}%` }}
-                        />
-                      ))}
+                    {/* Skeleton lines */}
+                    <div className="space-y-3">
+                      <div className="h-3 w-[85%] bg-white/[0.06] rounded animate-pulse" />
+                      <div className="h-3 w-[92%] bg-white/[0.05] rounded animate-pulse"
+                           style={{ animationDelay: "150ms" }} />
+                      <div className="h-3 w-[78%] bg-white/[0.04] rounded animate-pulse"
+                           style={{ animationDelay: "300ms" }} />
+                      <div className="h-3 w-[65%] bg-white/[0.04] rounded animate-pulse"
+                           style={{ animationDelay: "450ms" }} />
                     </div>
+                    {/* Hint text */}
+                    <p className="text-white/25 text-[11px] mt-4 tracking-wide text-center">
+                      {lang === "zh" ? "正在解讀你的驗證牌…" : "Reading your verification cards…"}
+                    </p>
                   </div>
                 </div>
               )}
@@ -784,10 +799,22 @@ export default function TarotFlowPage() {
               {validationError && !validationText && (
                 <div className="w-full max-w-md mb-6 animate-fadeUp">
                   <div className="rounded-xl border border-red-500/20 bg-red-500/[0.04] p-5 md:p-6 text-center">
-                    <p className="text-white/70 text-sm mb-4">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+                      className="text-red-400/60 mx-auto mb-3">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <p className="text-white/70 text-sm mb-2">
                       {lang === "zh"
-                        ? "感應中斷了，可能是網路不穩，請再試一次"
-                        : "Connection interrupted. Please try again."}
+                        ? "感應中斷了"
+                        : "Connection interrupted"}
+                    </p>
+                    <p className="text-white/40 text-xs mb-5">
+                      {lang === "zh"
+                        ? "可能是網路不穩或伺服器忙碌，請再試一次"
+                        : "This may be due to network issues or server load. Please try again."}
                     </p>
                     <button
                       onClick={handleValidationRetry}
@@ -796,7 +823,7 @@ export default function TarotFlowPage() {
                                  hover:bg-zen-gold/[0.15] hover:border-zen-gold/50
                                  transition-all duration-300"
                     >
-                      {lang === "zh" ? "重新感應 🔄" : "Try again 🔄"}
+                      {lang === "zh" ? "重新感應" : "Try again"}
                     </button>
                   </div>
                 </div>
@@ -848,6 +875,23 @@ export default function TarotFlowPage() {
                 </div>
               )}
             </>
+          )}
+
+          {/* Back to category button */}
+          {validationIntro === 'done' && (
+            <button
+              onClick={() => {
+                abortValidation.current?.abort();
+                setValidationLoading(false);
+                setValidationError(false);
+                setValidationText("");
+                setStep("category");
+              }}
+              className="mt-6 text-white/30 text-xs tracking-wider
+                         hover:text-white/55 transition-colors duration-300"
+            >
+              {lang === "zh" ? "← 重新選擇問題" : "← Change question"}
+            </button>
           )}
         </div>
       )}
