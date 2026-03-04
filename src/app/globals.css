@@ -425,8 +425,9 @@ body {
 
 /* Gold highlight for **bold** keywords in reading body */
 .reading-highlight {
-  color: rgba(255, 215, 0, 0.9);
-  text-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+  color: rgba(255, 215, 0, 0.95);
+  font-weight: 700;
+  text-shadow: 0 0 14px rgba(255, 215, 0, 0.2);
 }
 
 /* Step number circle glow */

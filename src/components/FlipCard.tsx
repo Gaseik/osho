@@ -57,7 +57,7 @@ export default function FlipCard({ card, label, delay, revealed, onFlipped, onRe
   };
 
   const w = small ? 100 : 140;
-  const h = small ? 150 : 210;
+  const h = small ? 168 : 210;
 
   return (
     <>

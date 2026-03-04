@@ -34,7 +34,7 @@ export default function TarotCardFace({ card, label, small, reversed }: TarotCar
   const [imageError, setImageError] = useState(false);
 
   const width = small ? 100 : 140;
-  const height = small ? 150 : 210;
+  const height = small ? 168 : 210;
   const romanNumeral = card.arcana === 'major' ? ROMAN_NUMERALS[card.number] : undefined;
   const suitSymbol = card.suit ? SUIT_SYMBOLS[card.suit] : undefined;
   const gradientKey = card.suit ?? (card.arcana === 'major' ? 'major' : 'major');

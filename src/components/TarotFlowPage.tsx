@@ -876,6 +876,23 @@ export default function TarotFlowPage() {
               )}
             </>
           )}
+
+          {/* Back to category button */}
+          {validationIntro === 'done' && (
+            <button
+              onClick={() => {
+                abortValidation.current?.abort();
+                setValidationLoading(false);
+                setValidationError(false);
+                setValidationText("");
+                setStep("category");
+              }}
+              className="mt-6 text-white/30 text-xs tracking-wider
+                         hover:text-white/55 transition-colors duration-300"
+            >
+              {lang === "zh" ? "← 重新選擇問題" : "← Change question"}
+            </button>
+          )}
         </div>
       )}
 

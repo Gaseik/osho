@@ -39,7 +39,7 @@ export default function MarkdownReading({ content }: MarkdownReadingProps) {
           </li>
         ),
         strong: ({ children }) => (
-          <strong className="text-zen-gold/90 font-semibold">
+          <strong className="reading-highlight font-bold">
             {children}
           </strong>
         ),
