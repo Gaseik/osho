@@ -8,6 +8,7 @@ import DrawPhase from "./DrawPhase";
 import ResultPhase from "./ResultPhase";
 import FlipCard from "./FlipCard";
 import TarotCardFace from "./TarotCardFace";
+import UserProfileEditor from "./UserProfileEditor";
 import { allTarotCards, type TarotCard } from "../data/tarot-cards";
 import { TAROT_SPREADS, type TarotSpread } from "../data/tarot-spreads";
 import { TAROT_SPREAD_DETAILS } from "../data/tarot-spread-details";
@@ -15,7 +16,7 @@ import { shuffle, type Card } from "../data/cards";
 import type { SpreadLayout } from "../data/spreads";
 import { getUserProfile } from "../utils/userProfile";
 
-type Step = "category" | "describe" | "validation" | "spreadSelect" | "draw" | "result";
+type Step = "profile" | "category" | "describe" | "validation" | "spreadSelect" | "draw" | "result";
 
 type CategoryId = "daily" | "relationship" | "career" | "decision" | "self" | "spiritual" | "custom";
 
@@ -103,7 +104,7 @@ export default function TarotFlowPage() {
   const lang = i18n.language === "zh-TW" ? "zh" : "en";
 
   // ─── Step state ───
-  const [step, setStep] = useState<Step>("category");
+  const [step, setStep] = useState<Step>(() => getUserProfile() ? "category" : "profile");
   const [question, setQuestion] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null);
   const [showCustom, setShowCustom] = useState(false);
@@ -136,6 +137,35 @@ export default function TarotFlowPage() {
   const [copied, setCopied] = useState(false);
 
   const spread = selectedSpreadId ? TAROT_SPREADS[selectedSpreadId] : null;
+
+  // ─── Step indicator ───
+  const TAROT_TOTAL_STEPS = 5;
+  const stepToNumber: Record<Step, number> = {
+    profile: 1,
+    category: 2,
+    describe: 3,
+    validation: 4,
+    spreadSelect: 5,
+    draw: 5,
+    result: 5,
+  };
+  const currentStepNum = stepToNumber[step];
+  const stepLabelKeys = [
+    "guide.stepProfile",
+    "guide.stepCategory",
+    "guide.stepDescribe",
+    "guide.stepValidation",
+    "guide.stepSpread",
+  ];
+
+  // ─── Profile handlers ───
+  const handleProfileSave = useCallback(() => {
+    setStep("category");
+  }, []);
+
+  const handleProfileSkip = useCallback(() => {
+    setStep("category");
+  }, []);
 
   // ═══════════════════════════════════════════
   //  Step 1: Category → Describe → Validation
@@ -482,7 +512,7 @@ export default function TarotFlowPage() {
   }, [spread, drawn, reversedStates, lang, question, getPositionLabels]);
 
   const handleReset = useCallback(() => {
-    setStep("category");
+    setStep(getUserProfile() ? "category" : "profile");
     setQuestion("");
     setSelectedCategory(null);
     setShowCustom(false);
@@ -527,6 +557,57 @@ export default function TarotFlowPage() {
                       mx-auto mt-3"
         />
       </div>
+
+      {/* ═══ Step Indicator (shown during guided steps, hidden during draw/result) ═══ */}
+      {step !== "draw" && step !== "result" && (
+        <div className="w-full max-w-[500px] animate-fadeUp">
+          {/* Step Dots */}
+          <div className="flex items-center justify-center gap-3 mb-8">
+            {Array.from({ length: TAROT_TOTAL_STEPS }, (_, i) => i + 1).map((s) => (
+              <div key={s} className="flex items-center gap-3">
+                <div
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300
+                    ${s === currentStepNum
+                      ? "bg-zen-gold scale-110"
+                      : s < currentStepNum
+                        ? "bg-zen-gold/50"
+                        : "bg-white/15"
+                    }`}
+                />
+                {s < TAROT_TOTAL_STEPS && (
+                  <div className={`w-8 h-px transition-colors duration-300 ${s < currentStepNum ? "bg-zen-gold/30" : "bg-white/10"}`} />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Step Labels */}
+          <div className="flex justify-between mb-6 px-2">
+            {stepLabelKeys.map((key, i) => (
+              <span
+                key={i}
+                className={`text-[10px] tracking-wider transition-colors duration-300
+                  ${i + 1 === currentStepNum ? "text-zen-gold/80" : "text-white/30"}`}
+              >
+                {t(key)}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ═══ Step 0: Profile ═══ */}
+      {step === "profile" && (
+        <div className="animate-fadeUp max-w-[500px] w-full">
+          <div className="bg-white/[0.03] rounded-xl border border-zen-gold/15 p-5">
+            <UserProfileEditor
+              compact
+              onSave={handleProfileSave}
+              onSkip={handleProfileSkip}
+            />
+          </div>
+        </div>
+      )}
 
       {/* ═══ Step 1a: Category ═══ */}
       {step === "category" && (
