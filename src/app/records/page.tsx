@@ -139,7 +139,7 @@ function RecordCard({
 }
 
 export default function RecordsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [records, setRecords] = useState<DivinationRecord[]>([]);
   const [mounted, setMounted] = useState(false);
 
