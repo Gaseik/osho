@@ -39,6 +39,10 @@ interface ResultPhaseProps {
   customCardNames?: string[];
   /** Custom spread layout (overrides SPREAD_LAYOUTS lookup) */
   customLayout?: import("../data/spreads").SpreadLayout;
+  /** Deck type for saving records */
+  deckType?: "osho" | "tarot";
+  /** Which card indices are reversed (tarot only) */
+  reversedIndices?: boolean[];
 }
 
 export default function ResultPhase({
@@ -56,6 +60,8 @@ export default function ResultPhase({
   buildApiBody,
   customCardNames,
   customLayout,
+  deckType,
+  reversedIndices,
 }: ResultPhaseProps) {
   const { t, i18n } = useTranslation();
   const resultRef = useRef<HTMLDivElement>(null);
@@ -218,11 +224,13 @@ export default function ResultPhase({
   };
 
   const handleSave = () => {
-    const recordCards: DivinationCard[] = drawn.map((c) => ({
+    const recordCards: DivinationCard[] = drawn.map((c, i) => ({
       id: c.id,
       name: c.name,
       nameZh: c.nameZh,
-      meaning: c.keywords.join(", "),
+      meaning: deckType === "tarot"
+        ? (reversedIndices?.[i] ? "Reversed" : "Upright")
+        : c.keywords.join(", "),
     }));
     saveRecord({
       id: generateId(),
@@ -235,6 +243,7 @@ export default function ResultPhase({
       createdAt: new Date().toISOString(),
       review: "",
       reviewedAt: null,
+      deckType,
     });
     setSaved(true);
     sendGAEvent("event", "save_reading", { spread_type: spread.id });

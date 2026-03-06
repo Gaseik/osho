@@ -979,6 +979,8 @@ export default function TarotFlowPage() {
           buildApiBody={buildApiBody}
           customCardNames={drawn.map((c) => c.name[lang])}
           customLayout={TAROT_LAYOUTS[selectedSpreadId!]}
+          deckType="tarot"
+          reversedIndices={reversedStates}
         />
       )}
     </div>
