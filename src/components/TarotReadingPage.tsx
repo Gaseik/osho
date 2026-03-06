@@ -271,6 +271,7 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
       createdAt: new Date().toISOString(),
       review: "",
       reviewedAt: null,
+      deckType: "tarot",
     });
 
     setSaved(true);

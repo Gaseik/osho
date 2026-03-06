@@ -508,44 +508,44 @@ export default function TarotFlowPage() {
   return (
     <div
       className="min-h-screen bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark
-                    text-white font-serif flex flex-col items-center px-4 py-10"
+                    text-white font-serif flex flex-col items-center px-4 py-6 sm:py-10"
     >
       <SideMenu />
 
       {/* Header */}
-      <div className="text-center animate-fadeUp mb-8">
-        <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
+      <div className="text-center animate-fadeUp mb-4 sm:mb-8">
+        <div className="text-[10px] sm:text-sm tracking-[0.375rem] text-zen-gold-dim mb-1 sm:mb-2">
           🃏 CLASSIC TAROT 🃏
         </div>
-        <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
+        <h1 className="text-xl sm:text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
           {step === "result"
             ? (lang === "zh" ? "解讀" : "Reading")
             : (lang === "zh" ? "塔羅占卜" : "Tarot Reading")}
         </h1>
         <div
           className="w-[60px] h-px bg-gradient-to-r from-transparent via-zen-gold/50 to-transparent
-                      mx-auto mt-3"
+                      mx-auto mt-2 sm:mt-3"
         />
       </div>
 
       {/* ═══ Step 1a: Category ═══ */}
       {step === "category" && (
         <div className="animate-fadeUp max-w-[500px] w-full">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2 sm:gap-3">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => handleCategorySelect(cat.id)}
-                className="p-4 px-5 rounded-xl bg-white/[0.03] border border-zen-gold/15
+                className="p-2.5 px-4 sm:p-4 sm:px-5 rounded-lg sm:rounded-xl bg-white/[0.03] border border-zen-gold/15
                          transition-all duration-300 hover:bg-zen-gold/[0.08] hover:border-zen-gold/40
-                         text-left flex items-center gap-4"
+                         text-left flex items-center gap-3 sm:gap-4"
               >
-                <span className="text-2xl w-8 text-center opacity-70">
+                <span className="text-lg sm:text-2xl w-7 sm:w-8 text-center opacity-70">
                   {CATEGORY_ICONS[cat.id]}
                 </span>
                 <div>
-                  <div className="text-[15px] text-white/90">{t(cat.labelKey)}</div>
-                  <div className="text-xs text-white/45 mt-0.5">{t(cat.descKey)}</div>
+                  <div className="text-sm sm:text-[15px] text-white/90">{t(cat.labelKey)}</div>
+                  <div className="text-[11px] sm:text-xs text-white/45 mt-0.5">{t(cat.descKey)}</div>
                 </div>
               </button>
             ))}
@@ -554,16 +554,16 @@ export default function TarotFlowPage() {
             {!showCustom ? (
               <button
                 onClick={() => setShowCustom(true)}
-                className="p-4 px-5 rounded-xl bg-white/[0.03] border border-dashed border-white/20
+                className="p-2.5 px-4 sm:p-4 sm:px-5 rounded-lg sm:rounded-xl bg-white/[0.03] border border-dashed border-white/20
                          transition-all duration-300 hover:bg-zen-gold/[0.08] hover:border-zen-gold/30
-                         text-left flex items-center gap-4"
+                         text-left flex items-center gap-3 sm:gap-4"
               >
-                <span className="text-2xl w-8 text-center opacity-70">
+                <span className="text-lg sm:text-2xl w-7 sm:w-8 text-center opacity-70">
                   {CATEGORY_ICONS.custom}
                 </span>
                 <div>
-                  <div className="text-[15px] text-white/90">{t("guide.categoryCustom")}</div>
-                  <div className="text-xs text-white/45 mt-0.5">{t("guide.categoryCustomDesc")}</div>
+                  <div className="text-sm sm:text-[15px] text-white/90">{t("guide.categoryCustom")}</div>
+                  <div className="text-[11px] sm:text-xs text-white/45 mt-0.5">{t("guide.categoryCustomDesc")}</div>
                 </div>
               </button>
             ) : (
@@ -979,6 +979,8 @@ export default function TarotFlowPage() {
           buildApiBody={buildApiBody}
           customCardNames={drawn.map((c) => c.name[lang])}
           customLayout={TAROT_LAYOUTS[selectedSpreadId!]}
+          deckType="tarot"
+          reversedIndices={reversedStates}
         />
       )}
     </div>
