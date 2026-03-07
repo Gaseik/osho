@@ -60,8 +60,19 @@ function RecordCard({
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div>
-            <div className="text-zen-gold text-sm tracking-wider font-medium">
-              {spreadName}
+            <div className="flex items-center gap-2">
+              <span className="text-zen-gold text-sm tracking-wider font-medium">
+                {spreadName}
+              </span>
+              {record.deckType === "tarot" ? (
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-300/70 border border-purple-500/20">
+                  🃏 Tarot
+                </span>
+              ) : (
+                <span className="text-[9px] px-1.5 py-0.5 rounded bg-zen-gold/10 text-zen-gold-dim border border-zen-gold/15">
+                  ☯︎ Osho
+                </span>
+              )}
             </div>
             <div className="text-white/30 text-[10px] mt-1">
               {formatDateTime(record.createdAt, i18n.language)}
@@ -90,14 +101,26 @@ function RecordCard({
 
         {/* Cards tags */}
         <div className="flex flex-wrap gap-1.5 mb-3">
-          {record.cards.map((card, i) => (
-            <span
-              key={i}
-              className="text-[10px] px-2 py-1 rounded-md bg-zen-gold/[0.06] border border-zen-gold/10 text-white/50"
-            >
-              {i18n.language === "zh-TW" ? card.nameZh : card.name}
-            </span>
-          ))}
+          {record.cards.map((card, i) => {
+            const isReversed = record.deckType === "tarot" && card.meaning === "Reversed";
+            return (
+              <span
+                key={i}
+                className={`text-[10px] px-2 py-1 rounded-md border ${
+                  isReversed
+                    ? "bg-purple-500/[0.06] border-purple-500/15 text-purple-300/60"
+                    : "bg-zen-gold/[0.06] border-zen-gold/10 text-white/50"
+                }`}
+              >
+                {i18n.language === "zh-TW" ? card.nameZh : card.name}
+                {record.deckType === "tarot" && (
+                  <span className="ml-1 opacity-60">
+                    {isReversed ? "▼" : "▲"}
+                  </span>
+                )}
+              </span>
+            );
+          })}
         </div>
 
         {/* Review status hint */}
@@ -116,7 +139,7 @@ function RecordCard({
 }
 
 export default function RecordsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [records, setRecords] = useState<DivinationRecord[]>([]);
   const [mounted, setMounted] = useState(false);
 
@@ -162,14 +185,24 @@ export default function RecordsPage() {
             <div className="text-white/20 text-sm mb-4">
               {t("record.empty")}
             </div>
-            <Link
-              href="/reading"
-              className="inline-block px-6 py-2.5 rounded-lg border border-zen-gold/30
-                       bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
-                       hover:bg-zen-gold/[0.15] transition-all duration-300"
-            >
-              {t("record.goReading")}
-            </Link>
+            <div className="flex gap-3 justify-center">
+              <Link
+                href="/reading"
+                className="inline-block px-5 py-2.5 rounded-lg border border-zen-gold/30
+                         bg-zen-gold/[0.08] text-zen-gold text-sm tracking-wider
+                         hover:bg-zen-gold/[0.15] transition-all duration-300"
+              >
+                🔮 {t("record.goReading")}
+              </Link>
+              <Link
+                href="/tarot"
+                className="inline-block px-5 py-2.5 rounded-lg border border-purple-500/30
+                         bg-purple-500/[0.08] text-purple-300 text-sm tracking-wider
+                         hover:bg-purple-500/[0.15] transition-all duration-300"
+              >
+                🃏 {i18n.language === "zh-TW" ? "傳統塔羅" : "Classic Tarot"}
+              </Link>
+            </div>
           </div>
         ) : (
           records.map((record) => (

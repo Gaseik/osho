@@ -16,6 +16,8 @@ export interface DivinationRecord {
   createdAt: string;
   review: string;
   reviewedAt: string | null;
+  /** "osho" (default/undefined) or "tarot" for classic tarot readings */
+  deckType?: "osho" | "tarot";
 }
 
 const STORAGE_KEY = "zen-divination-records";

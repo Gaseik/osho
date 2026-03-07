@@ -8,15 +8,42 @@ import Link from "next/link";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import CardSpreadLayout from "../../../components/CardSpreadLayout";
 import StaticCard from "../../../components/StaticCard";
+import TarotCardFace from "../../../components/TarotCardFace";
 import MarkdownReading from "../../../components/MarkdownReading";
-import { POSITION_LABELS, SPREAD_LAYOUTS } from "../../../data/spreads";
+import { POSITION_LABELS, SPREAD_LAYOUTS, type SpreadLayout } from "../../../data/spreads";
 import { CARD_DETAILS, type Card } from "../../../data/cards";
+import { allTarotCards } from "../../../data/tarot-cards";
+import { TAROT_SPREADS } from "../../../data/tarot-spreads";
 import {
   getRecords,
   updateRecord,
   deleteRecord,
   type DivinationRecord,
 } from "../../../utils/divinationRecords";
+
+/** Tarot spread layouts (must match TarotFlowPage) */
+const TAROT_LAYOUTS: Record<string, SpreadLayout> = {
+  "celtic-cross": {
+    cols: 6,
+    rows: [
+      { type: "cards", cells: [null, null, 4, null, null, null] },
+      { type: "cards", cells: [null, 3, 0, 5, null, 9] },
+      { type: "cards", cells: [null, null, 2, null, null, 8] },
+      { type: "cards", cells: [null, null, null, null, null, 7] },
+      { type: "cards", cells: [null, null, null, null, null, 6] },
+    ],
+  },
+  relationship: {
+    cols: 3,
+    rows: [
+      { type: "cards", cells: [0, 2, 1] },
+      { type: "cards", cells: [null, null, null] },
+      { type: "cards", cells: [3, null, 4] },
+      { type: "cards", cells: [null, 5, null] },
+      { type: "cards", cells: [null, 6, null] },
+    ],
+  },
+};
 
 function formatDateTime(iso: string, locale: string): string {
   const d = new Date(iso);
@@ -70,10 +97,20 @@ export default function RecordDetailPage() {
     );
   }
 
+  const isTarot = record.deckType === "tarot";
+  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+
   const spreadName =
     i18n.language === "zh-TW" ? record.spreadName : record.spreadNameEn;
 
   const getLabels = (): string[] => {
+    if (isTarot) {
+      const tarotSpread = TAROT_SPREADS[record.spreadId];
+      if (tarotSpread) {
+        return tarotSpread.positions.map((p) => p.name[lang]);
+      }
+      return [];
+    }
     if (i18n.language === "zh-TW") {
       return POSITION_LABELS[record.spreadId] || [];
     }
@@ -83,7 +120,9 @@ export default function RecordDetailPage() {
   };
 
   const labels = getLabels();
-  const layout = SPREAD_LAYOUTS[record.spreadId];
+  const layout = isTarot
+    ? TAROT_LAYOUTS[record.spreadId]
+    : SPREAD_LAYOUTS[record.spreadId];
 
   const handleSaveReview = () => {
     const reviewedAt = new Date().toISOString();
@@ -103,12 +142,48 @@ export default function RecordDetailPage() {
     router.push("/records");
   };
 
-  const renderCard = (cardIdx: number) => {
+  const renderOshoCard = (cardIdx: number) => {
     const saved = record.cards[cardIdx];
     const full = CARD_DETAILS.find((c) => c.id === saved.id);
     const card: Card = full ?? { ...saved, slug: "", suit: "major", keywords: [], keywordsZh: [], description: "", descriptionZh: "" };
     return <StaticCard card={card} label={labels[cardIdx] || ""} />;
   };
+
+  const renderTarotCard = (cardIdx: number) => {
+    const saved = record.cards[cardIdx];
+    const tarotCard = allTarotCards.find((c) => c.id === saved.id);
+    const isReversed = saved.meaning === "Reversed";
+    const cardName = lang === "zh" ? saved.nameZh : saved.name;
+
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <div className="text-[11px] text-zen-gold-dim tracking-widest">
+          {labels[cardIdx] || ""}
+        </div>
+        {tarotCard ? (
+          <TarotCardFace card={tarotCard} reversed={isReversed} />
+        ) : (
+          <div className="w-[140px] h-[210px] rounded-xl bg-white/[0.03] border border-zen-gold/20 flex items-center justify-center">
+            <span className="text-white/40 text-xs">{cardName}</span>
+          </div>
+        )}
+        <div className="text-xs text-white/70 mt-1">{cardName}</div>
+        <span
+          className={`text-[10px] tracking-wider ${
+            isReversed ? "text-purple-400/70" : "text-zen-gold/70"
+          }`}
+        >
+          {isReversed
+            ? `${t("tarot.reversed")} ▼`
+            : `${t("tarot.upright")} ▲`}
+        </span>
+      </div>
+    );
+  };
+
+  const renderCard = isTarot ? renderTarotCard : renderOshoCard;
+  const headerIcon = isTarot ? "🃏" : "☯︎";
+  const headerLabel = isTarot ? "CLASSIC TAROT" : t("common.subtitle");
 
   return (
     <div className="flex-1 bg-gradient-to-b from-zen-dark via-zen-darker to-zen-dark text-white font-serif flex flex-col items-center px-4 py-10">
@@ -117,7 +192,7 @@ export default function RecordDetailPage() {
       {/* Header */}
       <div className="text-center animate-fadeUp mb-4">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
-          ☯︎ {t("common.subtitle")} ☯︎
+          {headerIcon} {headerLabel} {headerIcon}
         </div>
         <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
           {spreadName}
@@ -146,6 +221,7 @@ export default function RecordDetailPage() {
           spreadId={record.spreadId}
           cardCount={record.cards.length}
           renderCard={renderCard}
+          customLayout={isTarot ? TAROT_LAYOUTS[record.spreadId] : undefined}
         />
       </div>
 
