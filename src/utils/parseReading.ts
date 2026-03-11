@@ -22,7 +22,7 @@
  */
 
 export interface ReadingSection {
-  id: "answer" | "card-meanings" | "card-reading" | "deeper-insight" | "practical-guidance" | "zen-reminder" | "generic";
+  id: "answer" | "card-meanings" | "card-reading" | "deeper-insight" | "practical-guidance" | "fortune-forecast" | "zen-reminder" | "generic";
   title: string;
   body: string;
 }
@@ -37,6 +37,7 @@ const SECTION_PATTERNS: {
   { id: "card-meanings", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:牌意解讀|Card\s*Meanings?)/i },
   { id: "card-reading", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:牌面解析|Card\s*(?:Reading|Analysis)|綜合解讀|整體解讀)/i },
   { id: "deeper-insight", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:深層洞察|多層面評估|Deeper\s*Insight|Multi.?dimensional\s*Assessment|深入分析|深層)/i },
+  { id: "fortune-forecast", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:運勢預測|運勢分析|Fortune\s*Forecast|Fortune\s*Analysis)/i },
   { id: "practical-guidance", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:具體指引|建議與練習|Practical\s*Guidance|Advice\s*[&＆]\s*Practice|行動指引|實際建議)/i },
   { id: "zen-reminder", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:靜心提醒|Zen\s*Reminder|Meditation\s*Reminder|冥想提醒)/i },
 ];

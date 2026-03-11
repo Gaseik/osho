@@ -79,6 +79,8 @@
     "categorySelfDesc": "Inner state and self-understanding",
     "categorySpiritual": "Spiritual Growth",
     "categorySpiritualDesc": "Spiritual awareness and life meaning",
+    "categoryFortune": "Fortune Reading",
+    "categoryFortuneDesc": "3-6 month fortune & outlook analysis",
     "categoryCustom": "Custom Topic",
     "categoryCustomDesc": "Type your own question or topic",
     "customTopicPlaceholder": "e.g. I've been arguing with my partner a lot lately...",
@@ -93,7 +95,8 @@
     "describePlaceholderCareer": "e.g. Considering a career change",
     "describePlaceholderDecision": "e.g. Deciding whether to move to another city",
     "describePlaceholderSelf": "e.g. Feeling a bit lost lately",
-    "describePlaceholderSpiritual": "e.g. Want to understand my inner state better"
+    "describePlaceholderSpiritual": "e.g. Want to understand my inner state better",
+    "describePlaceholderFortune": "e.g. How will my love life and career go in the next few months"
   },
   "spread": {
     "selectTitle": "Choose Your Spread",

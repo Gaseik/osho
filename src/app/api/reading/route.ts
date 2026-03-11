@@ -215,13 +215,72 @@ The user drew the following cards using the "${spread}" spread:
 ${cardLines}${topicContext}${userContext}`;
 }
 
+function buildFortuneInstructionZh(): string {
+  return `
+
+## 特殊模式：運勢分析
+這次解讀是「運勢占卜」模式，請特別按照以下結構提供 3-6 個月的運勢分析：
+
+請將 ## 具體指引 替換為 ## 運勢預測，並按照以下子項目分析：
+
+### 整體運勢
+概述未來 3-6 個月的整體能量走向和趨勢。
+
+### 感情運
+分析未來 3-6 個月的感情發展、桃花運或伴侶關係走向。
+
+### 事業運
+分析未來 3-6 個月的職場機會、挑戰與發展方向。
+
+### 財運
+分析未來 3-6 個月的財務狀況、投資機會或需注意的風險。
+
+### 健康運
+分析未來 3-6 個月的身心健康注意事項。
+
+### 關鍵月份
+指出未來 3-6 個月中最重要的轉折點或機會時間，越具體越好（例如：四月中旬、五月底等）。
+
+每個子項目請給出具體的時間範圍和實際建議，不要只說「注意健康」，要說明具體需要注意什麼、在什麼時間段特別需要留意。`;
+}
+
+function buildFortuneInstructionEn(): string {
+  return `
+
+## Special Mode: Fortune Analysis
+This reading is in "Fortune Reading" mode. Please provide a 3-6 month fortune analysis with the following structure:
+
+Replace ## 具體指引 with ## Fortune Forecast, and analyze these sub-areas:
+
+### Overall Fortune
+Overview of the overall energy trends and direction for the next 3-6 months.
+
+### Love & Relationships
+Analysis of romantic development, dating prospects, or partnership trajectory for the next 3-6 months.
+
+### Career
+Analysis of workplace opportunities, challenges, and development direction for the next 3-6 months.
+
+### Finances
+Analysis of financial outlook, investment opportunities, or risks to watch for over the next 3-6 months.
+
+### Health & Wellness
+Physical and mental health considerations for the next 3-6 months.
+
+### Key Months
+Identify the most important turning points or opportunity windows in the next 3-6 months. Be as specific as possible (e.g., mid-April, late May).
+
+For each sub-area, give concrete time ranges and practical advice. Don't just say "watch your health" — specify what to watch and when.`;
+}
+
 function buildTarotPrompt(
   spread: string,
   cards: CardInfo[],
   locale: string,
   userProfile?: UserProfileInfo,
   topic?: string,
-  validationContext?: string
+  validationContext?: string,
+  fortuneMode?: boolean
 ): string {
   const isZh = locale.startsWith("zh");
 
@@ -235,6 +294,10 @@ function buildTarotPrompt(
 
   const userContext = userProfile
     ? isZh ? buildUserContextZh(userProfile) : buildUserContextEn(userProfile)
+    : "";
+
+  const fortuneInstruction = fortuneMode
+    ? (isZh ? buildFortuneInstructionZh() : buildFortuneInstructionEn())
     : "";
 
   return `You are a masterful tarot reader who combines sharp intuition with honest, grounded wisdom. You read cards the way a brilliant storyteller would — weaving each card into a vivid, interconnected narrative that makes the querent feel truly seen and understood.
@@ -315,7 +378,7 @@ If the user writes in English, respond entirely in English.
 
 ${validationContext ? `${validationContext}\n\n` : ""}The user drew the following cards using the "${spread}" spread:
 
-${cardLines}${topicContext}${userContext}`;
+${cardLines}${topicContext}${userContext}${fortuneInstruction}`;
 }
 
 export async function POST(request: Request) {
@@ -355,7 +418,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deck_type?: string; validation?: boolean; validationContext?: string };
+  let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deck_type?: string; validation?: boolean; validationContext?: string; fortuneMode?: boolean };
   try {
     body = await request.json();
   } catch {
@@ -365,7 +428,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const { spread, spreadId, cards, locale, userProfile, topic, description, deck_type, validation, validationContext } = body;
+  const { spread, spreadId, cards, locale, userProfile, topic, description, deck_type, validation, validationContext, fortuneMode } = body;
   if (!spread || !cards?.length || !locale) {
     return Response.json(
       { error: "Missing required fields" },
@@ -399,10 +462,10 @@ Rules:
     maxTokens = 300;
   } else {
     const prompt = deck_type === "tarot"
-      ? buildTarotPrompt(spread, cards, locale, userProfile, topic, validationContext)
+      ? buildTarotPrompt(spread, cards, locale, userProfile, topic, validationContext, fortuneMode)
       : buildPrompt(spread, spreadId ?? "", cards, locale, userProfile, topic, description);
     messages = [{ role: "user", content: prompt }];
-    maxTokens = deck_type === "tarot" ? 3000 : 2000;
+    maxTokens = deck_type === "tarot" ? (fortuneMode ? 4000 : 3000) : 2000;
   }
 
   try {

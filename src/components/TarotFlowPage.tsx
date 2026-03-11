@@ -17,9 +17,10 @@ import { getUserProfile } from "../utils/userProfile";
 
 type Step = "category" | "describe" | "validation" | "spreadSelect" | "draw" | "result";
 
-type CategoryId = "daily" | "relationship" | "career" | "decision" | "self" | "spiritual" | "custom";
+type CategoryId = "daily" | "relationship" | "career" | "decision" | "self" | "spiritual" | "fortune" | "custom";
 
 const CATEGORIES: { id: Exclude<CategoryId, "custom">; labelKey: string; descKey: string }[] = [
+  { id: "fortune", labelKey: "guide.categoryFortune", descKey: "guide.categoryFortuneDesc" },
   { id: "daily", labelKey: "guide.categoryDaily", descKey: "guide.categoryDailyDesc" },
   { id: "relationship", labelKey: "guide.categoryRelationship", descKey: "guide.categoryRelationshipDesc" },
   { id: "career", labelKey: "guide.categoryCareer", descKey: "guide.categoryCareerDesc" },
@@ -35,6 +36,7 @@ const CATEGORY_ICONS: Record<CategoryId, string> = {
   decision: "⚖",
   self: "◎",
   spiritual: "❋",
+  fortune: "🔮",
   custom: "✎",
 };
 
@@ -45,6 +47,7 @@ const DESCRIBE_PLACEHOLDER_KEYS: Record<Exclude<CategoryId, "custom">, string> =
   decision: "guide.describePlaceholderDecision",
   self: "guide.describePlaceholderSelf",
   spiritual: "guide.describePlaceholderSpiritual",
+  fortune: "guide.describePlaceholderFortune",
 };
 
 const TAROT_CARD_BACK = "/assets/tarotCardBack.jpeg";
@@ -93,7 +96,9 @@ function recommendSpread(question: string): string | null {
   const q = question.toLowerCase();
   const lovWords = ["他", "她", "感情", "love", "relationship", "復合", "曖昧", "心裡", "分手", "對象"];
   const deepWords = ["人生", "方向", "未來", "career", "life", "深度", "全面"];
+  const fortuneWords = ["運勢", "fortune", "運氣", "luck", "前景", "outlook"];
   if (lovWords.some((w) => q.includes(w))) return "relationship";
+  if (fortuneWords.some((w) => q.includes(w))) return "celtic-cross";
   if (deepWords.some((w) => q.includes(w))) return "celtic-cross";
   return null;
 }
@@ -464,6 +469,7 @@ export default function TarotFlowPage() {
       ...(profile && { userProfile: profile }),
       topic: question || t("tarot.noQuestion"),
       ...(valCtx && { validationContext: valCtx }),
+      ...(selectedCategory === "fortune" && { fortuneMode: true }),
     };
   }, [spread, drawn, reversedStates, lang, selectedSpreadId, i18n.language, question, t, getPositionLabels, validationCards, validationText]);
 

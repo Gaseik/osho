@@ -480,6 +480,41 @@ function PracticalGuidanceSection({ section }: { section: ReadingSection }) {
   );
 }
 
+/* ── 3b. Fortune Forecast Section ── */
+function FortuneForecastSection({ section }: { section: ReadingSection }) {
+  return (
+    <AnimatedSection delay={240}>
+      <div className="rounded-xl border border-zen-gold/20 bg-gradient-to-b from-zen-gold/[0.04] to-transparent p-5 md:p-6">
+        <div className="flex items-center gap-2.5 mb-4">
+          <span className="text-lg leading-none">🔮</span>
+          <h2 className="text-zen-gold/90 text-base md:text-lg font-semibold tracking-wide">
+            {section.title}
+          </h2>
+        </div>
+        <div className="text-white/80 text-sm leading-[1.9]">
+          <ReactMarkdown
+            components={{
+              p: ({ children }) => <RichParagraph className="mb-3 last:mb-0">{children}</RichParagraph>,
+              strong: ({ children }) => (
+                <strong className="reading-highlight font-bold">{children}</strong>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-zen-gold/80 text-sm font-semibold tracking-wide mt-5 mb-2 flex items-center gap-2">
+                  {children}
+                </h3>
+              ),
+              ul: ({ children }) => <ul className="list-disc list-inside space-y-1 mb-3">{children}</ul>,
+              li: ({ children }) => <li className="text-white/75">{children}</li>,
+            }}
+          >
+            {section.body}
+          </ReactMarkdown>
+        </div>
+      </div>
+    </AnimatedSection>
+  );
+}
+
 /* ── 4. Zen Reminder Section ── */
 function ZenReminderSection({ section }: { section: ReadingSection }) {
   const quote = extractBlockquote(section.body);
@@ -556,6 +591,8 @@ function renderSection(section: ReadingSection) {
       return <DeeperInsightSection section={section} />;
     case "practical-guidance":
       return <PracticalGuidanceSection section={section} />;
+    case "fortune-forecast":
+      return <FortuneForecastSection section={section} />;
     case "zen-reminder":
       return <ZenReminderSection section={section} />;
     case "generic":

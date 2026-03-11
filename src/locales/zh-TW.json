@@ -79,6 +79,8 @@
     "categorySelfDesc": "內在狀態與自我了解",
     "categorySpiritual": "靈性成長",
     "categorySpiritualDesc": "靈性覺察與生命意義",
+    "categoryFortune": "運勢占卜",
+    "categoryFortuneDesc": "未來 3-6 個月的運勢分析",
     "categoryCustom": "自定義主題",
     "categoryCustomDesc": "輸入你想問的問題或主題",
     "customTopicPlaceholder": "例如：最近跟另一半常吵架，想知道該怎麼相處...",
@@ -93,7 +95,8 @@
     "describePlaceholderCareer": "例如：在考慮要不要換工作",
     "describePlaceholderDecision": "例如：在猶豫要不要搬到另一個城市",
     "describePlaceholderSelf": "例如：最近感覺迷失方向",
-    "describePlaceholderSpiritual": "例如：想更了解自己的內在狀態"
+    "describePlaceholderSpiritual": "例如：想更了解自己的內在狀態",
+    "describePlaceholderFortune": "例如：想知道下半年感情運勢、事業運如何"
   },
   "spread": {
     "selectTitle": "選擇你的牌陣",
