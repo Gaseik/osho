@@ -11,20 +11,19 @@ import {
   type DivinationRecord,
 } from "../../utils/divinationRecords";
 
+const DATE_LOCALE_MAP: Record<string, string> = {
+  'zh-TW': 'zh-TW',
+  en: 'en-US',
+  ja: 'ja-JP',
+  ko: 'ko-KR',
+};
+
 function formatDateTime(iso: string, locale: string): string {
   const d = new Date(iso);
-  if (locale === "zh-TW") {
-    return d.toLocaleString("zh-TW", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
-  return d.toLocaleString("en-US", {
+  const dateLocale = DATE_LOCALE_MAP[locale] || 'en-US';
+  return d.toLocaleString(dateLocale, {
     year: "numeric",
-    month: "short",
+    month: locale === "en" ? "short" : "2-digit",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
@@ -42,7 +41,7 @@ function RecordCard({
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const spreadName =
-    i18n.language === "zh-TW" ? record.spreadName : record.spreadNameEn;
+    i18n.language === "zh-TW" ? record.spreadName : (record.spreadNameEn || record.spreadName);
 
   const handleDelete = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -112,7 +111,7 @@ function RecordCard({
                     : "bg-zen-gold/[0.06] border-zen-gold/10 text-white/50"
                 }`}
               >
-                {i18n.language === "zh-TW" ? card.nameZh : card.name}
+                {i18n.language === "zh-TW" ? (card.nameZh || card.name) : card.name}
                 {record.deckType === "tarot" && (
                   <span className="ml-1 opacity-60">
                     {isReversed ? "▼" : "▲"}
@@ -200,7 +199,7 @@ export default function RecordsPage() {
                          bg-purple-500/[0.08] text-purple-300 text-sm tracking-wider
                          hover:bg-purple-500/[0.15] transition-all duration-300"
               >
-                🃏 {i18n.language === "zh-TW" ? "傳統塔羅" : "Classic Tarot"}
+                🃏 {t("menu.classicTarot")}
               </Link>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { getCardDataLang } from "../i18n/config";
 import { DrawnCard } from "../data/tarot-spreads";
 import TarotFlipCard from "./TarotFlipCard";
 import TarotCardFace from "./TarotCardFace";
@@ -29,7 +30,7 @@ export default function TarotSpreadResult({
   showClarifierButtons,
 }: TarotSpreadResultProps) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+  const lang = getCardDataLang(i18n.language);
 
   const cardLabel = (dc: DrawnCard) => (
     <div className="text-center mt-1.5">

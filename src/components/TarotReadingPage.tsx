@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { getCardDataLang } from "../i18n/config";
 import { sendGAEvent } from "@next/third-parties/google";
 import SideMenu from "./SideMenu";
 import TarotQuestionInput from "./TarotQuestionInput";
@@ -28,7 +29,7 @@ type AiState = "idle" | "loading" | "done" | "error";
 
 export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotReadingPageProps) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+  const lang = getCardDataLang(i18n.language);
   const spread = TAROT_SPREADS[spreadId];
 
   const [question, setQuestion] = useState("");

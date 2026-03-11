@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
+import { getCardDataLang } from "../i18n/config";
 import SideMenu from "./SideMenu";
 import DrawPhase from "./DrawPhase";
 import ResultPhase from "./ResultPhase";
@@ -105,7 +106,7 @@ function recommendSpread(question: string): string | null {
 
 export default function TarotFlowPage() {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+  const lang = getCardDataLang(i18n.language);
 
   // ─── Step state ───
   const [step, setStep] = useState<Step>("category");

@@ -611,5 +611,19 @@
     "clarifier": "確認牌",
     "clarifierLoading": "解讀中...",
     "noQuestion": "無特定問題，請給予整體指引"
+  },
+  "cardDetail": {
+    "allCards": "禪卡總覽",
+    "clickToEnlarge": "點擊放大",
+    "keywords": "關鍵詞",
+    "cardMeaning": "牌義解讀",
+    "coreMeaning": "核心意涵",
+    "tryReading": "抽一張牌試試",
+    "tryTarotReading": "抽一張塔羅牌試試",
+    "all": "總覽",
+    "tarotAllCards": "塔羅牌總覽",
+    "uprightMeaning": "正位牌義",
+    "reversedMeaning": "逆位牌義",
+    "timeframe": "時間參考"
   }
 }
