@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { TarotCard } from "../data/tarot-cards";
 import { getTarotCardSlug, getTarotSuitLabel } from "../data/tarot-cards";
 import TarotCardFace from "./TarotCardFace";
+import CardImageLightbox from "./CardImageLightbox";
 
 interface Props {
   card: TarotCard;
@@ -42,7 +43,19 @@ export default function TarotCardDetailContent({ card, prev, next }: Props) {
 
         {/* Card visual */}
         <div className="flex justify-center mb-6">
-          <TarotCardFace card={card} />
+          <CardImageLightbox
+            src={card.image}
+            alt={`${card.name.zh} (${card.name.en})`}
+          >
+            <div className="group/img relative">
+              <TarotCardFace card={card} />
+              <div className="absolute inset-0 rounded-xl bg-black/0 group-hover/img:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                <span className="text-white/0 group-hover/img:text-white/80 text-xs transition-colors duration-300">
+                  {lang === "zh" ? "點擊放大" : "Click to enlarge"}
+                </span>
+              </div>
+            </div>
+          </CardImageLightbox>
         </div>
 
         {/* Name */}

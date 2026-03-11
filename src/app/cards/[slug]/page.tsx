@@ -22,19 +22,19 @@ export async function generateMetadata({
     zhTW.cardKeywords[String(card.id) as keyof typeof zhTW.cardKeywords] ?? "";
 
   return {
-    title: `${card.nameZh}（${card.name}）| 洞見 牌義解讀`,
-    description: `${card.nameZh}（${card.name}）的牌義解讀與啟示。${keywordsZh}。免費線上奧修禪卡抽牌。`,
+    title: `${card.nameZh}（${card.name}）| 洞見 牌意百科`,
+    description: `${card.nameZh}（${card.name}）的牌意百科與啟示。${keywordsZh}。免費線上奧修禪卡抽牌。`,
     keywords: [
       card.nameZh,
       card.name,
       "奧修禪卡",
-      "禪卡牌義",
+      "禪卡牌意",
       "osho zen tarot",
       ...card.keywords,
     ],
     openGraph: {
       title: `${card.nameZh}（${card.name}）| 洞見`,
-      description: `${card.nameZh}的牌義解讀與生活啟示`,
+      description: `${card.nameZh}的牌意百科與生活啟示`,
     },
   };
 }

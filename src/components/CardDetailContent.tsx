@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CardDetail } from "../data/cardDetails";
 import { getCardImagePath, getSuitLabel } from "../data/cardDetails";
+import CardImageLightbox from "./CardImageLightbox";
 
 interface Props {
   card: CardDetail;
@@ -48,16 +49,26 @@ export default function CardDetailContent({ card, prev, next }: Props) {
 
         {/* Card image */}
         <div className="flex justify-center mb-6">
-          <div className="relative w-[180px] h-[270px] rounded-lg overflow-hidden shadow-2xl shadow-zen-gold/10">
-            <Image
-              src={getCardImagePath(card)}
-              alt={`${card.nameZh} (${card.name})`}
-              fill
-              sizes="180px"
-              className="object-cover"
-              priority
-            />
-          </div>
+          <CardImageLightbox
+            src={getCardImagePath(card)}
+            alt={`${card.nameZh} (${card.name})`}
+          >
+            <div className="relative w-[180px] h-[270px] rounded-lg overflow-hidden shadow-2xl shadow-zen-gold/10 group/img">
+              <Image
+                src={getCardImagePath(card)}
+                alt={`${card.nameZh} (${card.name})`}
+                fill
+                sizes="180px"
+                className="object-cover group-hover/img:scale-105 transition-transform duration-300"
+                priority
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                <span className="text-white/0 group-hover/img:text-white/80 text-xs transition-colors duration-300">
+                  {isZh ? "點擊放大" : "Click to enlarge"}
+                </span>
+              </div>
+            </div>
+          </CardImageLightbox>
         </div>
 
         {/* Name */}
