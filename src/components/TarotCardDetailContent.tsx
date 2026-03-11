@@ -5,6 +5,7 @@ import { getCardDataLang } from "../i18n/config";
 import Link from "next/link";
 import type { TarotCard } from "../data/tarot-cards";
 import { getTarotCardSlug, getTarotSuitLabel } from "../data/tarot-cards";
+import { getTarotCardDisplayName, getTarotSuitLabelLocalized } from "../data/tarot-i18n";
 import TarotCardFace from "./TarotCardFace";
 import CardImageLightbox from "./CardImageLightbox";
 
@@ -19,8 +20,9 @@ export default function TarotCardDetailContent({ card, prev, next }: Props) {
   const lang = getCardDataLang(i18n.language);
 
   const suitKey = card.suit ?? "major";
-  const suitLabel = getTarotSuitLabel(suitKey, lang);
+  const suitLabel = getTarotSuitLabelLocalized(suitKey, i18n.language);
   const suitLabelAlt = getTarotSuitLabel(suitKey, lang === "zh" ? "en" : "zh");
+  const cardDisplayName = getTarotCardDisplayName(card, i18n.language);
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -33,7 +35,7 @@ export default function TarotCardDetailContent({ card, prev, next }: Props) {
           {t("cardDetail.tarotAllCards")}
         </Link>
         <span className="mx-2">/</span>
-        <span className="text-white/60">{card.name[lang]}</span>
+        <span className="text-white/60">{cardDisplayName}</span>
       </nav>
 
       {/* Card header */}
@@ -61,10 +63,10 @@ export default function TarotCardDetailContent({ card, prev, next }: Props) {
 
         {/* Name */}
         <h1 className="text-[28px] font-light tracking-[0.15rem] text-white/90 m-0">
-          {card.name.zh}
+          {cardDisplayName}
         </h1>
         <p className="text-white/50 text-base mt-1 tracking-wider">
-          {card.name.en}
+          {lang === "zh" ? card.name.en : card.name.zh}
         </p>
 
         {/* Suit & Element badges */}
@@ -189,7 +191,7 @@ export default function TarotCardDetailContent({ card, prev, next }: Props) {
                        transition-colors no-underline text-sm"
           >
             <span>←</span>
-            <span>{prev.name[lang]}</span>
+            <span>{getTarotCardDisplayName(prev, i18n.language)}</span>
           </Link>
         ) : (
           <span />
@@ -206,7 +208,7 @@ export default function TarotCardDetailContent({ card, prev, next }: Props) {
             className="flex items-center gap-2 text-white/40 hover:text-zen-gold/80
                        transition-colors no-underline text-sm"
           >
-            <span>{next.name[lang]}</span>
+            <span>{getTarotCardDisplayName(next, i18n.language)}</span>
             <span>→</span>
           </Link>
         ) : (

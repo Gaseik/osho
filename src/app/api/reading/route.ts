@@ -67,64 +67,90 @@ interface UserProfileInfo {
   readingStyle?: string;
 }
 
-const STYLE_INSTRUCTIONS_ZH: Record<string, string> = {
-  natural: "",
-  warm: "\n\n解讀風格要求：用溫暖、鼓勵的語氣。多給予正向支持和肯定，即使是挑戰性的牌面也要找到光明面。語氣像一個溫柔的朋友在安慰和打氣。",
-  intuitive: "\n\n解讀風格要求：用直覺性、靈性的語氣。強調能量流動、內在感受和深層連結。可以使用意象和隱喻，讓解讀帶有靈性的深度和詩意。",
-  rational: "\n\n解讀風格要求：用理性、務實的語氣。著重邏輯分析和具體行動建議。少用抽象比喻，多用清晰的因果關係和可操作的步驟。像一個理性的顧問在給建議。",
-};
+type PromptLang = 'zh' | 'en' | 'ko' | 'ja';
 
-const STYLE_INSTRUCTIONS_EN: Record<string, string> = {
-  natural: "",
-  warm: "\n\nReading style: Use a warm, encouraging tone. Offer positive support and affirmation. Even with challenging cards, find the silver lining. Sound like a caring friend offering comfort and motivation.",
-  intuitive: "\n\nReading style: Use an intuitive, spiritual tone. Emphasize energy flow, inner feelings, and deep connections. Use imagery and metaphors to bring spiritual depth and poetic quality to the reading.",
-  rational: "\n\nReading style: Use a rational, practical tone. Focus on logical analysis and concrete action steps. Minimize abstract metaphors, emphasize clear cause-and-effect and actionable advice. Sound like a pragmatic advisor.",
-};
+function getPromptLang(locale: string): PromptLang {
+  if (locale.startsWith('zh')) return 'zh';
+  if (locale === 'ko') return 'ko';
+  if (locale === 'ja') return 'ja';
+  return 'en';
+}
 
-function buildUserContextZh(profile: UserProfileInfo): string {
-  const parts: string[] = [];
-  if (profile.name) parts.push(`稱呼：${profile.name}`);
-  if (profile.gender) {
-    const genderMap: Record<string, string> = { male: "男性", female: "女性", other: "其他" };
-    parts.push(`性別：${genderMap[profile.gender] || profile.gender}`);
+function getLanguageInstruction(lang: PromptLang): string {
+  switch (lang) {
+    case 'zh':
+      return `\n\n## Language\nRespond entirely in Traditional Chinese (繁體中文).`;
+    case 'ko':
+      return `\n\n## Language\nIMPORTANT: You MUST respond entirely in Korean (한국어). Keep the section headings in Chinese characters (## 牌意解讀, ## 牌面解析, ## 深層洞察, ## 具體指引, ## 靜心提醒, ## 解答), but write ALL content, analysis, and advice in Korean. Do NOT respond in English or Chinese.`;
+    case 'ja':
+      return `\n\n## Language\nIMPORTANT: You MUST respond entirely in Japanese (日本語). Keep the section headings in Chinese characters (## 牌意解讀, ## 牌面解析, ## 深層洞察, ## 具體指引, ## 靜心提醒, ## 解答), but write ALL content, analysis, and advice in Japanese. Do NOT respond in English or Chinese.`;
+    default:
+      return `\n\n## Language\nRespond entirely in English.`;
   }
-  if (profile.age) parts.push(`年齡：${profile.age} 歲`);
-  const styleInstruction = STYLE_INSTRUCTIONS_ZH[profile.readingStyle || "natural"] || "";
+}
+
+const STYLE_INSTRUCTIONS: Record<PromptLang, Record<string, string>> = {
+  zh: {
+    natural: "",
+    warm: "\n\n解讀風格要求：用溫暖、鼓勵的語氣。多給予正向支持和肯定，即使是挑戰性的牌面也要找到光明面。語氣像一個溫柔的朋友在安慰和打氣。",
+    intuitive: "\n\n解讀風格要求：用直覺性、靈性的語氣。強調能量流動、內在感受和深層連結。可以使用意象和隱喻，讓解讀帶有靈性的深度和詩意。",
+    rational: "\n\n解讀風格要求：用理性、務實的語氣。著重邏輯分析和具體行動建議。少用抽象比喻，多用清晰的因果關係和可操作的步驟。像一個理性的顧問在給建議。",
+  },
+  en: {
+    natural: "",
+    warm: "\n\nReading style: Use a warm, encouraging tone. Offer positive support and affirmation. Even with challenging cards, find the silver lining. Sound like a caring friend offering comfort and motivation.",
+    intuitive: "\n\nReading style: Use an intuitive, spiritual tone. Emphasize energy flow, inner feelings, and deep connections. Use imagery and metaphors to bring spiritual depth and poetic quality to the reading.",
+    rational: "\n\nReading style: Use a rational, practical tone. Focus on logical analysis and concrete action steps. Minimize abstract metaphors, emphasize clear cause-and-effect and actionable advice. Sound like a pragmatic advisor.",
+  },
+  ko: {
+    natural: "",
+    warm: "\n\n리딩 스타일: 따뜻하고 격려하는 톤으로. 긍정적인 지지와 확인을 제공하세요. 도전적인 카드에서도 희망을 찾으세요. 따뜻한 친구처럼 위로하고 응원하는 느낌으로.",
+    intuitive: "\n\n리딩 스타일: 직관적이고 영적인 톤으로. 에너지의 흐름, 내면의 감정, 깊은 연결을 강조하세요. 이미지와 은유를 사용하여 영적인 깊이와 시적인 아름다움을 더하세요.",
+    rational: "\n\n리딩 스타일: 이성적이고 실용적인 톤으로. 논리적 분석과 구체적 행동 조언에 집중하세요. 추상적 비유를 줄이고, 명확한 인과관계와 실행 가능한 단계를 제시하세요.",
+  },
+  ja: {
+    natural: "",
+    warm: "\n\nリーディングスタイル：温かく励ましのあるトーンで。ポジティブなサポートと肯定を提供してください。チャレンジングなカードでも希望を見つけてください。思いやりのある友人のように。",
+    intuitive: "\n\nリーディングスタイル：直感的でスピリチュアルなトーンで。エネルギーの流れ、内なる感情、深いつながりを強調してください。イメージとメタファーを使って深みを加えてください。",
+    rational: "\n\nリーディングスタイル：理性的で実用的なトーンで。論理的分析と具体的なアクションステップに焦点を当ててください。明確な因果関係と実行可能なアドバイスを強調してください。",
+  },
+};
+
+function buildUserContext(profile: UserProfileInfo, lang: PromptLang): string {
+  const labels: Record<PromptLang, { name: string; gender: string; age: string; ageUnit: string; intro: string; genders: Record<string, string> }> = {
+    zh: { name: "稱呼", gender: "性別", age: "年齡", ageUnit: " 歲", intro: "請根據用戶的背景資訊，讓解讀更加個人化和貼近。", genders: { male: "男性", female: "女性", other: "其他" } },
+    en: { name: "Name", gender: "Gender", age: "Age", ageUnit: "", intro: "Please personalize the reading based on the user's background.", genders: { male: "Male", female: "Female", other: "Other" } },
+    ko: { name: "이름", gender: "성별", age: "나이", ageUnit: "세", intro: "사용자의 배경 정보를 바탕으로 더 개인화된 리딩을 해주세요.", genders: { male: "남성", female: "여성", other: "기타" } },
+    ja: { name: "名前", gender: "性別", age: "年齢", ageUnit: "歳", intro: "ユーザーの背景情報に基づいて、よりパーソナライズされたリーディングを提供してください。", genders: { male: "男性", female: "女性", other: "その他" } },
+  };
+  const l = labels[lang];
+  const parts: string[] = [];
+  if (profile.name) parts.push(`${l.name}: ${profile.name}`);
+  if (profile.gender) parts.push(`${l.gender}: ${l.genders[profile.gender] || profile.gender}`);
+  if (profile.age) parts.push(`${l.age}: ${profile.age}${l.ageUnit}`);
+  const styleInstruction = STYLE_INSTRUCTIONS[lang]?.[profile.readingStyle || "natural"] || "";
   if (parts.length === 0 && !styleInstruction) return "";
   const userInfo = parts.length > 0
-    ? `\n\n用戶資訊：\n${parts.join("\n")}\n請根據用戶的背景資訊，讓解讀更加個人化和貼近。`
+    ? `\n\n${lang === 'zh' ? '用戶資訊' : lang === 'ko' ? '사용자 정보' : lang === 'ja' ? 'ユーザー情報' : 'User info'}:\n${parts.join("\n")}\n${l.intro}`
     : "";
   return `${userInfo}${styleInstruction}`;
 }
 
-function buildUserContextEn(profile: UserProfileInfo): string {
-  const parts: string[] = [];
-  if (profile.name) parts.push(`Name: ${profile.name}`);
-  if (profile.gender) {
-    const genderMap: Record<string, string> = { male: "Male", female: "Female", other: "Other" };
-    parts.push(`Gender: ${genderMap[profile.gender] || profile.gender}`);
-  }
-  if (profile.age) parts.push(`Age: ${profile.age}`);
-  const styleInstruction = STYLE_INSTRUCTIONS_EN[profile.readingStyle || "natural"] || "";
-  if (parts.length === 0 && !styleInstruction) return "";
-  const userInfo = parts.length > 0
-    ? `\n\nUser info:\n${parts.join("\n")}\nPlease personalize the reading based on the user's background.`
-    : "";
-  return `${userInfo}${styleInstruction}`;
-}
 
-
-function buildTopicContextZh(topic: string, description?: string): string {
-  if (description) {
-    return `\n\n用戶選擇的問題類別：${topic}。\n用戶描述的狀況：${description}\n請將牌義與此情境具體連結，在相關層面的分析要特別深入。`;
+function buildTopicContext(topic: string, lang: PromptLang, description?: string): string {
+  if (lang === 'zh') {
+    if (description) return `\n\n用戶選擇的問題類別：${topic}。\n用戶描述的狀況：${description}\n請將牌義與此情境具體連結，在相關層面的分析要特別深入。`;
+    return `\n\n用戶的提問主題：「${topic}」\n請特別針對這個主題方向來解讀牌面，讓解讀緊扣用戶關心的議題。`;
   }
-  return `\n\n用戶的提問主題：「${topic}」\n請特別針對這個主題方向來解讀牌面，讓解讀緊扣用戶關心的議題。`;
-}
-
-function buildTopicContextEn(topic: string, description?: string): string {
-  if (description) {
-    return `\n\nUser's selected category: ${topic}.\nUser's situation: ${description}\nPlease connect the card meanings specifically to this situation, with deeper analysis on the relevant aspects.`;
+  if (lang === 'ko') {
+    if (description) return `\n\n사용자가 선택한 질문 카테고리: ${topic}.\n사용자가 설명한 상황: ${description}\n카드의 의미를 이 상황과 구체적으로 연결하고, 관련 측면을 특히 깊이 분석해주세요.`;
+    return `\n\n사용자의 질문 주제: "${topic}"\n이 주제에 맞춰 카드를 해석하고, 사용자가 관심 있는 문제와 직접 연결해주세요.`;
   }
+  if (lang === 'ja') {
+    if (description) return `\n\nユーザーが選択した質問カテゴリ: ${topic}。\nユーザーが説明した状況: ${description}\nカードの意味をこの状況と具体的に結びつけ、関連する側面を特に深く分析してください。`;
+    return `\n\nユーザーの質問テーマ: 「${topic}」\nこのテーマに焦点を当ててカードを解釈し、ユーザーが気にしている問題に直接関連づけてください。`;
+  }
+  if (description) return `\n\nUser's selected category: ${topic}.\nUser's situation: ${description}\nPlease connect the card meanings specifically to this situation, with deeper analysis on the relevant aspects.`;
   return `\n\nUser's topic/question: "${topic}"\nPlease focus the reading specifically on this topic, making the interpretation directly relevant to what the user is asking about.`;
 }
 
@@ -137,18 +163,19 @@ function buildPrompt(
   topic?: string,
   description?: string
 ): string {
-  const isZh = locale.startsWith("zh");
+  const lang = getPromptLang(locale);
+  const useZhData = lang === 'zh';
 
-  const cardLines = isZh
+  const cardLines = useZhData
     ? cards.map((c) => `${c.position}：${c.nameZh}（${c.nameEn}）- ${c.meaningZh}`).join("\n")
     : cards.map((c) => `${c.position}: ${c.nameEn} - ${c.meaningEn}`).join("\n");
 
   const topicContext = topic
-    ? isZh ? buildTopicContextZh(topic, description) : buildTopicContextEn(topic, description)
+    ? buildTopicContext(topic, lang, description)
     : "";
 
   const userContext = userProfile
-    ? isZh ? buildUserContextZh(userProfile) : buildUserContextEn(userProfile)
+    ? buildUserContext(userProfile, lang)
     : "";
 
   return `You are a deep and insightful Osho Zen Tarot reader. Your tone is like a wise friend having an honest conversation — not a spiritual guru preaching from above.
@@ -205,14 +232,9 @@ Use blockquote format (>) for one short, powerful line.
 
 No chicken soup for the soul. Make it a gentle but precise nudge that makes the reader stop and think.
 
-## Language
-Respond in the same language as the user's message.
-If the user writes in Traditional Chinese, respond entirely in Traditional Chinese.
-If the user writes in English, respond entirely in English.
-
 The user drew the following cards using the "${spread}" spread:
 
-${cardLines}${topicContext}${userContext}`;
+${cardLines}${topicContext}${userContext}${getLanguageInstruction(lang)}`;
 }
 
 function buildFortuneInstructionZh(): string {
@@ -282,22 +304,23 @@ function buildTarotPrompt(
   validationContext?: string,
   fortuneMode?: boolean
 ): string {
-  const isZh = locale.startsWith("zh");
+  const lang = getPromptLang(locale);
+  const useZhData = lang === 'zh';
 
-  const cardLines = isZh
+  const cardLines = useZhData
     ? cards.map((c) => `${c.position}：${c.nameZh}（${c.nameEn}）- ${c.meaningZh}`).join("\n")
     : cards.map((c) => `${c.position}: ${c.nameEn} - ${c.meaningEn}`).join("\n");
 
   const topicContext = topic
-    ? isZh ? buildTopicContextZh(topic) : buildTopicContextEn(topic)
+    ? buildTopicContext(topic, lang)
     : "";
 
   const userContext = userProfile
-    ? isZh ? buildUserContextZh(userProfile) : buildUserContextEn(userProfile)
+    ? buildUserContext(userProfile, lang)
     : "";
 
   const fortuneInstruction = fortuneMode
-    ? (isZh ? buildFortuneInstructionZh() : buildFortuneInstructionEn())
+    ? (useZhData ? buildFortuneInstructionZh() : buildFortuneInstructionEn())
     : "";
 
   return `You are a masterful tarot reader who combines sharp intuition with honest, grounded wisdom. You read cards the way a brilliant storyteller would — weaving each card into a vivid, interconnected narrative that makes the querent feel truly seen and understood.
@@ -371,14 +394,9 @@ The uncomfortable but necessary truth. 2-3 points:
 One line in blockquote format (>).
 Not chicken soup. A line that lands like a gentle punch — the kind of sentence that stays in your head for days.
 
-## Language
-Respond in the same language as the user's message.
-If the user writes in Traditional Chinese, respond entirely in Traditional Chinese.
-If the user writes in English, respond entirely in English.
-
 ${validationContext ? `${validationContext}\n\n` : ""}The user drew the following cards using the "${spread}" spread:
 
-${cardLines}${topicContext}${userContext}${fortuneInstruction}`;
+${cardLines}${topicContext}${userContext}${fortuneInstruction}${getLanguageInstruction(lang)}`;
 }
 
 export async function POST(request: Request) {

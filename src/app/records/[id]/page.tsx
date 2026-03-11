@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
-import { getCardDataLang } from "../../../i18n/config";
+import { getCardDataLang, getSpreadLang } from "../../../i18n/config";
 import Link from "next/link";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import CardSpreadLayout from "../../../components/CardSpreadLayout";
@@ -107,7 +107,7 @@ export default function RecordDetailPage() {
     if (isTarot) {
       const tarotSpread = TAROT_SPREADS[record.spreadId];
       if (tarotSpread) {
-        return tarotSpread.positions.map((p) => p.name[lang]);
+        return tarotSpread.positions.map((p) => p.name[getSpreadLang(i18n.language)]);
       }
       return [];
     }

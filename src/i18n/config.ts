@@ -36,6 +36,17 @@ export function getCardDataLang(lang: string): 'en' | 'zh' {
   return lang === 'zh-TW' ? 'zh' : 'en';
 }
 
+/**
+ * Map i18n language code to spread/position data key.
+ * Spread data has "en", "zh", "ko", "ja" keys.
+ */
+export function getSpreadLang(lang: string): 'en' | 'zh' | 'ko' | 'ja' {
+  if (lang === 'zh-TW') return 'zh';
+  if (lang === 'ko') return 'ko';
+  if (lang === 'ja') return 'ja';
+  return 'en';
+}
+
 const SUPPORTED_LANGS = ['zh-TW', 'en', 'ja', 'ko'];
 
 i18n
