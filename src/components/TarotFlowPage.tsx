@@ -20,13 +20,13 @@ type Step = "category" | "describe" | "validation" | "spreadSelect" | "draw" | "
 type CategoryId = "daily" | "relationship" | "career" | "decision" | "self" | "spiritual" | "fortune" | "custom";
 
 const CATEGORIES: { id: Exclude<CategoryId, "custom">; labelKey: string; descKey: string }[] = [
+  { id: "fortune", labelKey: "guide.categoryFortune", descKey: "guide.categoryFortuneDesc" },
   { id: "daily", labelKey: "guide.categoryDaily", descKey: "guide.categoryDailyDesc" },
   { id: "relationship", labelKey: "guide.categoryRelationship", descKey: "guide.categoryRelationshipDesc" },
   { id: "career", labelKey: "guide.categoryCareer", descKey: "guide.categoryCareerDesc" },
   { id: "decision", labelKey: "guide.categoryDecision", descKey: "guide.categoryDecisionDesc" },
   { id: "self", labelKey: "guide.categorySelf", descKey: "guide.categorySelfDesc" },
   { id: "spiritual", labelKey: "guide.categorySpiritual", descKey: "guide.categorySpiritualDesc" },
-  { id: "fortune", labelKey: "guide.categoryFortune", descKey: "guide.categoryFortuneDesc" },
 ];
 
 const CATEGORY_ICONS: Record<CategoryId, string> = {
