@@ -23,19 +23,19 @@ export async function generateMetadata({
   if (!card) return {};
 
   return {
-    title: `${card.name.zh}（${card.name.en}）| 洞見 塔羅牌義`,
-    description: `${card.name.zh}（${card.name.en}）的塔羅牌義解讀，包含正位與逆位含義。關鍵字：${card.keywords.zh.join("、")}。`,
+    title: `${card.name.zh}（${card.name.en}）| 洞見 塔羅牌意`,
+    description: `${card.name.zh}（${card.name.en}）的塔羅牌意解讀，包含正位與逆位含義。關鍵字：${card.keywords.zh.join("、")}。`,
     keywords: [
       card.name.zh,
       card.name.en,
-      "塔羅牌義",
+      "塔羅牌意",
       "韋特塔羅",
       "tarot card meaning",
       ...card.keywords.en,
     ],
     openGraph: {
       title: `${card.name.zh}（${card.name.en}）| 洞見`,
-      description: `${card.name.zh}的塔羅牌義解讀與正逆位含義`,
+      description: `${card.name.zh}的塔羅牌意解讀與正逆位含義`,
     },
   };
 }

@@ -20,6 +20,8 @@ export default {
         'fadeUp': 'fadeUp 0.8s ease-out',
         'float': 'float 3s ease-in-out infinite',
         'slideIn': 'slideIn 0.4s ease-out',
+        'fadeIn': 'fadeIn 0.2s ease-out',
+        'scaleIn': 'scaleIn 0.3s ease-out',
       },
       keyframes: {
         glow: {
@@ -37,6 +39,14 @@ export default {
         slideIn: {
           from: { opacity: '0' },
           to: { opacity: '1' },
+        },
+        fadeIn: {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        scaleIn: {
+          from: { opacity: '0', transform: 'scale(0.9)' },
+          to: { opacity: '1', transform: 'scale(1)' },
         },
       },
     },

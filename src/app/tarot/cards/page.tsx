@@ -15,11 +15,11 @@ import {
 import TarotCardFace from "../../../components/TarotCardFace";
 
 export const metadata: Metadata = {
-  title: "78 張塔羅牌義解讀 | 洞見",
+  title: "78 張塔羅牌意百科 | 洞見",
   description:
-    "完整 78 張韋特塔羅牌義解讀，包含大阿爾克那、權杖、聖杯、寶劍、錢幣牌組。中英雙語。",
+    "完整 78 張韋特塔羅牌意百科，包含大阿爾克那、權杖、聖杯、寶劍、錢幣牌組。中英雙語。",
   keywords: [
-    "塔羅牌義",
+    "塔羅牌意",
     "韋特塔羅",
     "tarot card meanings",
     "rider-waite tarot",
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     "minor arcana",
   ],
   openGraph: {
-    title: "78 張塔羅牌義解讀 | 洞見",
+    title: "78 張塔羅牌意百科 | 洞見",
     description:
-      "完整 78 張韋特塔羅牌義解讀，包含大阿爾克那、權杖、聖杯、寶劍、錢幣牌組。中英雙語。",
+      "完整 78 張韋特塔羅牌意百科，包含大阿爾克那、權杖、聖杯、寶劍、錢幣牌組。中英雙語。",
   },
 };
 
@@ -64,7 +64,7 @@ export default function TarotCardsPage() {
           🃏 CLASSIC TAROT 🃏
         </div>
         <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
-          塔羅牌義總覽
+          塔羅牌意百科
         </h1>
         <p className="text-white/50 text-sm mt-2">
           Card Meanings — All 78 Rider-Waite Tarot Cards

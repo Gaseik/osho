@@ -5,20 +5,20 @@ import LanguageSwitcher from "../../components/LanguageSwitcher";
 import { CARD_DETAILS, getCardImagePath, getSuitLabel } from "../../data/cardDetails";
 
 export const metadata: Metadata = {
-  title: "79 張禪卡牌義解讀 | 洞見",
+  title: "79 張禪卡牌意百科 | 洞見",
   description:
-    "完整 79 張奧修禪卡牌義解讀，包含大阿爾克納、火、水、雲、彩虹牌組。中英雙語。",
+    "完整 79 張奧修禪卡牌意百科，包含大阿爾克納、火、水、雲、彩虹牌組。中英雙語。",
   keywords: [
     "奧修禪卡",
-    "禪卡牌義",
+    "禪卡牌意",
     "osho zen tarot",
     "禪卡解讀",
-    "塔羅牌義",
+    "塔羅牌意",
     "禪卡總覽",
   ],
   openGraph: {
-    title: "79 張禪卡牌義解讀 | 洞見",
-    description: "完整 79 張奧修禪卡牌義解讀，包含大阿爾克納、火、水、雲、彩虹牌組。中英雙語。",
+    title: "79 張禪卡牌意百科 | 洞見",
+    description: "完整 79 張奧修禪卡牌意百科，包含大阿爾克納、火、水、雲、彩虹牌組。中英雙語。",
   },
 };
 
@@ -45,7 +45,7 @@ export default function CardsPage() {
           ☯︎ ZEN INSIGHT ☯︎
         </div>
         <h1 className="text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
-          禪卡牌義總覽
+          禪卡牌意百科
         </h1>
         <p className="text-white/50 text-sm mt-2">
           Card Meanings — All 79 Osho Zen Tarot Cards
