@@ -631,7 +631,14 @@
     "detailTip": "✦ 問題越詳細，解讀會更精準",
     "questionLabel2": "問題",
     "reversedParen": "（逆位）",
-    "uprightParen": ""
+    "uprightParen": "",
+    "sectionAnswer": "解答",
+    "sectionCardMeanings": "牌意解讀",
+    "sectionCardReading": "牌面解析",
+    "sectionDeeperInsight": "深層洞察",
+    "sectionPracticalGuidance": "具體指引",
+    "sectionFortuneForecast": "運勢預測",
+    "sectionZenReminder": "靜心提醒"
   },
   "cardDetail": {
     "allCards": "禪卡總覽",

@@ -631,7 +631,14 @@
     "detailTip": "✦ The more detailed, the more precise",
     "questionLabel2": "Question",
     "reversedParen": " (Reversed)",
-    "uprightParen": ""
+    "uprightParen": "",
+    "sectionAnswer": "Answer",
+    "sectionCardMeanings": "Card Meanings",
+    "sectionCardReading": "Card Reading",
+    "sectionDeeperInsight": "Deeper Insight",
+    "sectionPracticalGuidance": "Practical Guidance",
+    "sectionFortuneForecast": "Fortune Forecast",
+    "sectionZenReminder": "Zen Reminder"
   },
   "cardDetail": {
     "allCards": "All Cards",

@@ -388,7 +388,14 @@
     "detailTip": "✦ 질문이 상세할수록 리딩이 더 정확해집니다",
     "questionLabel2": "질문",
     "reversedParen": " (역위치)",
-    "uprightParen": ""
+    "uprightParen": "",
+    "sectionAnswer": "답변",
+    "sectionCardMeanings": "카드 해석",
+    "sectionCardReading": "카드 분석",
+    "sectionDeeperInsight": "깊은 통찰",
+    "sectionPracticalGuidance": "구체적 안내",
+    "sectionFortuneForecast": "운세 예측",
+    "sectionZenReminder": "명상 메시지"
   },
   "cardDetail": {
     "allCards": "전체 카드",

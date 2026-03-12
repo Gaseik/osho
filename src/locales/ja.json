@@ -388,7 +388,14 @@
     "detailTip": "✦ 質問が詳細なほど、リーディングが正確になります",
     "questionLabel2": "質問",
     "reversedParen": "（逆位置）",
-    "uprightParen": ""
+    "uprightParen": "",
+    "sectionAnswer": "回答",
+    "sectionCardMeanings": "カード解釈",
+    "sectionCardReading": "カード分析",
+    "sectionDeeperInsight": "深い洞察",
+    "sectionPracticalGuidance": "具体的なガイダンス",
+    "sectionFortuneForecast": "運勢予測",
+    "sectionZenReminder": "瞑想メッセージ"
   },
   "cardDetail": {
     "allCards": "全カード一覧",
