@@ -237,8 +237,9 @@ The user drew the following cards using the "${spread}" spread:
 ${cardLines}${topicContext}${userContext}${getLanguageInstruction(lang)}`;
 }
 
-function buildFortuneInstructionZh(): string {
-  return `
+function buildFortuneInstruction(lang: PromptLang): string {
+  const instructions: Record<PromptLang, string> = {
+    zh: `
 
 ## 特殊模式：運勢分析
 這次解讀是「運勢占卜」模式，請特別按照以下結構提供 3-6 個月的運勢分析：
@@ -263,16 +264,14 @@ function buildFortuneInstructionZh(): string {
 ### 關鍵月份
 指出未來 3-6 個月中最重要的轉折點或機會時間，越具體越好（例如：四月中旬、五月底等）。
 
-每個子項目請給出具體的時間範圍和實際建議，不要只說「注意健康」，要說明具體需要注意什麼、在什麼時間段特別需要留意。`;
-}
+每個子項目請給出具體的時間範圍和實際建議，不要只說「注意健康」，要說明具體需要注意什麼、在什麼時間段特別需要留意。`,
 
-function buildFortuneInstructionEn(): string {
-  return `
+    en: `
 
 ## Special Mode: Fortune Analysis
 This reading is in "Fortune Reading" mode. Please provide a 3-6 month fortune analysis with the following structure:
 
-Replace ## 具體指引 with ## Fortune Forecast, and analyze these sub-areas:
+Replace ## 具體指引 with ## 運勢預測, and analyze these sub-areas:
 
 ### Overall Fortune
 Overview of the overall energy trends and direction for the next 3-6 months.
@@ -292,7 +291,64 @@ Physical and mental health considerations for the next 3-6 months.
 ### Key Months
 Identify the most important turning points or opportunity windows in the next 3-6 months. Be as specific as possible (e.g., mid-April, late May).
 
-For each sub-area, give concrete time ranges and practical advice. Don't just say "watch your health" — specify what to watch and when.`;
+For each sub-area, give concrete time ranges and practical advice. Don't just say "watch your health" — specify what to watch and when.`,
+
+    ko: `
+
+## 특별 모드: 운세 분석
+이번 리딩은 "운세 리딩" 모드입니다. 다음 구조에 따라 3~6개월의 운세 분석을 제공해주세요:
+
+## 具體指引 대신 ## 運勢預測 을 사용하고, 다음 항목들을 분석해주세요:
+
+### 전체 운세
+향후 3~6개월의 전반적인 에너지 흐름과 방향을 개요합니다.
+
+### 연애운
+향후 3~6개월의 연애 발전, 만남의 기회, 또는 파트너 관계의 방향을 분석합니다.
+
+### 직업운
+향후 3~6개월의 직장 기회, 도전과 발전 방향을 분석합니다.
+
+### 재물운
+향후 3~6개월의 재정 상황, 투자 기회 또는 주의해야 할 리스크를 분석합니다.
+
+### 건강운
+향후 3~6개월의 심신 건강 주의사항을 분석합니다.
+
+### 핵심 시기
+향후 3~6개월 중 가장 중요한 전환점이나 기회 시기를 가능한 구체적으로 지적합니다 (예: 4월 중순, 5월 말 등).
+
+각 항목에 대해 구체적인 시간 범위와 실질적인 조언을 제공해주세요. "건강에 주의하세요"라고만 하지 말고, 구체적으로 무엇을, 언제 특히 주의해야 하는지 설명해주세요.`,
+
+    ja: `
+
+## 特別モード：運勢分析
+今回のリーディングは「運勢リーディング」モードです。以下の構造に従って3〜6ヶ月の運勢分析を提供してください：
+
+## 具體指引 の代わりに ## 運勢預測 を使用し、以下の項目を分析してください：
+
+### 全体運
+今後3〜6ヶ月の全体的なエネルギーの流れと方向性を概説します。
+
+### 恋愛運
+今後3〜6ヶ月の恋愛の発展、出会いの機会、またはパートナーシップの方向性を分析します。
+
+### 仕事運
+今後3〜6ヶ月の職場の機会、課題、発展の方向性を分析します。
+
+### 金運
+今後3〜6ヶ月の財務状況、投資機会、または注意すべきリスクを分析します。
+
+### 健康運
+今後3〜6ヶ月の心身の健康に関する注意事項を分析します。
+
+### 重要な時期
+今後3〜6ヶ月で最も重要な転換点や機会の時期をできるだけ具体的に指摘します（例：4月中旬、5月末など）。
+
+各項目について具体的な時間範囲と実践的なアドバイスを提供してください。「健康に注意」とだけ言わず、具体的に何を、いつ特に注意すべきか説明してください。`,
+  };
+
+  return instructions[lang];
 }
 
 function buildTarotPrompt(
@@ -320,7 +376,7 @@ function buildTarotPrompt(
     : "";
 
   const fortuneInstruction = fortuneMode
-    ? (useZhData ? buildFortuneInstructionZh() : buildFortuneInstructionEn())
+    ? buildFortuneInstruction(lang)
     : "";
 
   return `You are a masterful tarot reader who combines sharp intuition with honest, grounded wisdom. You read cards the way a brilliant storyteller would — weaving each card into a vivid, interconnected narrative that makes the querent feel truly seen and understood.

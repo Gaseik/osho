@@ -240,3 +240,34 @@ export function getTarotSuitLabelLocalized(
   }
   return labels.en;
 }
+
+const SUIT_DESCS_LOCALIZED: Record<string, Record<string, string>> = {
+  major: {
+    ko: '22장의 대 아르카나 카드는 인생의 중요한 주제와 영적 에너지의 변화를 나타냅니다.',
+    ja: '22枚の大アルカナカードは、人生の重要なテーマとスピリチュアルなエネルギーの変化を表します。',
+  },
+  wands: {
+    ko: '완드 수트는 불의 에너지를 나타냅니다 — 열정, 창의성, 행동과 의지.',
+    ja: 'ワンドのスートは火のエネルギーを表します — 情熱、創造性、行動と意志。',
+  },
+  cups: {
+    ko: '컵 수트는 물의 에너지를 나타냅니다 — 감정, 관계, 직관과 내면 세계.',
+    ja: 'カップのスートは水のエネルギーを表します — 感情、人間関係、直感と内面の世界。',
+  },
+  swords: {
+    ko: '소드 수트는 공기의 에너지를 나타냅니다 — 사고, 소통, 갈등과 진실.',
+    ja: 'ソードのスートは風のエネルギーを表します — 思考、コミュニケーション、葛藤と真実。',
+  },
+  pentacles: {
+    ko: '펜타클 수트는 땅의 에너지를 나타냅니다 — 물질 세계, 재정, 건강과 일.',
+    ja: 'ペンタクルのスートは地のエネルギーを表します — 物質世界、財務、健康と仕事。',
+  },
+};
+
+export function getTarotSuitDescLocalized(suit: string, locale: string): string {
+  const descs = SUIT_DESCS_LOCALIZED[suit];
+  if (locale === 'ko' && descs?.ko) return descs.ko;
+  if (locale === 'ja' && descs?.ja) return descs.ja;
+  // Fall back to the original en/zh from tarot-cards.ts
+  return '';
+}

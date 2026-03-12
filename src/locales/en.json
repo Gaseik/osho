@@ -650,6 +650,10 @@
     "tryTarotReading": "Try a Tarot Reading",
     "all": "All",
     "tarotAllCards": "All Cards",
+    "tarotCardsPageTitle": "Tarot Card Encyclopedia",
+    "tarotCardsPageSubtitle": "Card Meanings — All 78 Rider-Waite Tarot Cards",
+    "tarotCardsPageCta": "Try Drawing a Tarot Card",
+    "tarotCardsCount": "cards",
     "uprightMeaning": "Upright Meaning",
     "reversedMeaning": "Reversed Meaning",
     "timeframe": "Timeframe"

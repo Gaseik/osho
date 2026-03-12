@@ -407,6 +407,10 @@
     "tryTarotReading": "タロットリーディングしてみる",
     "all": "一覧",
     "tarotAllCards": "全カード一覧",
+    "tarotCardsPageTitle": "タロットカード大全",
+    "tarotCardsPageSubtitle": "カードの意味 — 全78枚ウェイトタロットカード",
+    "tarotCardsPageCta": "タロットカードを1枚引いてみる",
+    "tarotCardsCount": "枚",
     "uprightMeaning": "正位置の意味",
     "reversedMeaning": "逆位置の意味",
     "timeframe": "時間枠"

@@ -407,6 +407,10 @@
     "tryTarotReading": "타로 리딩 해보기",
     "all": "전체",
     "tarotAllCards": "전체 카드",
+    "tarotCardsPageTitle": "타로 카드 백과",
+    "tarotCardsPageSubtitle": "카드 의미 — 78장 웨이트 타로 카드 전체",
+    "tarotCardsPageCta": "타로 카드 한 장 뽑아보기",
+    "tarotCardsCount": "장",
     "uprightMeaning": "정위치 의미",
     "reversedMeaning": "역위치 의미",
     "timeframe": "시간대"
