@@ -459,6 +459,13 @@ export async function POST(request: Request) {
   let maxTokens: number;
 
   if (validation) {
+    const lang = getPromptLang(locale);
+    const validationLangMap: Record<PromptLang, string> = {
+      zh: 'You MUST respond entirely in Traditional Chinese (繁體中文).',
+      ko: 'You MUST respond entirely in Korean (한국어). Do NOT respond in Chinese or English.',
+      ja: 'You MUST respond entirely in Japanese (日本語). Do NOT respond in Chinese or English.',
+      en: 'Respond in English.',
+    };
     const validationSystemPrompt = `You are a perceptive tarot reader doing a quick validation check. Your ONLY job is to describe the user's current state in 3-4 sentences. Nothing more.
 
 Rules:
@@ -471,7 +478,8 @@ Rules:
 - Synthesize all 3 cards into ONE cohesive description, do not explain cards individually
 - No titles, no headers, no markdown formatting, no bullet points
 - Just 3-4 natural sentences, like a friend telling you what they see
-- Keep it under 100 words`;
+- Keep it under 100 words
+- ${validationLangMap[lang]}`;
 
     messages = [
       { role: "system", content: validationSystemPrompt },
