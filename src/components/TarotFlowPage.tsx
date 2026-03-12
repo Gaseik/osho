@@ -3,12 +3,14 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
+import { getCardDataLang, getSpreadLang } from "../i18n/config";
 import SideMenu from "./SideMenu";
 import DrawPhase from "./DrawPhase";
 import ResultPhase from "./ResultPhase";
 import FlipCard from "./FlipCard";
 import TarotCardFace from "./TarotCardFace";
 import { allTarotCards, type TarotCard } from "../data/tarot-cards";
+import { getTarotCardDisplayName } from "../data/tarot-i18n";
 import { TAROT_SPREADS, type TarotSpread } from "../data/tarot-spreads";
 import { TAROT_SPREAD_DETAILS } from "../data/tarot-spread-details";
 import { shuffle, type Card } from "../data/cards";
@@ -105,7 +107,8 @@ function recommendSpread(question: string): string | null {
 
 export default function TarotFlowPage() {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+  const lang = getCardDataLang(i18n.language);
+  const sLang = getSpreadLang(i18n.language);
 
   // ─── Step state ───
   const [step, setStep] = useState<Step>("category");
@@ -233,17 +236,23 @@ export default function TarotFlowPage() {
     // 30s timeout
     const timeout = setTimeout(() => controller.abort(), 30_000);
 
-    const isZh = i18n.language.startsWith("zh");
+    const locale = i18n.language;
+    const isZh = locale.startsWith("zh");
     const cardList = cards
       .map(
         (c, i) =>
-          `${i + 1}. ${c.card.name[lang]}（${c.isReversed ? (isZh ? "逆位" : "Reversed") : (isZh ? "正位" : "Upright")}）`
+          `${i + 1}. ${getTarotCardDisplayName(c.card, locale)}（${c.isReversed ? t("tarot.reversed") : t("tarot.upright")}）`
       )
       .join("\n");
 
-    const userMessage = isZh
-      ? `使用者的問題：${questionText || "無特定問題"}\n\n驗證牌：\n${cardList}\n\n請只描述使用者目前的狀態，3-4 句話就好。不要給建議、不要給指引、不要用任何標題或格式。用繁體中文回答。`
-      : `User's question: ${questionText || "No specific question"}\n\nValidation cards:\n${cardList}\n\nDescribe only the user's current state in 3-4 sentences. No advice, no guidance, no titles or formatting. Respond in English.`;
+    const langInstructions: Record<string, { q: string; noQ: string; instruction: string }> = {
+      zh: { q: "使用者的問題", noQ: "無特定問題", instruction: "請只描述使用者目前的狀態，3-4 句話就好。不要給建議、不要給指引、不要用任何標題或格式。用繁體中文回答。" },
+      ko: { q: "사용자의 질문", noQ: "특정 질문 없음", instruction: "사용자의 현재 상태만 3-4문장으로 설명해주세요. 조언, 안내, 제목이나 서식은 사용하지 마세요. 한국어로 답해주세요." },
+      ja: { q: "ユーザーの質問", noQ: "特定の質問なし", instruction: "ユーザーの現在の状態を3〜4文で説明してください。アドバイス、ガイダンス、タイトルやフォーマットは不要です。日本語で回答してください。" },
+      en: { q: "User's question", noQ: "No specific question", instruction: "Describe only the user's current state in 3-4 sentences. No advice, no guidance, no titles or formatting. Respond in English." },
+    };
+    const li = langInstructions[isZh ? 'zh' : locale === 'ko' ? 'ko' : locale === 'ja' ? 'ja' : 'en'];
+    const userMessage = `${li.q}: ${questionText || li.noQ}\n\n${isZh ? '驗證牌' : 'Validation cards'}:\n${cardList}\n\n${li.instruction}`;
 
     try {
       const resp = await fetch("/api/reading", {
@@ -371,8 +380,8 @@ export default function TarotFlowPage() {
   // Get position labels for current spread
   const getPositionLabels = useCallback((): string[] => {
     if (!spread) return [];
-    return spread.positions.map((p) => p.name[lang]);
-  }, [spread, lang]);
+    return spread.positions.map((p) => p.name[sLang]);
+  }, [spread, sLang]);
 
   // ═══════════════════════════════════════════
   //  Step 5: Result — custom render for tarot
@@ -385,7 +394,7 @@ export default function TarotFlowPage() {
       const card = drawn[cardIdx];
       const isReversed = reversedStates[cardIdx];
       const labels = getPositionLabels();
-      const cardName = card.name[lang];
+      const cardName = getTarotCardDisplayName(card, i18n.language);
 
       return (
         <div className="flex flex-col items-center gap-2">
@@ -401,7 +410,7 @@ export default function TarotFlowPage() {
             onRequestReveal={opts.onRequestReveal}
             reversed={isReversed}
             customFace={<TarotCardFace card={card} reversed={isReversed} />}
-            customName={`${cardName}${isReversed ? (lang === "zh" ? "（逆位）" : " (Reversed)") : ""}`}
+            customName={`${cardName}${isReversed ? t("tarot.reversedParen") : ""}`}
             cardBackSrc={TAROT_CARD_BACK}
           />
           <div
@@ -441,10 +450,8 @@ export default function TarotFlowPage() {
     if (validationCards.length > 0 && validationText) {
       const valCardList = validationCards
         .map((vc) => {
-          const name = vc.card.name[lang];
-          const dir = vc.isReversed
-            ? (isZh ? "逆位" : "Reversed")
-            : (isZh ? "正位" : "Upright");
+          const name = getTarotCardDisplayName(vc.card, i18n.language);
+          const dir = vc.isReversed ? t("tarot.reversed") : t("tarot.upright");
           return `${name}（${dir}）`;
         })
         .join("、");
@@ -456,7 +463,7 @@ export default function TarotFlowPage() {
 
     return {
       deck_type: "tarot",
-      spread: spread.name[lang],
+      spread: spread.name[sLang],
       spreadId: selectedSpreadId,
       cards: drawn.map((c, i) => ({
         position: `${i + 1} - ${labels[i]}`,
@@ -471,21 +478,21 @@ export default function TarotFlowPage() {
       ...(valCtx && { validationContext: valCtx }),
       ...(selectedCategory === "fortune" && { fortuneMode: true }),
     };
-  }, [spread, drawn, reversedStates, lang, selectedSpreadId, i18n.language, question, t, getPositionLabels, validationCards, validationText]);
+  }, [spread, drawn, reversedStates, sLang, selectedSpreadId, i18n.language, question, t, getPositionLabels, validationCards, validationText]);
 
   const handleCopyPrompt = useCallback(() => {
     if (!spread) return;
     const labels = getPositionLabels();
     const lines = drawn.map(
       (c, i) =>
-        `${labels[i]}：${c.name[lang]}（${reversedStates[i] ? (lang === "zh" ? "逆位" : "Reversed") : (lang === "zh" ? "正位" : "Upright")}）`
+        `${labels[i]}：${getTarotCardDisplayName(c, i18n.language)}（${reversedStates[i] ? t("tarot.reversed") : t("tarot.upright")}）`
     );
-    const text = `${spread.name[lang]}\n${lines.join("\n")}\n\n${lang === "zh" ? "問題" : "Question"}: ${question}`;
+    const text = `${spread.name[sLang]}\n${lines.join("\n")}\n\n${t("tarot.questionLabel2")}: ${question}`;
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  }, [spread, drawn, reversedStates, lang, question, getPositionLabels]);
+  }, [spread, drawn, reversedStates, sLang, i18n.language, question, t, getPositionLabels]);
 
   const handleReset = useCallback(() => {
     setStep("category");
@@ -525,8 +532,8 @@ export default function TarotFlowPage() {
         </div>
         <h1 className="text-xl sm:text-[28px] font-light tracking-[0.1875rem] text-white/90 m-0">
           {step === "result"
-            ? (lang === "zh" ? "解讀" : "Reading")
-            : (lang === "zh" ? "塔羅占卜" : "Tarot Reading")}
+            ? t("tarot.readingTitle")
+            : t("tarot.tarotReadingTitle")}
         </h1>
         <div
           className="w-[60px] h-px bg-gradient-to-r from-transparent via-zen-gold/50 to-transparent
@@ -589,9 +596,7 @@ export default function TarotFlowPage() {
                   autoFocus
                 />
                 <p className="text-[11px] text-white/30 italic mt-1.5">
-                  {lang === "zh"
-                    ? "✦ 問題越詳細，解讀會更精準"
-                    : "✦ The more detailed, the more precise"}
+                  {t("tarot.detailTip")}
                 </p>
                 <button
                   onClick={handleCustomTopicSubmit}
@@ -645,9 +650,7 @@ export default function TarotFlowPage() {
             />
             <div className="flex justify-between items-center mt-1">
               <p className="text-[11px] text-white/30 italic">
-                {lang === "zh"
-                  ? "✦ 問題越詳細，解讀會更精準"
-                  : "✦ The more detailed, the more precise"}
+                {t("tarot.detailTip")}
               </p>
               <span className="text-[10px] text-white/25">
                 {situationDesc.length}/100
@@ -684,14 +687,14 @@ export default function TarotFlowPage() {
               }`}
             >
               <h2 className="text-2xl md:text-3xl font-light tracking-[0.35em] text-zen-gold/90 validation-title-in">
-                {lang === "zh" ? "驗 證 階 段" : "VERIFICATION"}
+                {t("tarot.verification")}
               </h2>
               <div
                 className="w-16 h-px bg-gradient-to-r from-transparent via-zen-gold/50 to-transparent
                             mt-4 mb-3"
               />
               <p className="text-white/40 text-xs tracking-[0.15em]">
-                {lang === "zh" ? "確認你目前的狀態" : "Confirm your current state"}
+                {t("tarot.confirmYourState")}
               </p>
             </div>
           )}
@@ -708,9 +711,7 @@ export default function TarotFlowPage() {
                 </div>
               )}
               <p className="text-white/50 text-xs tracking-wider mb-4">
-                {lang === "zh"
-                  ? "── 讓我們先確認你目前的狀態 ──"
-                  : "── Let's first confirm your current state ──"}
+                {t("tarot.confirmStateIntro")}
               </p>
             </div>
           )}
@@ -734,7 +735,7 @@ export default function TarotFlowPage() {
                   onFlipped={() => setValidationFlipped((p) => p + 1)}
                   reversed={vc.isReversed}
                   customFace={<TarotCardFace card={vc.card} reversed={vc.isReversed} small />}
-                  customName={vc.card.name[lang]}
+                  customName={getTarotCardDisplayName(vc.card, i18n.language)}
                   cardBackSrc={TAROT_CARD_BACK}
                   small
                 />
@@ -742,7 +743,7 @@ export default function TarotFlowPage() {
                   className="text-center mt-1.5 transition-opacity duration-300"
                   style={{ opacity: validationFlipped > idx ? 1 : 0 }}
                 >
-                  <div className="text-[11px] text-white/70">{vc.card.name[lang]}</div>
+                  <div className="text-[11px] text-white/70">{getTarotCardDisplayName(vc.card, i18n.language)}</div>
                   <div
                     className={`text-[9px] tracking-wider mt-0.5 ${
                       vc.isReversed ? "text-purple-400/70" : "text-zen-gold/70"
@@ -780,7 +781,7 @@ export default function TarotFlowPage() {
                         <circle cx="12" cy="12" r="3" />
                       </svg>
                       <span className="text-zen-gold/85 text-sm font-semibold tracking-wide animate-pulse">
-                        {lang === "zh" ? "感應中…" : "Sensing…"}
+                        {t("tarot.sensing")}
                       </span>
                     </div>
                     {/* Skeleton lines */}
@@ -795,7 +796,7 @@ export default function TarotFlowPage() {
                     </div>
                     {/* Hint text */}
                     <p className="text-white/25 text-[11px] mt-4 tracking-wide text-center">
-                      {lang === "zh" ? "正在解讀你的驗證牌…" : "Reading your verification cards…"}
+                      {t("tarot.readingVerificationCards")}
                     </p>
                   </div>
                 </div>
@@ -813,14 +814,10 @@ export default function TarotFlowPage() {
                       <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
                     <p className="text-white/70 text-sm mb-2">
-                      {lang === "zh"
-                        ? "感應中斷了"
-                        : "Connection interrupted"}
+                      {t("tarot.connectionInterrupted")}
                     </p>
                     <p className="text-white/40 text-xs mb-5">
-                      {lang === "zh"
-                        ? "可能是網路不穩或伺服器忙碌，請再試一次"
-                        : "This may be due to network issues or server load. Please try again."}
+                      {t("tarot.connectionError")}
                     </p>
                     <button
                       onClick={handleValidationRetry}
@@ -829,7 +826,7 @@ export default function TarotFlowPage() {
                                  hover:bg-zen-gold/[0.15] hover:border-zen-gold/50
                                  transition-all duration-300"
                     >
-                      {lang === "zh" ? "重新感應" : "Try again"}
+                      {t("tarot.retrySensing")}
                     </button>
                   </div>
                 </div>
@@ -846,7 +843,7 @@ export default function TarotFlowPage() {
                         <circle cx="12" cy="12" r="3" />
                       </svg>
                       <span className="text-zen-gold/85 text-sm font-semibold tracking-wide">
-                        {lang === "zh" ? "你目前的狀態" : "Your Current State"}
+                        {t("tarot.yourCurrentState")}
                       </span>
                     </div>
                     <div className="text-white/80 text-sm leading-[1.9] whitespace-pre-line">
@@ -867,7 +864,7 @@ export default function TarotFlowPage() {
                                hover:border-zen-gold/60 hover:scale-[1.02]
                                transition-all duration-300"
                   >
-                    {lang === "zh" ? "符合我的狀態，繼續 ✅" : "This matches, continue ✅"}
+                    {t("tarot.matchesContinue")}
                   </button>
                   <button
                     onClick={handleValidationRetry}
@@ -876,7 +873,7 @@ export default function TarotFlowPage() {
                                hover:bg-white/[0.08] hover:text-white/80
                                transition-all duration-300"
                   >
-                    {lang === "zh" ? "不太符合，重新抽 🔄" : "Doesn't match, try again 🔄"}
+                    {t("tarot.doesntMatch")}
                   </button>
                 </div>
               )}
@@ -896,7 +893,7 @@ export default function TarotFlowPage() {
               className="mt-6 text-white/30 text-xs tracking-wider
                          hover:text-white/55 transition-colors duration-300"
             >
-              {lang === "zh" ? "← 重新選擇問題" : "← Change question"}
+              {t("tarot.changeQuestion")}
             </button>
           )}
         </div>
@@ -906,9 +903,7 @@ export default function TarotFlowPage() {
       {step === "spreadSelect" && (
         <div className="animate-fadeUp w-full max-w-2xl">
           <p className="text-center text-white/50 text-sm tracking-wider mb-8">
-            {lang === "zh"
-              ? "選擇最適合你問題的牌陣"
-              : "Choose the best spread for your question"}
+            {t("tarot.chooseBestSpread")}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -928,15 +923,15 @@ export default function TarotFlowPage() {
                   {isRecommended && (
                     <span className="absolute -top-2 right-3 px-2 py-0.5 text-[10px] tracking-wider
                                      bg-zen-gold/20 border border-zen-gold/30 rounded-full text-zen-gold/90">
-                      {lang === "zh" ? "推薦 ✨" : "Recommended ✨"}
+                      {t("tarot.recommendedTag")}
                     </span>
                   )}
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="text-white/85 text-sm group-hover:text-zen-gold/90 transition-colors font-light tracking-wider">
-                        {sp.name[lang]}
+                        {sp.name[sLang]}
                       </div>
-                      <div className="text-white/35 text-xs mt-0.5">{sp.name[lang === "zh" ? "en" : "zh"]}</div>
+                      <div className="text-white/35 text-xs mt-0.5">{sp.name[sLang === "zh" ? "en" : "zh"]}</div>
                       {detail && (
                         <div className="text-white/45 text-xs mt-2 leading-relaxed">
                           {detail.desc[lang]}
@@ -945,7 +940,7 @@ export default function TarotFlowPage() {
                     </div>
                     <div className="flex flex-col items-center gap-0.5 shrink-0">
                       <span className="text-xl text-zen-gold/60 font-light">{sp.count}</span>
-                      <span className="text-white/30 text-[10px]">{lang === "zh" ? "張" : "cards"}</span>
+                      <span className="text-white/30 text-[10px]">{t("tarot.cardUnit")}</span>
                     </div>
                   </div>
                 </button>
@@ -964,7 +959,7 @@ export default function TarotFlowPage() {
           onDrawCard={handleDrawCard}
           onComplete={handleDrawComplete}
           positionLabels={getPositionLabels()}
-          spreadDisplayName={spread.name[lang]}
+          spreadDisplayName={spread.name[sLang]}
           cardBackSrc={TAROT_CARD_BACK}
         />
       )}
@@ -972,7 +967,7 @@ export default function TarotFlowPage() {
       {/* ═══ Step 5: Result ═══ */}
       {step === "draw" && spread && phase === "result" && (
         <ResultPhase
-          spread={{ id: selectedSpreadId!, count: spread.count, name: spread.name.zh, nameEn: spread.name.en }}
+          spread={{ id: selectedSpreadId!, count: spread.count, name: spread.name[sLang], nameEn: spread.name.en }}
           drawn={drawn.map(toOshoCard)}
           flippedCount={flippedCount}
           copied={copied}
@@ -983,7 +978,7 @@ export default function TarotFlowPage() {
           positionLabels={getPositionLabels()}
           customRenderCard={customRenderCard}
           buildApiBody={buildApiBody}
-          customCardNames={drawn.map((c) => c.name[lang])}
+          customCardNames={drawn.map((c) => getTarotCardDisplayName(c, i18n.language))}
           customLayout={TAROT_LAYOUTS[selectedSpreadId!]}
           deckType="tarot"
           reversedIndices={reversedStates}

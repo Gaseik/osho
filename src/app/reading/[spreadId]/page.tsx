@@ -5,7 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
 import { Card, CARDS, shuffle } from "../../../data/cards";
-import { SPREADS, POSITION_LABELS } from "../../../data/spreads";
+import { SPREADS } from "../../../data/spreads";
 import DrawPhase from "../../../components/DrawPhase";
 import ResultPhase from "../../../components/ResultPhase";
 import SideMenu from "../../../components/SideMenu";
@@ -56,12 +56,8 @@ export default function ReadingSpreadPage() {
   };
 
   const getSpreadLabels = (sid: string): string[] => {
-    if (i18n.language === "zh-TW") {
-      return POSITION_LABELS[sid];
-    }
-    const labelKey = `spread.${sid}Labels`;
     return Array.from({ length: spread.count }, (_, i) =>
-      t(`${labelKey}.${i}`)
+      t(`spread.${sid}Labels.${i}`)
     );
   };
 
@@ -70,8 +66,7 @@ export default function ReadingSpreadPage() {
     const lines = drawn.map(
       (c, i) => `${labels[i]}：${c.name}（${c.nameZh}）- ${c.keywords.join(", ")}`
     );
-    const spreadName =
-      i18n.language === "zh-TW" ? spread.name : t(`spread.${spread.id}`);
+    const spreadName = t(`spread.${spread.id}`);
     const cardsText = lines.join("\n");
     const prompt = t("result.promptTemplate", { spreadName, cards: cardsText });
 

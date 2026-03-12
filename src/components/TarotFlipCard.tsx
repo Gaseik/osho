@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { getCardDataLang } from "../i18n/config";
+import { getTarotCardDisplayName } from "../data/tarot-i18n";
 import { TarotCard } from "../data/tarot-cards";
 import CardBack from "./CardBack";
 import TarotCardFace from "./TarotCardFace";
@@ -30,7 +32,7 @@ export default function TarotFlipCard({
   const hasStartedFlip = useRef(false);
   const onFlippedRef = useRef(onFlipped);
   onFlippedRef.current = onFlipped;
-  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+  const lang = getCardDataLang(i18n.language);
 
   useEffect(() => {
     if (revealed && !hasStartedFlip.current) {
@@ -88,7 +90,7 @@ export default function TarotFlipCard({
         createPortal(
           <div className="card-zoom-overlay" onClick={() => setZoomed(false)}>
             <div className="card-zoom-content">
-              <div className="card-zoom-name">{card.name[lang]}</div>
+              <div className="card-zoom-name">{getTarotCardDisplayName(card, i18n.language)}</div>
               <TarotCardFace card={card} reversed={reversed} />
             </div>
           </div>,

@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { sendGAEvent } from '@next/third-parties/google';
 import { useTranslation } from 'react-i18next';
-import { Spread, POSITION_LABELS } from "../data/spreads";
+import { Spread } from "../data/spreads";
 import CardBack from "./CardBack";
 import { Pointer } from "lucide-react";
 
@@ -247,9 +247,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete,
           {drawn.length < spread.count && t('draw.nextPosition', {
             label: positionLabels
               ? positionLabels[drawn.length]
-              : i18n.language === 'zh-TW'
-                ? POSITION_LABELS[spread.id]?.[drawn.length]
-                : t(`spread.${spread.id}Labels.${drawn.length}`)
+              : t(`spread.${spread.id}Labels.${drawn.length}`)
           })}
         </p>
       </div>
@@ -261,9 +259,7 @@ export default function DrawPhase({ spread, deck, drawn, onDrawCard, onComplete,
             {drawn.map((card, i) => {
               const posLabel = positionLabels
                 ? positionLabels[i]
-                : i18n.language === 'zh-TW'
-                  ? POSITION_LABELS[spread.id]?.[i]
-                  : t(`spread.${spread.id}Labels.${i}`);
+                : t(`spread.${spread.id}Labels.${i}`);
               return (
                 <div
                   key={card.id}

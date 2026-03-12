@@ -1,6 +1,8 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { getCardDataLang, getSpreadLang } from "../i18n/config";
+import { getTarotCardDisplayName } from "../data/tarot-i18n";
 import { DrawnCard } from "../data/tarot-spreads";
 import TarotFlipCard from "./TarotFlipCard";
 import TarotCardFace from "./TarotCardFace";
@@ -29,12 +31,13 @@ export default function TarotSpreadResult({
   showClarifierButtons,
 }: TarotSpreadResultProps) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+  const lang = getCardDataLang(i18n.language);
+  const sLang = getSpreadLang(i18n.language);
 
   const cardLabel = (dc: DrawnCard) => (
     <div className="text-center mt-1.5">
       <div className="text-[11px] text-white/50 tracking-wider">
-        {dc.positionName[lang]}
+        {dc.positionName[sLang]}
       </div>
       <div
         className={`text-[10px] tracking-wider mt-0.5 ${
@@ -71,7 +74,7 @@ export default function TarotSpreadResult({
           <TarotCardFace card={cl.card} reversed={cl.isReversed} small />
         </div>
         <div className="text-[9px] text-white/40 mt-0.5">
-          {cl.card.name[lang]}
+          {getTarotCardDisplayName(cl.card, i18n.language)}
         </div>
         <div
           className={`text-[9px] tracking-wider ${
@@ -164,14 +167,14 @@ export default function TarotSpreadResult({
                   </div>
                   <div className="text-center mt-1.5">
                     <div className="text-[10px] text-white/45 tracking-wider">
-                      {dc0.positionName[lang]}
+                      {dc0.positionName[sLang]}
                       <span className={`ml-1 ${dc0.isReversed ? "text-purple-400/60" : "text-zen-gold/60"}`}>
                         {dc0.isReversed ? "▼" : "▲"}
                       </span>
                     </div>
                     {dc1 && (
                       <div className="text-[10px] text-white/45 tracking-wider">
-                        {dc1.positionName[lang]}
+                        {dc1.positionName[sLang]}
                         <span className={`ml-1 ${dc1.isReversed ? "text-purple-400/60" : "text-zen-gold/60"}`}>
                           {dc1.isReversed ? "▼" : "▲"}
                         </span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { getCardDataLang } from "../i18n/config";
 import Image from "next/image";
 import Link from "next/link";
 import type { CardDetail } from "../data/cardDetails";
@@ -15,11 +16,11 @@ interface Props {
 
 export default function CardDetailContent({ card, prev, next }: Props) {
   const { t, i18n } = useTranslation();
-  const isZh = i18n.language === "zh-TW";
+  const lang = getCardDataLang(i18n.language);
 
-  const suitZh = getSuitLabel(card.suit ?? "major", "zh");
-  const suitEn = getSuitLabel(card.suit ?? "major", "en");
+  const suitLabel = getSuitLabel(card.suit ?? "major", lang);
 
+  const cardName = t(`cards.${card.id}`);
   const keywordsStr = t(`cardKeywords.${card.id}`);
   const keywords = keywordsStr.split(/[,、]/).map((s: string) => s.trim());
   const rawDescription = t(`cardDescriptions.${card.id}`);
@@ -33,18 +34,18 @@ export default function CardDetailContent({ card, prev, next }: Props) {
           href="/cards"
           className="hover:text-zen-gold/80 transition-colors no-underline text-white/40"
         >
-          {isZh ? "禪卡總覽" : "All Cards"}
+          {t("cardDetail.allCards")}
         </Link>
         <span className="mx-2">/</span>
         <span className="text-white/60">
-          {isZh ? card.nameZh : card.name}
+          {cardName}
         </span>
       </nav>
 
       {/* Card header */}
       <div className="text-center mb-10 animate-fadeUp">
         <div className="text-sm tracking-[0.375rem] text-zen-gold-dim mb-2">
-          ☯︎ {(isZh ? suitZh : suitEn).toUpperCase()} ☯︎
+          ☯︎ {suitLabel.toUpperCase()} ☯︎
         </div>
 
         {/* Card image */}
@@ -64,7 +65,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
               />
               <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/20 transition-colors duration-300 flex items-center justify-center">
                 <span className="text-white/0 group-hover/img:text-white/80 text-xs transition-colors duration-300">
-                  {isZh ? "點擊放大" : "Click to enlarge"}
+                  {t("cardDetail.clickToEnlarge")}
                 </span>
               </div>
             </div>
@@ -73,7 +74,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
 
         {/* Name */}
         <h1 className="text-[28px] font-light tracking-[0.15rem] text-white/90 m-0">
-          {isZh ? card.nameZh : card.name}
+          {cardName}
         </h1>
 
         {/* Suit badge */}
@@ -82,7 +83,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
                       border border-zen-gold/20 bg-zen-gold/[0.05]"
         >
           <span className="text-zen-gold/70 text-xs tracking-wider">
-            {isZh ? suitZh : suitEn}
+            {suitLabel}
           </span>
         </div>
 
@@ -95,7 +96,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
       {/* Keywords */}
       <section className="mb-10 animate-fadeUp">
         <h2 className="text-sm text-zen-gold/70 tracking-[0.15rem] mb-3 font-light">
-          {isZh ? "關鍵詞" : "Keywords"}
+          {t("cardDetail.keywords")}
         </h2>
         <div className="flex flex-wrap gap-2">
           {keywords.map((kw: string) => (
@@ -113,7 +114,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
       {/* Description */}
       <section className="mb-10 animate-fadeUp">
         <h2 className="text-sm text-zen-gold/70 tracking-[0.15rem] mb-4 font-light">
-          {isZh ? "牌義解讀" : "Card Meaning"}
+          {t("cardDetail.cardMeaning")}
         </h2>
         <div
           className="space-y-4 text-white/60 text-sm leading-relaxed
@@ -128,10 +129,10 @@ export default function CardDetailContent({ card, prev, next }: Props) {
       {/* Core meaning from original data */}
       <section className="mb-10 animate-fadeUp">
         <h2 className="text-sm text-zen-gold/70 tracking-[0.15rem] mb-3 font-light">
-          {isZh ? "核心意涵" : "Core Meaning"}
+          {t("cardDetail.coreMeaning")}
         </h2>
         <p className="text-white/50 text-sm italic">
-          {isZh ? card.keywordsZh.join("、") : card.keywords.join(", ")}
+          {lang === "zh" ? card.keywordsZh.join("、") : card.keywords.join(", ")}
         </p>
       </section>
 
@@ -147,7 +148,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
                      transition-all duration-300 no-underline"
         >
           <span>☯︎</span>
-          <span>{isZh ? "抽一張牌試試" : "Try a Reading"}</span>
+          <span>{t("cardDetail.tryReading")}</span>
         </Link>
       </div>
 
@@ -160,7 +161,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
                        transition-colors no-underline text-sm"
           >
             <span>←</span>
-            <span>{isZh ? prev.nameZh : prev.name}</span>
+            <span>{t(`cards.${prev.id}`)}</span>
           </Link>
         ) : (
           <span />
@@ -169,7 +170,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
           href="/cards"
           className="text-white/30 hover:text-white/60 text-xs no-underline transition-colors"
         >
-          {isZh ? "總覽" : "All"}
+          {t("cardDetail.all")}
         </Link>
         {next ? (
           <Link
@@ -177,7 +178,7 @@ export default function CardDetailContent({ card, prev, next }: Props) {
             className="flex items-center gap-2 text-white/40 hover:text-zen-gold/80
                        transition-colors no-underline text-sm"
           >
-            <span>{isZh ? next.nameZh : next.name}</span>
+            <span>{t(`cards.${next.id}`)}</span>
             <span>→</span>
           </Link>
         ) : (

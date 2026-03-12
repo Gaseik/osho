@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from "react-i18next";
+import { getCardDataLang, getSpreadLang } from "../../../i18n/config";
 import Link from "next/link";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import CardSpreadLayout from "../../../components/CardSpreadLayout";
@@ -45,20 +46,19 @@ const TAROT_LAYOUTS: Record<string, SpreadLayout> = {
   },
 };
 
+const DATE_LOCALE_MAP: Record<string, string> = {
+  'zh-TW': 'zh-TW',
+  en: 'en-US',
+  ja: 'ja-JP',
+  ko: 'ko-KR',
+};
+
 function formatDateTime(iso: string, locale: string): string {
   const d = new Date(iso);
-  if (locale === "zh-TW") {
-    return d.toLocaleString("zh-TW", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  }
-  return d.toLocaleString("en-US", {
+  const dateLocale = DATE_LOCALE_MAP[locale] || 'en-US';
+  return d.toLocaleString(dateLocale, {
     year: "numeric",
-    month: "short",
+    month: locale === "en" ? "short" : "2-digit",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
@@ -98,21 +98,18 @@ export default function RecordDetailPage() {
   }
 
   const isTarot = record.deckType === "tarot";
-  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+  const lang = getCardDataLang(i18n.language);
 
   const spreadName =
-    i18n.language === "zh-TW" ? record.spreadName : record.spreadNameEn;
+    i18n.language === "zh-TW" ? record.spreadName : (record.spreadNameEn || record.spreadName);
 
   const getLabels = (): string[] => {
     if (isTarot) {
       const tarotSpread = TAROT_SPREADS[record.spreadId];
       if (tarotSpread) {
-        return tarotSpread.positions.map((p) => p.name[lang]);
+        return tarotSpread.positions.map((p) => p.name[getSpreadLang(i18n.language)]);
       }
       return [];
-    }
-    if (i18n.language === "zh-TW") {
-      return POSITION_LABELS[record.spreadId] || [];
     }
     return Array.from({ length: record.cards.length }, (_, i) =>
       t(`spread.${record.spreadId}Labels.${i}`)

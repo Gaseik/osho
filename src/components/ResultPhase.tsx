@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { useTranslation } from 'react-i18next';
 import { Card } from "../data/cards";
-import { Spread, POSITION_LABELS, SPREAD_LAYOUTS } from "../data/spreads";
+import { Spread, SPREAD_LAYOUTS } from "../data/spreads";
 import FlipCard from "./FlipCard";
 import CardSpreadLayout from "./CardSpreadLayout";
 import StructuredReading from "./StructuredReading";
@@ -99,9 +99,6 @@ export default function ResultPhase({
 
   const getSpreadLabels = (spreadId: string): string[] => {
     if (positionLabelsProp) return positionLabelsProp;
-    if (i18n.language === 'zh-TW') {
-      return POSITION_LABELS[spreadId];
-    }
     return Array.from({ length: spread.count }, (_, i) =>
       t(`spread.${spreadId}Labels.${i}`)
     );
@@ -113,7 +110,7 @@ export default function ResultPhase({
       const cardName = t(`cards.${c.id}`);
       return `${labels[i]}：${cardName} - ${c.keywords.join(", ")}`;
     });
-    const spreadName = i18n.language === 'zh-TW' ? spread.name : t(`spread.${spread.id}`);
+    const spreadName = t(`spread.${spread.id}`);
     const cardsText = lines.join("\n");
     return t('result.promptTemplate', { spreadName, cards: cardsText });
   };
@@ -133,7 +130,7 @@ export default function ResultPhase({
       apiBody = buildApiBody();
     } else {
       const labels = getSpreadLabels(spread.id);
-      const spreadName = i18n.language === 'zh-TW' ? (spread as Spread).name : t(`spread.${spread.id}`);
+      const spreadName = t(`spread.${spread.id}`);
       const cards = drawn.map((c, i) => ({
         position: labels[i],
         nameZh: c.nameZh,

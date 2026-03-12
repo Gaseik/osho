@@ -67,64 +67,90 @@ interface UserProfileInfo {
   readingStyle?: string;
 }
 
-const STYLE_INSTRUCTIONS_ZH: Record<string, string> = {
-  natural: "",
-  warm: "\n\n解讀風格要求：用溫暖、鼓勵的語氣。多給予正向支持和肯定，即使是挑戰性的牌面也要找到光明面。語氣像一個溫柔的朋友在安慰和打氣。",
-  intuitive: "\n\n解讀風格要求：用直覺性、靈性的語氣。強調能量流動、內在感受和深層連結。可以使用意象和隱喻，讓解讀帶有靈性的深度和詩意。",
-  rational: "\n\n解讀風格要求：用理性、務實的語氣。著重邏輯分析和具體行動建議。少用抽象比喻，多用清晰的因果關係和可操作的步驟。像一個理性的顧問在給建議。",
-};
+type PromptLang = 'zh' | 'en' | 'ko' | 'ja';
 
-const STYLE_INSTRUCTIONS_EN: Record<string, string> = {
-  natural: "",
-  warm: "\n\nReading style: Use a warm, encouraging tone. Offer positive support and affirmation. Even with challenging cards, find the silver lining. Sound like a caring friend offering comfort and motivation.",
-  intuitive: "\n\nReading style: Use an intuitive, spiritual tone. Emphasize energy flow, inner feelings, and deep connections. Use imagery and metaphors to bring spiritual depth and poetic quality to the reading.",
-  rational: "\n\nReading style: Use a rational, practical tone. Focus on logical analysis and concrete action steps. Minimize abstract metaphors, emphasize clear cause-and-effect and actionable advice. Sound like a pragmatic advisor.",
-};
+function getPromptLang(locale: string): PromptLang {
+  if (locale.startsWith('zh')) return 'zh';
+  if (locale === 'ko') return 'ko';
+  if (locale === 'ja') return 'ja';
+  return 'en';
+}
 
-function buildUserContextZh(profile: UserProfileInfo): string {
-  const parts: string[] = [];
-  if (profile.name) parts.push(`稱呼：${profile.name}`);
-  if (profile.gender) {
-    const genderMap: Record<string, string> = { male: "男性", female: "女性", other: "其他" };
-    parts.push(`性別：${genderMap[profile.gender] || profile.gender}`);
+function getLanguageInstruction(lang: PromptLang): string {
+  switch (lang) {
+    case 'zh':
+      return `\n\n## Language\nRespond entirely in Traditional Chinese (繁體中文).`;
+    case 'ko':
+      return `\n\n## Language\nIMPORTANT: You MUST respond entirely in Korean (한국어). Keep the section headings in Chinese characters (## 牌意解讀, ## 牌面解析, ## 深層洞察, ## 具體指引, ## 靜心提醒, ## 解答), but write ALL content, analysis, and advice in Korean. Do NOT respond in English or Chinese.`;
+    case 'ja':
+      return `\n\n## Language\nIMPORTANT: You MUST respond entirely in Japanese (日本語). Keep the section headings in Chinese characters (## 牌意解讀, ## 牌面解析, ## 深層洞察, ## 具體指引, ## 靜心提醒, ## 解答), but write ALL content, analysis, and advice in Japanese. Do NOT respond in English or Chinese.`;
+    default:
+      return `\n\n## Language\nRespond entirely in English.`;
   }
-  if (profile.age) parts.push(`年齡：${profile.age} 歲`);
-  const styleInstruction = STYLE_INSTRUCTIONS_ZH[profile.readingStyle || "natural"] || "";
+}
+
+const STYLE_INSTRUCTIONS: Record<PromptLang, Record<string, string>> = {
+  zh: {
+    natural: "",
+    warm: "\n\n解讀風格要求：用溫暖、鼓勵的語氣。多給予正向支持和肯定，即使是挑戰性的牌面也要找到光明面。語氣像一個溫柔的朋友在安慰和打氣。",
+    intuitive: "\n\n解讀風格要求：用直覺性、靈性的語氣。強調能量流動、內在感受和深層連結。可以使用意象和隱喻，讓解讀帶有靈性的深度和詩意。",
+    rational: "\n\n解讀風格要求：用理性、務實的語氣。著重邏輯分析和具體行動建議。少用抽象比喻，多用清晰的因果關係和可操作的步驟。像一個理性的顧問在給建議。",
+  },
+  en: {
+    natural: "",
+    warm: "\n\nReading style: Use a warm, encouraging tone. Offer positive support and affirmation. Even with challenging cards, find the silver lining. Sound like a caring friend offering comfort and motivation.",
+    intuitive: "\n\nReading style: Use an intuitive, spiritual tone. Emphasize energy flow, inner feelings, and deep connections. Use imagery and metaphors to bring spiritual depth and poetic quality to the reading.",
+    rational: "\n\nReading style: Use a rational, practical tone. Focus on logical analysis and concrete action steps. Minimize abstract metaphors, emphasize clear cause-and-effect and actionable advice. Sound like a pragmatic advisor.",
+  },
+  ko: {
+    natural: "",
+    warm: "\n\n리딩 스타일: 따뜻하고 격려하는 톤으로. 긍정적인 지지와 확인을 제공하세요. 도전적인 카드에서도 희망을 찾으세요. 따뜻한 친구처럼 위로하고 응원하는 느낌으로.",
+    intuitive: "\n\n리딩 스타일: 직관적이고 영적인 톤으로. 에너지의 흐름, 내면의 감정, 깊은 연결을 강조하세요. 이미지와 은유를 사용하여 영적인 깊이와 시적인 아름다움을 더하세요.",
+    rational: "\n\n리딩 스타일: 이성적이고 실용적인 톤으로. 논리적 분석과 구체적 행동 조언에 집중하세요. 추상적 비유를 줄이고, 명확한 인과관계와 실행 가능한 단계를 제시하세요.",
+  },
+  ja: {
+    natural: "",
+    warm: "\n\nリーディングスタイル：温かく励ましのあるトーンで。ポジティブなサポートと肯定を提供してください。チャレンジングなカードでも希望を見つけてください。思いやりのある友人のように。",
+    intuitive: "\n\nリーディングスタイル：直感的でスピリチュアルなトーンで。エネルギーの流れ、内なる感情、深いつながりを強調してください。イメージとメタファーを使って深みを加えてください。",
+    rational: "\n\nリーディングスタイル：理性的で実用的なトーンで。論理的分析と具体的なアクションステップに焦点を当ててください。明確な因果関係と実行可能なアドバイスを強調してください。",
+  },
+};
+
+function buildUserContext(profile: UserProfileInfo, lang: PromptLang): string {
+  const labels: Record<PromptLang, { name: string; gender: string; age: string; ageUnit: string; intro: string; genders: Record<string, string> }> = {
+    zh: { name: "稱呼", gender: "性別", age: "年齡", ageUnit: " 歲", intro: "請根據用戶的背景資訊，讓解讀更加個人化和貼近。", genders: { male: "男性", female: "女性", other: "其他" } },
+    en: { name: "Name", gender: "Gender", age: "Age", ageUnit: "", intro: "Please personalize the reading based on the user's background.", genders: { male: "Male", female: "Female", other: "Other" } },
+    ko: { name: "이름", gender: "성별", age: "나이", ageUnit: "세", intro: "사용자의 배경 정보를 바탕으로 더 개인화된 리딩을 해주세요.", genders: { male: "남성", female: "여성", other: "기타" } },
+    ja: { name: "名前", gender: "性別", age: "年齢", ageUnit: "歳", intro: "ユーザーの背景情報に基づいて、よりパーソナライズされたリーディングを提供してください。", genders: { male: "男性", female: "女性", other: "その他" } },
+  };
+  const l = labels[lang];
+  const parts: string[] = [];
+  if (profile.name) parts.push(`${l.name}: ${profile.name}`);
+  if (profile.gender) parts.push(`${l.gender}: ${l.genders[profile.gender] || profile.gender}`);
+  if (profile.age) parts.push(`${l.age}: ${profile.age}${l.ageUnit}`);
+  const styleInstruction = STYLE_INSTRUCTIONS[lang]?.[profile.readingStyle || "natural"] || "";
   if (parts.length === 0 && !styleInstruction) return "";
   const userInfo = parts.length > 0
-    ? `\n\n用戶資訊：\n${parts.join("\n")}\n請根據用戶的背景資訊，讓解讀更加個人化和貼近。`
+    ? `\n\n${lang === 'zh' ? '用戶資訊' : lang === 'ko' ? '사용자 정보' : lang === 'ja' ? 'ユーザー情報' : 'User info'}:\n${parts.join("\n")}\n${l.intro}`
     : "";
   return `${userInfo}${styleInstruction}`;
 }
 
-function buildUserContextEn(profile: UserProfileInfo): string {
-  const parts: string[] = [];
-  if (profile.name) parts.push(`Name: ${profile.name}`);
-  if (profile.gender) {
-    const genderMap: Record<string, string> = { male: "Male", female: "Female", other: "Other" };
-    parts.push(`Gender: ${genderMap[profile.gender] || profile.gender}`);
-  }
-  if (profile.age) parts.push(`Age: ${profile.age}`);
-  const styleInstruction = STYLE_INSTRUCTIONS_EN[profile.readingStyle || "natural"] || "";
-  if (parts.length === 0 && !styleInstruction) return "";
-  const userInfo = parts.length > 0
-    ? `\n\nUser info:\n${parts.join("\n")}\nPlease personalize the reading based on the user's background.`
-    : "";
-  return `${userInfo}${styleInstruction}`;
-}
 
-
-function buildTopicContextZh(topic: string, description?: string): string {
-  if (description) {
-    return `\n\n用戶選擇的問題類別：${topic}。\n用戶描述的狀況：${description}\n請將牌義與此情境具體連結，在相關層面的分析要特別深入。`;
+function buildTopicContext(topic: string, lang: PromptLang, description?: string): string {
+  if (lang === 'zh') {
+    if (description) return `\n\n用戶選擇的問題類別：${topic}。\n用戶描述的狀況：${description}\n請將牌義與此情境具體連結，在相關層面的分析要特別深入。`;
+    return `\n\n用戶的提問主題：「${topic}」\n請特別針對這個主題方向來解讀牌面，讓解讀緊扣用戶關心的議題。`;
   }
-  return `\n\n用戶的提問主題：「${topic}」\n請特別針對這個主題方向來解讀牌面，讓解讀緊扣用戶關心的議題。`;
-}
-
-function buildTopicContextEn(topic: string, description?: string): string {
-  if (description) {
-    return `\n\nUser's selected category: ${topic}.\nUser's situation: ${description}\nPlease connect the card meanings specifically to this situation, with deeper analysis on the relevant aspects.`;
+  if (lang === 'ko') {
+    if (description) return `\n\n사용자가 선택한 질문 카테고리: ${topic}.\n사용자가 설명한 상황: ${description}\n카드의 의미를 이 상황과 구체적으로 연결하고, 관련 측면을 특히 깊이 분석해주세요.`;
+    return `\n\n사용자의 질문 주제: "${topic}"\n이 주제에 맞춰 카드를 해석하고, 사용자가 관심 있는 문제와 직접 연결해주세요.`;
   }
+  if (lang === 'ja') {
+    if (description) return `\n\nユーザーが選択した質問カテゴリ: ${topic}。\nユーザーが説明した状況: ${description}\nカードの意味をこの状況と具体的に結びつけ、関連する側面を特に深く分析してください。`;
+    return `\n\nユーザーの質問テーマ: 「${topic}」\nこのテーマに焦点を当ててカードを解釈し、ユーザーが気にしている問題に直接関連づけてください。`;
+  }
+  if (description) return `\n\nUser's selected category: ${topic}.\nUser's situation: ${description}\nPlease connect the card meanings specifically to this situation, with deeper analysis on the relevant aspects.`;
   return `\n\nUser's topic/question: "${topic}"\nPlease focus the reading specifically on this topic, making the interpretation directly relevant to what the user is asking about.`;
 }
 
@@ -137,18 +163,19 @@ function buildPrompt(
   topic?: string,
   description?: string
 ): string {
-  const isZh = locale.startsWith("zh");
+  const lang = getPromptLang(locale);
+  const useZhData = lang === 'zh';
 
-  const cardLines = isZh
+  const cardLines = useZhData
     ? cards.map((c) => `${c.position}：${c.nameZh}（${c.nameEn}）- ${c.meaningZh}`).join("\n")
     : cards.map((c) => `${c.position}: ${c.nameEn} - ${c.meaningEn}`).join("\n");
 
   const topicContext = topic
-    ? isZh ? buildTopicContextZh(topic, description) : buildTopicContextEn(topic, description)
+    ? buildTopicContext(topic, lang, description)
     : "";
 
   const userContext = userProfile
-    ? isZh ? buildUserContextZh(userProfile) : buildUserContextEn(userProfile)
+    ? buildUserContext(userProfile, lang)
     : "";
 
   return `You are a deep and insightful Osho Zen Tarot reader. Your tone is like a wise friend having an honest conversation — not a spiritual guru preaching from above.
@@ -205,18 +232,14 @@ Use blockquote format (>) for one short, powerful line.
 
 No chicken soup for the soul. Make it a gentle but precise nudge that makes the reader stop and think.
 
-## Language
-Respond in the same language as the user's message.
-If the user writes in Traditional Chinese, respond entirely in Traditional Chinese.
-If the user writes in English, respond entirely in English.
-
 The user drew the following cards using the "${spread}" spread:
 
-${cardLines}${topicContext}${userContext}`;
+${cardLines}${topicContext}${userContext}${getLanguageInstruction(lang)}`;
 }
 
-function buildFortuneInstructionZh(): string {
-  return `
+function buildFortuneInstruction(lang: PromptLang): string {
+  const instructions: Record<PromptLang, string> = {
+    zh: `
 
 ## 特殊模式：運勢分析
 這次解讀是「運勢占卜」模式，請特別按照以下結構提供 3-6 個月的運勢分析：
@@ -241,16 +264,14 @@ function buildFortuneInstructionZh(): string {
 ### 關鍵月份
 指出未來 3-6 個月中最重要的轉折點或機會時間，越具體越好（例如：四月中旬、五月底等）。
 
-每個子項目請給出具體的時間範圍和實際建議，不要只說「注意健康」，要說明具體需要注意什麼、在什麼時間段特別需要留意。`;
-}
+每個子項目請給出具體的時間範圍和實際建議，不要只說「注意健康」，要說明具體需要注意什麼、在什麼時間段特別需要留意。`,
 
-function buildFortuneInstructionEn(): string {
-  return `
+    en: `
 
 ## Special Mode: Fortune Analysis
 This reading is in "Fortune Reading" mode. Please provide a 3-6 month fortune analysis with the following structure:
 
-Replace ## 具體指引 with ## Fortune Forecast, and analyze these sub-areas:
+Replace ## 具體指引 with ## 運勢預測, and analyze these sub-areas:
 
 ### Overall Fortune
 Overview of the overall energy trends and direction for the next 3-6 months.
@@ -270,7 +291,64 @@ Physical and mental health considerations for the next 3-6 months.
 ### Key Months
 Identify the most important turning points or opportunity windows in the next 3-6 months. Be as specific as possible (e.g., mid-April, late May).
 
-For each sub-area, give concrete time ranges and practical advice. Don't just say "watch your health" — specify what to watch and when.`;
+For each sub-area, give concrete time ranges and practical advice. Don't just say "watch your health" — specify what to watch and when.`,
+
+    ko: `
+
+## 특별 모드: 운세 분석
+이번 리딩은 "운세 리딩" 모드입니다. 다음 구조에 따라 3~6개월의 운세 분석을 제공해주세요:
+
+## 具體指引 대신 ## 運勢預測 을 사용하고, 다음 항목들을 분석해주세요:
+
+### 전체 운세
+향후 3~6개월의 전반적인 에너지 흐름과 방향을 개요합니다.
+
+### 연애운
+향후 3~6개월의 연애 발전, 만남의 기회, 또는 파트너 관계의 방향을 분석합니다.
+
+### 직업운
+향후 3~6개월의 직장 기회, 도전과 발전 방향을 분석합니다.
+
+### 재물운
+향후 3~6개월의 재정 상황, 투자 기회 또는 주의해야 할 리스크를 분석합니다.
+
+### 건강운
+향후 3~6개월의 심신 건강 주의사항을 분석합니다.
+
+### 핵심 시기
+향후 3~6개월 중 가장 중요한 전환점이나 기회 시기를 가능한 구체적으로 지적합니다 (예: 4월 중순, 5월 말 등).
+
+각 항목에 대해 구체적인 시간 범위와 실질적인 조언을 제공해주세요. "건강에 주의하세요"라고만 하지 말고, 구체적으로 무엇을, 언제 특히 주의해야 하는지 설명해주세요.`,
+
+    ja: `
+
+## 特別モード：運勢分析
+今回のリーディングは「運勢リーディング」モードです。以下の構造に従って3〜6ヶ月の運勢分析を提供してください：
+
+## 具體指引 の代わりに ## 運勢預測 を使用し、以下の項目を分析してください：
+
+### 全体運
+今後3〜6ヶ月の全体的なエネルギーの流れと方向性を概説します。
+
+### 恋愛運
+今後3〜6ヶ月の恋愛の発展、出会いの機会、またはパートナーシップの方向性を分析します。
+
+### 仕事運
+今後3〜6ヶ月の職場の機会、課題、発展の方向性を分析します。
+
+### 金運
+今後3〜6ヶ月の財務状況、投資機会、または注意すべきリスクを分析します。
+
+### 健康運
+今後3〜6ヶ月の心身の健康に関する注意事項を分析します。
+
+### 重要な時期
+今後3〜6ヶ月で最も重要な転換点や機会の時期をできるだけ具体的に指摘します（例：4月中旬、5月末など）。
+
+各項目について具体的な時間範囲と実践的なアドバイスを提供してください。「健康に注意」とだけ言わず、具体的に何を、いつ特に注意すべきか説明してください。`,
+  };
+
+  return instructions[lang];
 }
 
 function buildTarotPrompt(
@@ -282,22 +360,23 @@ function buildTarotPrompt(
   validationContext?: string,
   fortuneMode?: boolean
 ): string {
-  const isZh = locale.startsWith("zh");
+  const lang = getPromptLang(locale);
+  const useZhData = lang === 'zh';
 
-  const cardLines = isZh
+  const cardLines = useZhData
     ? cards.map((c) => `${c.position}：${c.nameZh}（${c.nameEn}）- ${c.meaningZh}`).join("\n")
     : cards.map((c) => `${c.position}: ${c.nameEn} - ${c.meaningEn}`).join("\n");
 
   const topicContext = topic
-    ? isZh ? buildTopicContextZh(topic) : buildTopicContextEn(topic)
+    ? buildTopicContext(topic, lang)
     : "";
 
   const userContext = userProfile
-    ? isZh ? buildUserContextZh(userProfile) : buildUserContextEn(userProfile)
+    ? buildUserContext(userProfile, lang)
     : "";
 
   const fortuneInstruction = fortuneMode
-    ? (isZh ? buildFortuneInstructionZh() : buildFortuneInstructionEn())
+    ? buildFortuneInstruction(lang)
     : "";
 
   return `You are a masterful tarot reader who combines sharp intuition with honest, grounded wisdom. You read cards the way a brilliant storyteller would — weaving each card into a vivid, interconnected narrative that makes the querent feel truly seen and understood.
@@ -371,14 +450,9 @@ The uncomfortable but necessary truth. 2-3 points:
 One line in blockquote format (>).
 Not chicken soup. A line that lands like a gentle punch — the kind of sentence that stays in your head for days.
 
-## Language
-Respond in the same language as the user's message.
-If the user writes in Traditional Chinese, respond entirely in Traditional Chinese.
-If the user writes in English, respond entirely in English.
-
 ${validationContext ? `${validationContext}\n\n` : ""}The user drew the following cards using the "${spread}" spread:
 
-${cardLines}${topicContext}${userContext}${fortuneInstruction}`;
+${cardLines}${topicContext}${userContext}${fortuneInstruction}${getLanguageInstruction(lang)}`;
 }
 
 export async function POST(request: Request) {
@@ -441,6 +515,13 @@ export async function POST(request: Request) {
   let maxTokens: number;
 
   if (validation) {
+    const lang = getPromptLang(locale);
+    const validationLangMap: Record<PromptLang, string> = {
+      zh: 'You MUST respond entirely in Traditional Chinese (繁體中文).',
+      ko: 'You MUST respond entirely in Korean (한국어). Do NOT respond in Chinese or English.',
+      ja: 'You MUST respond entirely in Japanese (日本語). Do NOT respond in Chinese or English.',
+      en: 'Respond in English.',
+    };
     const validationSystemPrompt = `You are a perceptive tarot reader doing a quick validation check. Your ONLY job is to describe the user's current state in 3-4 sentences. Nothing more.
 
 Rules:
@@ -453,7 +534,8 @@ Rules:
 - Synthesize all 3 cards into ONE cohesive description, do not explain cards individually
 - No titles, no headers, no markdown formatting, no bullet points
 - Just 3-4 natural sentences, like a friend telling you what they see
-- Keep it under 100 words`;
+- Keep it under 100 words
+- ${validationLangMap[lang]}`;
 
     messages = [
       { role: "system", content: validationSystemPrompt },

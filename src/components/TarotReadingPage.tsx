@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { getCardDataLang, getSpreadLang } from "../i18n/config";
 import { sendGAEvent } from "@next/third-parties/google";
 import SideMenu from "./SideMenu";
 import TarotQuestionInput from "./TarotQuestionInput";
@@ -28,7 +29,8 @@ type AiState = "idle" | "loading" | "done" | "error";
 
 export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotReadingPageProps) {
   const { t, i18n } = useTranslation();
-  const lang = i18n.language === "zh-TW" ? "zh" : "en";
+  const lang = getCardDataLang(i18n.language);
+  const sLang = getSpreadLang(i18n.language);
   const spread = TAROT_SPREADS[spreadId];
 
   const [question, setQuestion] = useState("");
@@ -79,13 +81,13 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
   const buildCardInfos = useCallback(
     (cards: DrawnCard[]) =>
       cards.map((dc) => ({
-        position: `${dc.position} - ${dc.positionName[lang]}`,
+        position: `${dc.position} - ${dc.positionName[sLang]}`,
         nameZh: `${dc.card.name.zh}${dc.isReversed ? "（逆位）" : "（正位）"}`,
         nameEn: `${dc.card.name.en} (${dc.isReversed ? "Reversed" : "Upright"})`,
         meaningZh: dc.isReversed ? dc.card.reversed.zh : dc.card.upright.zh,
         meaningEn: dc.isReversed ? dc.card.reversed.en : dc.card.upright.en,
       })),
-    [lang]
+    [sLang]
   );
 
   // ===== Start AI reading =====
@@ -107,7 +109,7 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           deck_type: "tarot",
-          spread: spread.name[lang],
+          spread: spread.name[sLang],
           cards: buildCardInfos(drawnCards),
           locale: i18n.language,
           userProfile: profile || undefined,
@@ -185,20 +187,28 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
       // Call AI for clarifier reading
       try {
         const questionText = question || t("tarot.noQuestion");
-        const isZh = i18n.language.startsWith("zh");
+        const locale = i18n.language;
+        const isZh = locale.startsWith("zh");
+        const langInstruction: Record<string, string> = {
+          zh: "用繁體中文回答。",
+          ko: "한국어로 답해주세요.",
+          ja: "日本語で回答してください。",
+          en: "Respond in English.",
+        };
+        const respLang = isZh ? 'zh' : locale === 'ko' ? 'ko' : locale === 'ja' ? 'ja' : 'en';
         const clarifierPrompt = isZh
-          ? `使用者的原始問題：${questionText}\n在「${spread.name.zh}」牌陣中，位置「${dc.positionName.zh}」的牌是「${dc.card.name.zh}（${dc.isReversed ? "逆位" : "正位"}）」。\n\n使用者為這個位置抽了一張確認牌：${card.name.zh}（${isReversed ? "逆位" : "正位"}）\n\n請用 2-3 句話簡短說明這張確認牌如何補充或釐清主牌的訊息。直接說重點，不需要標題或格式。用繁體中文回答。`
-          : `User's original question: ${questionText}\nIn the "${spread.name.en}" spread, the card at position "${dc.positionName.en}" is "${dc.card.name.en} (${dc.isReversed ? "Reversed" : "Upright"})".\n\nThe user drew a clarifier card: ${card.name.en} (${isReversed ? "Reversed" : "Upright"})\n\nIn 2-3 sentences, briefly explain how this clarifier card supplements or clarifies the main card's message. Get straight to the point, no titles or formatting needed. Respond in English.`;
+          ? `使用者的原始問題：${questionText}\n在「${spread.name.zh}」牌陣中，位置「${dc.positionName.zh}」的牌是「${dc.card.name.zh}（${dc.isReversed ? "逆位" : "正位"}）」。\n\n使用者為這個位置抽了一張確認牌：${card.name.zh}（${isReversed ? "逆位" : "正位"}）\n\n請用 2-3 句話簡短說明這張確認牌如何補充或釐清主牌的訊息。直接說重點，不需要標題或格式。${langInstruction[respLang]}`
+          : `User's original question: ${questionText}\nIn the "${spread.name.en}" spread, the card at position "${dc.positionName.en}" is "${dc.card.name.en} (${dc.isReversed ? "Reversed" : "Upright"})".\n\nThe user drew a clarifier card: ${card.name.en} (${isReversed ? "Reversed" : "Upright"})\n\nIn 2-3 sentences, briefly explain how this clarifier card supplements or clarifies the main card's message. Get straight to the point, no titles or formatting needed. ${langInstruction[respLang]}`;
 
         const resp = await fetch("/api/reading", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             deck_type: "tarot",
-            spread: spread.name[lang],
+            spread: spread.name[sLang],
             cards: [
               {
-                position: dc.positionName[lang],
+                position: dc.positionName[sLang],
                 nameZh: `${dc.card.name.zh}（${dc.isReversed ? "逆位" : "正位"}）`,
                 nameEn: `${dc.card.name.en} (${dc.isReversed ? "Reversed" : "Upright"})`,
                 meaningZh: dc.isReversed ? dc.card.reversed.zh : dc.card.upright.zh,

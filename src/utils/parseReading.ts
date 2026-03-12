@@ -33,13 +33,13 @@ const SECTION_PATTERNS: {
   id: ReadingSection["id"];
   pattern: RegExp;
 }[] = [
-  { id: "answer", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:解答|Answer|Direct\s*Answer)/i },
-  { id: "card-meanings", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:牌意解讀|Card\s*Meanings?)/i },
-  { id: "card-reading", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:牌面解析|Card\s*(?:Reading|Analysis)|綜合解讀|整體解讀)/i },
-  { id: "deeper-insight", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:深層洞察|多層面評估|Deeper\s*Insight|Multi.?dimensional\s*Assessment|深入分析|深層)/i },
-  { id: "fortune-forecast", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:運勢預測|運勢分析|Fortune\s*Forecast|Fortune\s*Analysis)/i },
-  { id: "practical-guidance", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:具體指引|建議與練習|Practical\s*Guidance|Advice\s*[&＆]\s*Practice|行動指引|實際建議)/i },
-  { id: "zen-reminder", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:靜心提醒|Zen\s*Reminder|Meditation\s*Reminder|冥想提醒)/i },
+  { id: "answer", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:解答|Answer|Direct\s*Answer|답변|回答)/i },
+  { id: "card-meanings", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:牌意解讀|Card\s*Meanings?|카드\s*해석|カード解釈)/i },
+  { id: "card-reading", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:牌面解析|Card\s*(?:Reading|Analysis)|綜合解讀|整體解讀|리딩\s*분석|카드\s*분석|リーディング分析)/i },
+  { id: "deeper-insight", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:深層洞察|多層面評估|Deeper\s*Insight|Multi.?dimensional\s*Assessment|深入分析|深層|깊은\s*통찰|深い洞察)/i },
+  { id: "fortune-forecast", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:運勢預測|運勢分析|Fortune\s*Forecast|Fortune\s*Analysis|운세\s*예측|運勢予測)/i },
+  { id: "practical-guidance", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:具體指引|建議與練習|Practical\s*Guidance|Advice\s*[&＆]\s*Practice|行動指引|實際建議|구체적\s*안내|具体的なガイダンス)/i },
+  { id: "zen-reminder", pattern: /^(?:#{1,3}\s*|(?:\*\*)).*(?:靜心提醒|Zen\s*Reminder|Meditation\s*Reminder|冥想提醒|명상\s*메시지|瞑想メッセージ)/i },
 ];
 
 /** Check if a line is a # or ## heading (NOT ### which is a sub-heading inside sections) */

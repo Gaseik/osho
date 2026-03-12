@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Menu01, XClose, Globe01, Mail01, BookOpen01, MagicWand02, HelpCircle, User01 } from '@untitled-ui/icons-react';
 import { getRecords } from '../utils/divinationRecords';
 import { getUserProfile } from '../utils/userProfile';
+import { LANGUAGE_OPTIONS } from '../i18n/config';
 
 function ChevronDown({ open }: { open: boolean }) {
   return (
@@ -36,6 +37,7 @@ export default function SideMenu() {
   const [hasProfile, setHasProfile] = useState(false);
   const [oshoOpen, setOshoOpen] = useState(true);
   const [tarotOpen, setTarotOpen] = useState(true);
+  const [langOpen, setLangOpen] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -58,10 +60,7 @@ export default function SideMenu() {
     }
   }, [pathname]);
 
-  const toggleLanguage = () => {
-    const newLang = i18n.language === 'zh-TW' ? 'en' : 'zh-TW';
-    i18n.changeLanguage(newLang);
-  };
+  const currentLangLabel = LANGUAGE_OPTIONS.find(l => l.code === i18n.language)?.label ?? i18n.language;
 
   const isActive = (href: string) => pathname === href;
 
@@ -283,16 +282,40 @@ export default function SideMenu() {
 
             {/* Language */}
             <button
-              onClick={toggleLanguage}
+              onClick={() => setLangOpen(!langOpen)}
               className="flex items-center gap-3 py-2.5 text-white/70 hover:text-zen-gold
                          transition-colors text-left w-full"
             >
               <Globe01 width={16} height={16} />
               <span className="text-sm tracking-wider">{t('menu.language')}</span>
-              <span className="ml-auto text-xs text-white/40">
-                {i18n.language === 'zh-TW' ? 'EN' : '中文'}
+              <span className="ml-auto flex items-center gap-1.5 text-xs text-white/40">
+                {currentLangLabel}
+                <ChevronDown open={langOpen} />
               </span>
             </button>
+            {langOpen && (
+              <div className="mb-1">
+                {LANGUAGE_OPTIONS.map(({ code, label }) => (
+                  <button
+                    key={code}
+                    onClick={() => {
+                      i18n.changeLanguage(code);
+                      setLangOpen(false);
+                    }}
+                    className={`flex items-center gap-3 py-2 pl-7 text-sm tracking-wider transition-colors w-full text-left ${
+                      i18n.language === code
+                        ? 'text-zen-gold'
+                        : 'text-white/60 hover:text-zen-gold'
+                    }`}
+                  >
+                    {label}
+                    {i18n.language === code && (
+                      <span className="ml-auto text-xs text-zen-gold/60">✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Ko-fi donate — always visible at bottom */}

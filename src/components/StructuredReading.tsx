@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState, Fragment } from "react";
 import ReactMarkdown from "react-markdown";
+import { useTranslation } from "react-i18next";
 import {
   parseReading,
   parseCardMeanings,
@@ -11,6 +12,17 @@ import {
   type ReadingSection,
 } from "../utils/parseReading";
 import MarkdownReading from "./MarkdownReading";
+
+/* ── Section title localization map ── */
+const SECTION_TITLE_KEYS: Record<string, string> = {
+  answer: "tarot.sectionAnswer",
+  "card-meanings": "tarot.sectionCardMeanings",
+  "card-reading": "tarot.sectionCardReading",
+  "deeper-insight": "tarot.sectionDeeperInsight",
+  "practical-guidance": "tarot.sectionPracticalGuidance",
+  "fortune-forecast": "tarot.sectionFortuneForecast",
+  "zen-reminder": "tarot.sectionZenReminder",
+};
 
 /* ── Inline bold-highlight renderer ── */
 function InlineText({ text }: { text: string }) {
@@ -607,6 +619,7 @@ interface StructuredReadingProps {
 }
 
 export default function StructuredReading({ content }: StructuredReadingProps) {
+  const { t } = useTranslation();
   const sections = parseReading(content);
 
   // Fallback: if parsing found no sections at all, render with MarkdownReading
@@ -614,9 +627,21 @@ export default function StructuredReading({ content }: StructuredReadingProps) {
     return <MarkdownReading content={content} />;
   }
 
+  // Localize section titles based on section ID
+  const localizedSections = sections.map((section) => {
+    const key = SECTION_TITLE_KEYS[section.id];
+    if (key) {
+      const localized = t(key);
+      if (localized && localized !== key) {
+        return { ...section, title: localized };
+      }
+    }
+    return section;
+  });
+
   return (
     <div className="structured-reading flex flex-col">
-      {sections.map((section, i) => (
+      {localizedSections.map((section, i) => (
         <Fragment key={`${section.id}-${i}`}>
           {i > 0 && <SectionDivider />}
           {renderSection(section)}
