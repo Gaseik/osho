@@ -657,5 +657,39 @@
     "uprightMeaning": "Upright Meaning",
     "reversedMeaning": "Reversed Meaning",
     "timeframe": "Timeframe"
+  },
+  "meta": {
+    "home": {
+      "title": "Zen Insight | Online Tarot / Osho Cards | Face Your True Voice",
+      "description": "Free online Tarot and Osho Zen card reading with AI interpretation. Face your true voice and explore inner wisdom."
+    },
+    "cards": {
+      "title": "79 Osho Zen Cards Encyclopedia | Zen Insight",
+      "description": "Complete 79 Osho Zen Tarot card meanings, including Major Arcana, Fire, Water, Clouds, and Rainbows suits."
+    },
+    "spreads": {
+      "title": "9 Zen Card Spreads Guide | Zen Insight",
+      "description": "Single card, Stream of Time, Two Partners, Either-Or, Diamond, Key, Mirror and more — 9 spread types with detailed guides."
+    },
+    "about": {
+      "title": "About Zen Insight | About",
+      "description": "Zen Insight is a free online Zen card reading platform inspired by Osho Zen Tarot."
+    },
+    "reading": {
+      "title": "Online Card Reading · AI Interpretation | Zen Insight",
+      "description": "Choose a spread, draw cards, and get AI-powered interpretation of your Zen card reading."
+    },
+    "tarotCards": {
+      "title": "78 Tarot Card Meanings Encyclopedia | Zen Insight",
+      "description": "Complete 78 Rider-Waite Tarot card meanings, including Major Arcana, Wands, Cups, Swords, and Pentacles."
+    },
+    "tarotSpreads": {
+      "title": "4 Tarot Spread Types Guide | Zen Insight",
+      "description": "Single Card, Three Card Spread, Celtic Cross, Relationship Spread — 4 classic tarot spreads with detailed guides."
+    },
+    "records": {
+      "title": "Reading Records | Zen Insight",
+      "description": "View your reading records and past interpretations."
+    }
   }
 }
