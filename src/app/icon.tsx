@@ -20,12 +20,14 @@ export default function Icon() {
       >
         <div
           style={{
-            fontSize: "40px",
+            fontSize: "44px",
+            fontWeight: 700,
             color: "rgba(255, 215, 0, 0.9)",
             display: "flex",
+            lineHeight: 1,
           }}
         >
-          ☯︎
+          O
         </div>
       </div>
     ),
