@@ -223,6 +223,8 @@
     "rateLimitError": "현재 사용자가 많습니다. 서버가 바쁘니 잠시 후 다시 시도해주세요.",
     "dailyLimitError": "일일 무료 한도에 도달했습니다. 내일 다시 방문해주세요 🙏",
     "retryReading": "리딩 재시도",
+    "errorModelUnavailable": "AI 서비스를 일시적으로 이용할 수 없습니다. 조치 중이니 잠시 후 다시 시도해주세요 🙏",
+    "errorGeneric": "리딩 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
     "copyReading": "리딩 복사",
     "copyReadingDone": "리딩 복사됨",
     "orCopyPrompt": "또는 직접 리딩을 위해 프롬프트 복사"

@@ -223,6 +223,8 @@
     "rateLimitError": "Too many users right now. The server is busy, please try again shortly.",
     "dailyLimitError": "Daily free limit reached. Please come back tomorrow 🙏",
     "retryReading": "Retry Reading",
+    "errorModelUnavailable": "The AI service is temporarily unavailable. We're on it — please try again later 🙏",
+    "errorGeneric": "Something went wrong with the reading. Please try again shortly.",
     "copyReading": "Copy Reading",
     "copyReadingDone": "Reading Copied",
     "orCopyPrompt": "Or copy prompt for self-reading"

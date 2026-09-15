@@ -82,6 +82,20 @@ yarn dev
 yarn build
 ```
 
+## Environment Variables
+
+Copy `.env.example` to `.env.local` and fill in:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GROQ_API_KEY` | Yes | Groq API key used by the `/api/reading` route |
+| `GROQ_MODELS` | Yes | Comma-separated Groq model IDs, in priority order (first = primary, rest = fallbacks). The reading API tries them in sequence and only falls back when a model is unavailable (404 / `model_not_found`); every other error is surfaced instead of being masked. There is no hardcoded default — if unset, the API returns `500 { "error": { "code": "CONFIG_ERROR" } }`. Example: `GROQ_MODELS=llama-3.3-70b-versatile,llama-3.1-8b-instant,openai/gpt-oss-20b` |
+| `ALLOWED_ORIGIN` | No | Restrict `/api/reading` to a single origin (defaults to Vercel/localhost/`NEXT_PUBLIC_SITE_URL`) |
+| `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL, used for metadata and origin checks |
+
+The model that actually served a response is reported in the `X-Model-Used`
+response header, so the active model can be confirmed straight from DevTools.
+
 ## Project Structure
 
 ```

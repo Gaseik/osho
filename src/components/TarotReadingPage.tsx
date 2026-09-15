@@ -14,6 +14,13 @@ import { TAROT_SPREADS, DrawnCard, drawTarotCards } from "../data/tarot-spreads"
 import { allTarotCards } from "../data/tarot-cards";
 import { getUserProfile } from "../utils/userProfile";
 import {
+  parseReadingError,
+  readingErrorMessageKey,
+  trackReadingError,
+  NETWORK_READING_ERROR,
+  type ReadingErrorInfo,
+} from "../utils/readingError";
+import {
   saveRecord,
   generateId,
   type DivinationCard,
@@ -39,7 +46,7 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
   // AI reading state
   const [aiState, setAiState] = useState<AiState>("idle");
   const [aiText, setAiText] = useState("");
-  const [aiError, setAiError] = useState("");
+  const [errorInfo, setErrorInfo] = useState<ReadingErrorInfo | null>(null);
 
   // Clarifiers
   const [clarifiers, setClarifiers] = useState<Record<number, ClarifierData>>({});
@@ -56,7 +63,7 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
     setDrawnCards(cards);
     setAiState("idle");
     setAiText("");
-    setAiError("");
+    setErrorInfo(null);
     setClarifiers({});
     setSaved(false);
     sendGAEvent("event", "draw_card", {
@@ -72,7 +79,7 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
     setQuestion("");
     setAiState("idle");
     setAiText("");
-    setAiError("");
+    setErrorInfo(null);
     setClarifiers({});
     setSaved(false);
   }, []);
@@ -96,7 +103,7 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
 
     setAiState("loading");
     setAiText("");
-    setAiError("");
+    setErrorInfo(null);
 
     const controller = new AbortController();
     abortRef.current = controller;
@@ -119,20 +126,19 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
       });
 
       if (!resp.ok) {
-        const data = await resp.json().catch(() => ({}));
-        if (resp.status === 429) {
-          setAiError(t("tarot.rateLimitError"));
-        } else {
-          setAiError(data.error || t("tarot.readingError"));
-        }
+        const info = await parseReadingError(resp);
+        console.log("AI reading error:", resp.status, info.code);
+        setErrorInfo(info);
         setAiState("error");
+        trackReadingError(info.code, "tarot", spreadId);
         return;
       }
 
       const reader = resp.body?.getReader();
       if (!reader) {
-        setAiError(t("tarot.readingError"));
+        setErrorInfo(NETWORK_READING_ERROR);
         setAiState("error");
+        trackReadingError(NETWORK_READING_ERROR.code, "tarot", spreadId);
         return;
       }
 
@@ -152,8 +158,9 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
       });
     } catch (err: unknown) {
       if (err instanceof DOMException && err.name === "AbortError") return;
-      setAiError(t("tarot.readingError"));
+      setErrorInfo(NETWORK_READING_ERROR);
       setAiState("error");
+      trackReadingError(NETWORK_READING_ERROR.code, "tarot", spreadId);
     }
   }, [drawnCards, aiState, question, spread, lang, i18n.language, buildCardInfos, spreadId, t]);
 
@@ -383,16 +390,22 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
             </div>
           )}
 
-          {aiState === "error" && (
+          {aiState === "error" && errorInfo && (
             <div className="mt-10 w-full max-w-lg">
-              <div className="p-5 rounded-xl bg-red-900/10 border border-red-500/20 text-center">
-                <p className="text-red-300/70 text-sm">{aiError}</p>
-                <button
-                  onClick={handleStartReading}
-                  className="mt-3 text-xs text-zen-gold/60 hover:text-zen-gold transition-colors"
-                >
-                  {t("tarot.drawAgain")}
-                </button>
+              <div className="p-5 rounded-xl bg-white/[0.03] border border-zen-gold/20 text-center">
+                <p className="text-white/60 text-sm">
+                  {errorInfo.dailyLimit
+                    ? t("tarot.rateLimitError")
+                    : t(readingErrorMessageKey(errorInfo.code))}
+                </p>
+                {!errorInfo.dailyLimit && (
+                  <button
+                    onClick={handleStartReading}
+                    className="mt-3 text-xs text-zen-gold/60 hover:text-zen-gold transition-colors"
+                  >
+                    {t("result.retryReading")}
+                  </button>
+                )}
               </div>
             </div>
           )}

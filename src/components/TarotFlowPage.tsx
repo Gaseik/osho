@@ -16,6 +16,13 @@ import { TAROT_SPREAD_DETAILS } from "../data/tarot-spread-details";
 import { shuffle, type Card } from "../data/cards";
 import type { SpreadLayout } from "../data/spreads";
 import { getUserProfile } from "../utils/userProfile";
+import {
+  parseReadingError,
+  readingErrorMessageKey,
+  trackReadingError,
+  NETWORK_READING_ERROR,
+  type ReadingErrorInfo,
+} from "../utils/readingError";
 
 type Step = "category" | "describe" | "validation" | "spreadSelect" | "draw" | "result";
 
@@ -128,7 +135,7 @@ export default function TarotFlowPage() {
   const [validationRevealed, setValidationRevealed] = useState(false);
   const [validationFlipped, setValidationFlipped] = useState(0);
   const [validationIntro, setValidationIntro] = useState<'done' | 'intro' | 'fadeOut'>('done');
-  const [validationError, setValidationError] = useState(false);
+  const [validationError, setValidationError] = useState<ReadingErrorInfo | null>(null);
 
   // ─── Spread selection ───
   const [selectedSpreadId, setSelectedSpreadId] = useState<string | null>(null);
@@ -192,7 +199,7 @@ export default function TarotFlowPage() {
     setValidationCards(cards);
     setValidationText("");
     setValidationLoading(true);
-    setValidationError(false);
+    setValidationError(null);
     setValidationFlipped(0);
     setValidationAttempt((prev) => prev + 1);
 
@@ -278,15 +285,18 @@ export default function TarotFlowPage() {
       clearTimeout(timeout);
 
       if (!resp.ok) {
+        const info = await parseReadingError(resp);
         setValidationLoading(false);
-        setValidationError(true);
+        setValidationError(info);
+        trackReadingError(info.code, "tarot", "validation");
         return;
       }
 
       const reader = resp.body?.getReader();
       if (!reader) {
         setValidationLoading(false);
-        setValidationError(true);
+        setValidationError(NETWORK_READING_ERROR);
+        trackReadingError(NETWORK_READING_ERROR.code, "tarot", "validation");
         return;
       }
 
@@ -305,12 +315,14 @@ export default function TarotFlowPage() {
         // If aborted by timeout (not by a new call replacing this one)
         if (abortValidation.current === controller) {
           setValidationLoading(false);
-          setValidationError(true);
+          setValidationError(NETWORK_READING_ERROR);
+          trackReadingError(NETWORK_READING_ERROR.code, "tarot", "validation");
         }
         return;
       }
       setValidationLoading(false);
-      setValidationError(true);
+      setValidationError(NETWORK_READING_ERROR);
+      trackReadingError(NETWORK_READING_ERROR.code, "tarot", "validation");
     }
   };
 
@@ -512,7 +524,7 @@ export default function TarotFlowPage() {
     setValidationText("");
     setValidationAttempt(0);
     setValidationIntro('done');
-    setValidationError(false);
+    setValidationError(null);
   }, []);
 
   // ═══════════════════════════════════════════
@@ -805,10 +817,10 @@ export default function TarotFlowPage() {
               {/* Error state */}
               {validationError && !validationText && (
                 <div className="w-full max-w-md mb-6 animate-fadeUp">
-                  <div className="rounded-xl border border-red-500/20 bg-red-500/[0.04] p-5 md:p-6 text-center">
+                  <div className="rounded-xl border border-zen-gold/20 bg-white/[0.03] p-5 md:p-6 text-center">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                       strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
-                      className="text-red-400/60 mx-auto mb-3">
+                      className="text-zen-gold/50 mx-auto mb-3">
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="12" />
                       <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -817,7 +829,9 @@ export default function TarotFlowPage() {
                       {t("tarot.connectionInterrupted")}
                     </p>
                     <p className="text-white/40 text-xs mb-5">
-                      {t("tarot.connectionError")}
+                      {validationError.code === "MODEL_UNAVAILABLE"
+                        ? t(readingErrorMessageKey(validationError.code))
+                        : t("tarot.connectionError")}
                     </p>
                     <button
                       onClick={handleValidationRetry}
@@ -886,7 +900,7 @@ export default function TarotFlowPage() {
               onClick={() => {
                 abortValidation.current?.abort();
                 setValidationLoading(false);
-                setValidationError(false);
+                setValidationError(null);
                 setValidationText("");
                 setStep("category");
               }}
