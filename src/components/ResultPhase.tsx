@@ -21,6 +21,7 @@ import {
   readingErrorMessageKey,
   trackReadingError,
   NETWORK_READING_ERROR,
+  EMPTY_READING_ERROR,
   type ReadingErrorInfo,
 } from "../utils/readingError";
 
@@ -189,6 +190,16 @@ export default function ResultPhase({
         const { done, value } = await reader.read();
         if (done) break;
         accumulated += decoder.decode(value, { stream: true });
+      }
+
+      if (!accumulated.trim()) {
+        console.log("AI reading error: empty response");
+        setErrorInfo(EMPTY_READING_ERROR);
+        setAiState("error");
+        setShowPrompt(true);
+        setShowPromptLink(true);
+        trackReadingError(EMPTY_READING_ERROR.code, deckType ?? "osho", spread.id);
+        return;
       }
 
       setAiText(accumulated);

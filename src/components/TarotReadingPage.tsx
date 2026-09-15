@@ -18,6 +18,7 @@ import {
   readingErrorMessageKey,
   trackReadingError,
   NETWORK_READING_ERROR,
+  EMPTY_READING_ERROR,
   type ReadingErrorInfo,
 } from "../utils/readingError";
 import {
@@ -149,6 +150,14 @@ export default function TarotReadingPage({ spreadId, titleKey, descKey }: TarotR
         if (done) break;
         fullText += decoder.decode(value, { stream: true });
         setAiText(fullText);
+      }
+
+      if (!fullText.trim()) {
+        console.log("AI reading error: empty response");
+        setErrorInfo(EMPTY_READING_ERROR);
+        setAiState("error");
+        trackReadingError(EMPTY_READING_ERROR.code, "tarot", spreadId);
+        return;
       }
 
       setAiState("done");
