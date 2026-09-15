@@ -2,6 +2,132 @@ export const runtime = "nodejs";
 
 import Groq from "groq-sdk";
 
+// --- Model configuration (env-driven) ---
+// GROQ_MODELS is a comma-separated list of Groq model IDs, ordered by priority
+// (first = primary, rest = fallbacks). There is deliberately NO hardcoded
+// default: a missing config must fail loudly instead of silently reaching for a
+// model that may not exist either.
+const MODEL_CHAIN = (process.env.GROQ_MODELS ?? "")
+  .split(",")
+  .map((m) => m.trim())
+  .filter(Boolean);
+
+/** Thrown when every model in MODEL_CHAIN reported model_not_found / 404. */
+class AllModelsUnavailableError extends Error {
+  constructor(cause?: unknown) {
+    super("ALL_MODELS_UNAVAILABLE");
+    this.name = "AllModelsUnavailableError";
+    this.cause = cause;
+  }
+}
+
+/**
+ * Only "model does not exist / no access" may trigger a fallback. Rate limits,
+ * auth failures, oversized payloads and context-length errors must bubble up
+ * untouched — cycling the whole chain would just mask the real problem.
+ */
+function isModelUnavailable(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const e = error as {
+    status?: number;
+    statusCode?: number;
+    code?: string;
+    message?: string;
+    error?: { code?: string; error?: { code?: string } };
+  };
+  if (e.status === 404 || e.statusCode === 404) return true;
+  if (e.code === "model_not_found") return true;
+  if (e.error?.code === "model_not_found") return true;
+  if (e.error?.error?.code === "model_not_found") return true;
+  return (
+    typeof e.message === "string" &&
+    /model_not_found|does not exist or you do not have access/i.test(e.message)
+  );
+}
+
+interface CompletionParams {
+  messages: { role: "system" | "user"; content: string }[];
+  temperature: number;
+  max_tokens: number;
+  stream: true;
+}
+
+/**
+ * Try each configured model in order. Groq raises model_not_found from
+ * create() itself — before a single chunk is streamed — so retrying here is
+ * safe. Never move this after streaming has started: the response is already
+ * on the wire by then and cannot be retried.
+ */
+async function createCompletionWithFallback(groq: Groq, params: CompletionParams) {
+  let lastError: unknown;
+
+  for (const model of MODEL_CHAIN) {
+    try {
+      const stream = await groq.chat.completions.create({ ...params, model });
+      if (model !== MODEL_CHAIN[0]) {
+        console.log(`[reading] fallback succeeded, using model: ${model}`);
+      }
+      return { stream, model };
+    } catch (error) {
+      if (!isModelUnavailable(error)) throw error;
+      console.warn(`[reading] model unavailable, falling back: ${model}`);
+      lastError = error;
+    }
+  }
+
+  throw new AllModelsUnavailableError(lastError);
+}
+
+// --- Structured error responses ---
+// Only a stable code goes to the client; upstream messages (which can leak
+// model names or account state) stay in the server log.
+type ReadingErrorCode =
+  | "MODEL_UNAVAILABLE"
+  | "CONFIG_ERROR"
+  | "SERVICE_ERROR"
+  | "SERVICE_BUSY"
+  | "UNKNOWN_ERROR";
+
+function errorResponse(code: ReadingErrorCode, status: number) {
+  return Response.json({ error: { code } }, { status });
+}
+
+/** Best-effort HTTP status extraction from a Groq SDK error. */
+function getUpstreamStatus(error: unknown): number | undefined {
+  if (!error || typeof error !== "object") return undefined;
+  const e = error as { status?: unknown; statusCode?: unknown };
+  if (typeof e.status === "number") return e.status;
+  if (typeof e.statusCode === "number") return e.statusCode;
+  return undefined;
+}
+
+function handleGroqError(error: unknown): Response {
+  if (error instanceof AllModelsUnavailableError) {
+    console.error(
+      `[reading] all configured models unavailable (${MODEL_CHAIN.join(", ")}):`,
+      error.cause
+    );
+    return errorResponse("MODEL_UNAVAILABLE", 503);
+  }
+
+  const raw = error instanceof Error ? error.message : String(error);
+  console.error("[reading] Groq API error:", raw);
+
+  const status = getUpstreamStatus(error);
+  if (status === 401 || status === 403) return errorResponse("SERVICE_ERROR", 503);
+  if (status === 429) return errorResponse("SERVICE_BUSY", 503);
+
+  // Backstop for errors that arrive without a usable status property.
+  if (/rate.?limit|too many requests|\b429\b/i.test(raw)) {
+    return errorResponse("SERVICE_BUSY", 503);
+  }
+  if (/invalid.?api.?key|invalid_api_key|unauthorized/i.test(raw)) {
+    return errorResponse("SERVICE_ERROR", 503);
+  }
+
+  return errorResponse("UNKNOWN_ERROR", 500);
+}
+
 // --- Rate Limiting (in-memory, resets on cold start) ---
 const DAILY_LIMIT = 10;
 
@@ -472,7 +598,7 @@ export async function POST(request: Request) {
 
   if (!allowed) {
     return Response.json(
-      { error: "今日免費次數已用完，請明天再來 🙏", dailyLimit: true },
+      { error: "今日免費次數已用完，請明天再來 🙏", dailyLimit: true, code: "RATE_LIMITED" },
       {
         status: 429,
         headers: {
@@ -485,11 +611,13 @@ export async function POST(request: Request) {
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    console.log("Groq error: GROQ_API_KEY not set in environment");
-    return Response.json(
-      { error: "API key not configured – set GROQ_API_KEY in .env.local", status: 500 },
-      { status: 500 }
-    );
+    console.error("[reading] GROQ_API_KEY is not configured");
+    return errorResponse("CONFIG_ERROR", 500);
+  }
+
+  if (MODEL_CHAIN.length === 0) {
+    console.error("[reading] GROQ_MODELS is not configured");
+    return errorResponse("CONFIG_ERROR", 500);
   }
 
   let body: { spread: string; spreadId?: string; cards: CardInfo[]; locale: string; userProfile?: UserProfileInfo; topic?: string; description?: string; deck_type?: string; validation?: boolean; validationContext?: string; fortuneMode?: boolean };
@@ -552,8 +680,7 @@ Rules:
 
   try {
     const groq = new Groq({ apiKey });
-    const response = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+    const { stream: completion, model: modelUsed } = await createCompletionWithFallback(groq, {
       messages,
       temperature: 0.8,
       max_tokens: maxTokens,
@@ -563,7 +690,7 @@ Rules:
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          for await (const chunk of response) {
+          for await (const chunk of completion) {
             const text = chunk.choices[0]?.delta?.content;
             if (text) {
               controller.enqueue(new TextEncoder().encode(text));
@@ -571,7 +698,7 @@ Rules:
           }
           controller.close();
         } catch (streamError) {
-          console.log("Groq stream error:", streamError);
+          console.error(`[reading] stream error (model: ${modelUsed}):`, streamError);
           controller.error(streamError);
         }
       },
@@ -583,39 +710,11 @@ Rules:
         "Cache-Control": "no-cache",
         "X-RateLimit-Limit": String(DAILY_LIMIT),
         "X-RateLimit-Remaining": String(remaining),
+        "X-Model-Used": modelUsed,
       },
     });
   } catch (error: unknown) {
-    const raw = error instanceof Error ? error.message : String(error);
-    console.log("Groq API error:", raw);
-
-    let status = 500;
-    let message = raw;
-
-    // Detect rate-limit from Groq SDK (status property on error object)
-    const errObj = error as Record<string, unknown>;
-    if (errObj?.status === 429 || errObj?.statusCode === 429) {
-      status = 429;
-    }
-
-    try {
-      const parsed = JSON.parse(raw);
-      const code = parsed.error?.code || parsed.code;
-      if (code === 429 || code === "rate_limit_exceeded") status = 429;
-      if (code && typeof code === "number" && status === 500) status = code;
-      message = parsed.error?.message || parsed.message || raw;
-    } catch {
-      // Not JSON, use raw message as-is
-    }
-
-    // Also detect rate-limit keywords in the message
-    if (status === 500 && /rate.?limit|too many requests|429/i.test(raw)) {
-      status = 429;
-    }
-
-    return Response.json(
-      { error: message, status },
-      { status }
-    );
+    return handleGroqError(error);
   }
 }
+

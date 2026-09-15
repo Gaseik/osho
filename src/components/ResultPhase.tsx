@@ -16,6 +16,13 @@ import {
   type DivinationCard,
 } from "../utils/divinationRecords";
 import { getUserProfile } from "../utils/userProfile";
+import {
+  parseReadingError,
+  readingErrorMessageKey,
+  trackReadingError,
+  NETWORK_READING_ERROR,
+  type ReadingErrorInfo,
+} from "../utils/readingError";
 
 type AiState = "idle" | "loading" | "done" | "error";
 
@@ -74,9 +81,7 @@ export default function ResultPhase({
   // AI reading state
   const [aiState, setAiState] = useState<AiState>("idle");
   const [aiText, setAiText] = useState("");
-  const [aiError, setAiError] = useState("");
-  const [isRateLimited, setIsRateLimited] = useState(false);
-  const [isDailyLimit, setIsDailyLimit] = useState(false);
+  const [errorInfo, setErrorInfo] = useState<ReadingErrorInfo | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [showPromptLink, setShowPromptLink] = useState(false);
   const [readingCopied, setReadingCopied] = useState(false);
@@ -118,9 +123,7 @@ export default function ResultPhase({
   const handleAiReading = useCallback(async () => {
     setAiState("loading");
     setAiText("");
-    setAiError("");
-    setIsRateLimited(false);
-    setIsDailyLimit(false);
+    setErrorInfo(null);
     setShowPrompt(false);
     setShowPromptLink(false);
 
@@ -158,27 +161,24 @@ export default function ResultPhase({
       });
 
       if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        console.log("AI reading error:", response.status, errData);
-        if (response.status === 429) {
-          setIsRateLimited(true);
-          if (errData.dailyLimit) {
-            setIsDailyLimit(true);
-          }
-        }
-        setAiError(errData.error || `HTTP ${response.status}`);
+        const info = await parseReadingError(response);
+        console.log("AI reading error:", response.status, info.code);
+        setErrorInfo(info);
         setAiState("error");
         setShowPrompt(true);
         setShowPromptLink(true);
+        trackReadingError(info.code, deckType ?? "osho", spread.id);
         return;
       }
 
       // Read the full response as text (no streaming display)
       const reader = response.body?.getReader();
       if (!reader) {
+        setErrorInfo(NETWORK_READING_ERROR);
         setAiState("error");
         setShowPrompt(true);
         setShowPromptLink(true);
+        trackReadingError(NETWORK_READING_ERROR.code, deckType ?? "osho", spread.id);
         return;
       }
 
@@ -197,13 +197,14 @@ export default function ResultPhase({
       sendGAEvent("event", "reading_complete", { spread_type: spread.id });
     } catch (err) {
       console.log("AI reading fetch error:", err);
-      setAiError(err instanceof Error ? err.message : String(err));
+      setErrorInfo(NETWORK_READING_ERROR);
       setAiState("error");
       setShowPrompt(true);
       setShowPromptLink(true);
+      trackReadingError(NETWORK_READING_ERROR.code, deckType ?? "osho", spread.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spread, drawn, i18n.language]);
+  }, [spread, drawn, i18n.language, deckType]);
 
   // Auto-trigger AI reading when all cards are flipped
   useEffect(() => {
@@ -370,22 +371,17 @@ export default function ResultPhase({
         {/* Loading State - Pulse Skeleton */}
         {aiState === "loading" && <PulseSkeleton />}
 
-        {/* Error Message */}
-        {aiState === "error" && (
-          <div className={`bg-white/[0.03] rounded-xl border ${isRateLimited ? 'border-zen-gold/30' : 'border-red-500/20'} p-4 max-w-[500px] w-full text-left mb-2`}>
+        {/* Error Message — drawn cards stay on screen, retry reuses them */}
+        {aiState === "error" && errorInfo && (
+          <div className="bg-white/[0.03] rounded-xl border border-zen-gold/20 p-4 max-w-[500px] w-full text-left mb-2">
             <div className="text-xs text-white/60 leading-relaxed">
-              {isDailyLimit
+              {errorInfo.dailyLimit
                 ? t('result.dailyLimitError')
-                : isRateLimited
+                : errorInfo.code === 'RATE_LIMITED'
                   ? t('result.rateLimitError')
-                  : t('result.aiReadingError')}
+                  : t(readingErrorMessageKey(errorInfo.code))}
             </div>
-            {aiError && !isRateLimited && (
-              <div className="mt-2 text-[10px] text-red-400/70 font-mono leading-relaxed break-all">
-                {aiError}
-              </div>
-            )}
-            {isRateLimited && !isDailyLimit && (
+            {!errorInfo.dailyLimit && (
               <button
                 onClick={handleAiReading}
                 className="mt-3 w-full px-5 py-2.5 rounded-lg border border-zen-gold/30

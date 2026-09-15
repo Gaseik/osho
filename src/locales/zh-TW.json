@@ -223,6 +223,8 @@
     "rateLimitError": "目前使用人數較多，伺服器忙碌中，請稍後再試 ☕",
     "dailyLimitError": "今日免費次數已用完，請明天再來 🙏",
     "retryReading": "重新嘗試解讀",
+    "errorModelUnavailable": "AI 服務暫時無法使用，我們正在處理，請稍後再試 🙏",
+    "errorGeneric": "解讀時發生了一點狀況，請稍後再試一次",
     "copyReading": "複製解讀結果",
     "copyReadingDone": "已複製解讀結果",
     "orCopyPrompt": "或複製 Prompt 自行解讀"
