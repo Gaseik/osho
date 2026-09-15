@@ -58,6 +58,15 @@ export const NETWORK_READING_ERROR: ReadingErrorInfo = {
 };
 
 /**
+ * The API answered 200 but the stream carried no text. Treated as a failure so
+ * the user gets a message and a retry instead of a silently blank reading.
+ */
+export const EMPTY_READING_ERROR: ReadingErrorInfo = {
+  code: "UNKNOWN_ERROR",
+  dailyLimit: false,
+};
+
+/**
  * i18n key for the message shown to the user.
  * Rate limiting keeps its own existing copy, handled by the caller.
  */

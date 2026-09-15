@@ -21,6 +21,7 @@ import {
   readingErrorMessageKey,
   trackReadingError,
   NETWORK_READING_ERROR,
+  EMPTY_READING_ERROR,
   type ReadingErrorInfo,
 } from "../utils/readingError";
 
@@ -309,6 +310,10 @@ export default function TarotFlowPage() {
         setValidationText(fullText);
       }
       setValidationLoading(false);
+      if (!fullText.trim()) {
+        setValidationError(EMPTY_READING_ERROR);
+        trackReadingError(EMPTY_READING_ERROR.code, "tarot", "validation");
+      }
     } catch (err: unknown) {
       clearTimeout(timeout);
       if (err instanceof DOMException && err.name === "AbortError") {

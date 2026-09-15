@@ -52,22 +52,62 @@ interface CompletionParams {
   stream: true;
 }
 
+/** A model that connected fine but produced no content at all. */
+class EmptyCompletionError extends Error {
+  constructor(model: string, finishReason: string | undefined) {
+    super(`EMPTY_COMPLETION: ${model} (finish_reason: ${finishReason ?? "none"})`);
+    this.name = "EmptyCompletionError";
+  }
+}
+
+type CompletionChunk = { choices?: { delta?: { content?: string | null }; finish_reason?: string | null }[] };
+
+/**
+ * Pull chunks until the first one carrying actual content. Nothing has been
+ * written to the client yet at this point, so a model that yields no content
+ * (reasoning models can spend the entire token budget on reasoning tokens and
+ * finish with an empty message) can still be swapped out for the next one.
+ */
+async function openContentStream(completion: AsyncIterable<CompletionChunk>) {
+  const iterator = completion[Symbol.asyncIterator]();
+  let finishReason: string | undefined;
+
+  for (;;) {
+    const { value, done } = await iterator.next();
+    if (done) return { iterator, first: null, finishReason };
+    finishReason = value?.choices?.[0]?.finish_reason ?? finishReason;
+    const text = value?.choices?.[0]?.delta?.content;
+    if (text) return { iterator, first: text, finishReason };
+  }
+}
+
 /**
  * Try each configured model in order. Groq raises model_not_found from
- * create() itself — before a single chunk is streamed — so retrying here is
- * safe. Never move this after streaming has started: the response is already
- * on the wire by then and cannot be retried.
+ * create() itself — before a single chunk is streamed — and an empty
+ * completion is detected before the first byte reaches the client, so both
+ * can be retried here. Never move this after streaming has started: the
+ * response is already on the wire by then and cannot be retried.
  */
 async function createCompletionWithFallback(groq: Groq, params: CompletionParams) {
   let lastError: unknown;
 
   for (const model of MODEL_CHAIN) {
     try {
-      const stream = await groq.chat.completions.create({ ...params, model });
+      const completion = await groq.chat.completions.create({ ...params, model });
+      const { iterator, first, finishReason } = await openContentStream(completion);
+
+      if (first === null) {
+        console.warn(
+          `[reading] model returned no content (finish_reason: ${finishReason ?? "none"}), falling back: ${model}`
+        );
+        lastError = new EmptyCompletionError(model, finishReason);
+        continue;
+      }
+
       if (model !== MODEL_CHAIN[0]) {
         console.log(`[reading] fallback succeeded, using model: ${model}`);
       }
-      return { stream, model };
+      return { iterator, first, model };
     } catch (error) {
       if (!isModelUnavailable(error)) throw error;
       console.warn(`[reading] model unavailable, falling back: ${model}`);
@@ -104,7 +144,7 @@ function getUpstreamStatus(error: unknown): number | undefined {
 function handleGroqError(error: unknown): Response {
   if (error instanceof AllModelsUnavailableError) {
     console.error(
-      `[reading] all configured models unavailable (${MODEL_CHAIN.join(", ")}):`,
+      `[reading] no usable model in chain (${MODEL_CHAIN.join(", ")}):`,
       error.cause
     );
     return errorResponse("MODEL_UNAVAILABLE", 503);
@@ -680,7 +720,7 @@ Rules:
 
   try {
     const groq = new Groq({ apiKey });
-    const { stream: completion, model: modelUsed } = await createCompletionWithFallback(groq, {
+    const { iterator, first, model: modelUsed } = await createCompletionWithFallback(groq, {
       messages,
       temperature: 0.8,
       max_tokens: maxTokens,
@@ -689,11 +729,15 @@ Rules:
 
     const stream = new ReadableStream({
       async start(controller) {
+        const encoder = new TextEncoder();
         try {
-          for await (const chunk of completion) {
-            const text = chunk.choices[0]?.delta?.content;
+          controller.enqueue(encoder.encode(first));
+          for (;;) {
+            const { value, done } = await iterator.next();
+            if (done) break;
+            const text = value?.choices?.[0]?.delta?.content;
             if (text) {
-              controller.enqueue(new TextEncoder().encode(text));
+              controller.enqueue(encoder.encode(text));
             }
           }
           controller.close();
